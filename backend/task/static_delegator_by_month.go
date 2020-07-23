@@ -270,7 +270,7 @@ func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(starttime, endtime 
 	chanLimit := make(chan bool, conf.Get().Server.NetreqLimitMax)
 	for _, tx := range txs {
 		switch tx.Type {
-		case types.TxTypeWithdrawDelegatorReward, types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll,
+		case types.TxTypeWithdrawDelegatorReward, types.TxTypeMsgFundCommunityPool, types.TxTypeMsgWithdrawValidatorCommission,
 			types.TxTypeBeginRedelegate, types.TxTypeStakeBeginUnbonding, types.TxTypeStakeDelegate, types.TxTypeStakeEditValidator:
 			chanLimit <- true
 			group.Add(1)

@@ -53,15 +53,15 @@ func (task TxNumGroupByDayTask) DoTask(fn func(string) chan bool) error {
 		delegatorNum = int64(v)
 	}
 
-	// token stat statistics
-	tokenStat := task.getTokenStat()
+	//// token stat statistics
+	//tokenStat := task.getTokenStat()
 
 	txNumStat := document.TxNumStat{
 		Date:         utils.FmtTime(yesterday, utils.DateFmtYYYYMMDD),
 		Num:          int64(total),
 		TotalAccNum:  totalAccNum,
 		DelegatorNum: delegatorNum,
-		TokenStat:    tokenStat,
+		//TokenStat:    tokenStat,
 		CreateTime:   time.Now(),
 	}
 

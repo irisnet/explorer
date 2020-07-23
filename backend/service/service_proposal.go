@@ -9,7 +9,6 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"strconv"
-	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"time"
 	"encoding/json"
 )
@@ -757,90 +756,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	proposal.Proposer = from
 	proposal.TxHash = txHash
 	switch proposal.Type {
-	case lcd.ProposalTypeParameter, lcd.ProposalTypeSoftwareUpgrade:
-		tx, err := document.CommonTx{}.QueryTxByHash(proposal.TxHash)
-		if err != nil {
-			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
-		} else {
-			if len(tx.Msgs) > 0 {
-				if lcd.ProposalTypeParameter == proposal.Type {
-					msg := msgvo.TxMsgSubmitProposal{}
-					if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
-						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
-					} else {
-						var params []vo.Param
-						for _, p := range msg.Params {
-							params = append(params, vo.Param{
-								Subspace: p.Subspace,
-								Key:      p.Key,
-								Value:    p.Value,
-							})
-						}
-						proposal.Parameters = params
-					}
-				} else {
-					msg := msgvo.TxMsgSubmitSoftwareUpgradeProposal{}
-					if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
-						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
-					} else {
-						var params []vo.Param
-						for _, p := range msg.DocTxMsgSubmitProposal.Params {
-							params = append(params, vo.Param{
-								Subspace: p.Subspace,
-								Key:      p.Key,
-								Value:    p.Value,
-							})
-						}
-						proposal.Parameters = params
-						proposal.Version = uint64(msg.Version)
-						proposal.Software = msg.Software
-						proposal.SwitchHeight = uint64(msg.SwitchHeight)
-						proposal.Threshold = msg.Threshold
-					}
-				}
-			}
-		}
-		resp.Proposal = proposal
-		return
-	case lcd.ProposalTypeCommunityTaxUsage:
-		tx, err := document.CommonTx{}.QueryTxByHash(proposal.TxHash)
-		if err != nil {
-			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
-		} else {
-			if len(tx.Msgs) > 0 {
-				msg := msgvo.TxMsgSubmitCommunityTaxUsageProposal{}
-				if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
-				} else {
-					proposal.Usage = msg.Usage
-					proposal.DestAddress = msg.DestAddress
-					proposal.Percent = msg.Percent
-				}
-			}
-		}
-		resp.Proposal = proposal
-		return
-	case lcd.ProposalTypeTokenAddition:
-		tx, err := document.CommonTx{}.QueryTxByHash(proposal.TxHash)
-		if err != nil {
-			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
-		} else {
-			if len(tx.Msgs) > 0 {
-				msg := msgvo.TxMsgSubmitTokenAdditionProposal{}
-				if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
-				} else {
-					proposal.Symbol = msg.Symbol
-					proposal.CanonicalSymbol = msg.CanonicalSymbol
-					proposal.Name = msg.Name
-					proposal.Decimal = msg.Decimal
-					proposal.MinUnitAlias = msg.MinUnitAlias
-					proposal.InitialSupply = msg.InitialSupply
-				}
-			}
-		}
-		resp.Proposal = proposal
-		return
 
 	}
 

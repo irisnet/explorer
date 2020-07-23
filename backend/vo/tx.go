@@ -97,21 +97,21 @@ func (t Tx) PrintHashFromToAmount() string {
 }
 
 type BaseTx struct {
-	Signer      string            `json:"signer,omitempty"`
-	Hash        string            `json:"hash"`
-	BlockHeight int64             `json:"block_height"`
-	Type        string            `json:"type"`
-	Fee         utils.ActualFee   `json:"fee"`
-	Amount      utils.Coins       `json:"amount"`
-	Status      string            `json:"status"`
-	GasLimit    int64             `json:"gas_limit"`
-	GasUsed     int64             `json:"gas_used"`
-	GasWanted   int64             `json:"gas_wanted"`
-	GasPrice    float64           `json:"gas_price"`
-	Memo        string            `json:"memo"`
-	Log         string            `json:"log"`
-	Timestamp   time.Time         `json:"timestamp"`
-	Tags        map[string]string `json:"tags"`
+	Signer      string          `json:"signer,omitempty"`
+	Hash        string          `json:"hash"`
+	BlockHeight int64           `json:"block_height"`
+	Type        string          `json:"type"`
+	Fee         utils.ActualFee `json:"fee"`
+	Amount      utils.Coins     `json:"amount"`
+	Status      string          `json:"status"`
+	GasLimit    int64           `json:"gas_limit"`
+	GasUsed     int64           `json:"gas_used"`
+	GasWanted   int64           `json:"gas_wanted"`
+	GasPrice    float64         `json:"gas_price"`
+	Memo        string          `json:"memo"`
+	Log         string          `json:"log"`
+	Timestamp   time.Time       `json:"timestamp"`
+	Events      []Event         `json:"events"`
 }
 
 type TransTx struct {
@@ -162,13 +162,13 @@ type RecentTx struct {
 type RecentTxRespond []RecentTx
 type AssetTx struct {
 	BaseTx
-	Tags     map[string]string `json:"tags"`
+	Events   []Event           `json:"events"`
 	Msgs     []MsgItem         `json:"msgs"`
 	Monikers map[string]string `json:"monikers"`
 }
 type GuardianTx struct {
 	BaseTx
-	Tags     map[string]string `json:"tags"`
+	Events   []Event           `json:"events"`
 	Msgs     []MsgItem         `json:"msgs"`
 	Monikers map[string]string `json:"monikers"`
 }
@@ -176,14 +176,14 @@ type GuardianTx struct {
 type HtlcTx struct {
 	BaseTx
 	ExpireHeight int64             `json:"expire_height,string"`
-	Tags         map[string]string `json:"tags"`
+	Events       []Event           `json:"events"`
 	Msgs         []MsgItem         `json:"msgs"`
 	Monikers     map[string]string `json:"monikers"`
 }
 
 type CoinswapTx struct {
 	BaseTx
-	Tags     map[string]string `json:"tags"`
+	Events   []Event           `json:"events"`
 	Msgs     []MsgItem         `json:"msgs"`
 	Monikers map[string]string `json:"monikers"`
 }
@@ -211,33 +211,39 @@ type MsgItem struct {
 	MsgData interface{} `json:"msg"`
 }
 
-type UdInfo struct {
-	Source  string `json:"source"`
-	Gateway string `json:"gateway"`
-	Symbol  string `json:"symbol"`
+type CommonTx struct {
+	Time       time.Time       `json:"time"`
+	Height     int64           `json:"height"`
+	TxHash     string          `json:"tx_hash"`
+	From       string          `json:"from"`
+	To         string          `json:"to"`
+	Amount     utils.Coins     `json:"amount"`
+	Type       string          `json:"type"`
+	Fee        utils.Fee       `json:"fee"`
+	Memo       string          `json:"memo"`
+	Status     string          `json:"status"`
+	Code       uint32          `json:"code"`
+	Log        string          `json:"log"`
+	GasUsed    int64           `json:"gas_used"`
+	GasWanted  int64           `json:"gas_wanted"`
+	GasPrice   float64         `json:"gas_price"`
+	ActualFee  utils.ActualFee `json:"actual_fee"`
+	ProposalId uint64          `json:"proposal_id"`
+	Events     []Event         `json:"events"`
+	Msgs       []MsgItem       `json:"msgs"`
+	Signers    []Signer        `json:"signers"`
 }
 
-type CommonTx struct {
-	Time       time.Time         `json:"time"`
-	Height     int64             `json:"height"`
-	TxHash     string            `json:"tx_hash"`
-	From       string            `json:"from"`
-	To         string            `json:"to"`
-	Amount     utils.Coins       `json:"amount"`
+type Event struct {
 	Type       string            `json:"type"`
-	Fee        utils.Fee         `json:"fee"`
-	Memo       string            `json:"memo"`
-	Status     string            `json:"status"`
-	Code       uint32            `json:"code"`
-	Log        string            `json:"log"`
-	GasUsed    int64             `json:"gas_used"`
-	GasWanted  int64             `json:"gas_wanted"`
-	GasPrice   float64           `json:"gas_price"`
-	ActualFee  utils.ActualFee   `json:"actual_fee"`
-	ProposalId uint64            `json:"proposal_id"`
-	Tags       map[string]string `json:"tags"`
-	Msgs       []MsgItem         `json:"msgs"`
-	Signers    []Signer          `json:"signers"`
+	Attributes map[string]string `json:"attributes"`
+}
+
+func (e Event) GetType() string {
+	return e.Type
+}
+func (e Event) GetAttributes() map[string]string {
+	return e.Attributes
 }
 
 func (tx CommonTx) String() string {
@@ -258,11 +264,11 @@ func (tx CommonTx) String() string {
 		GasPrice             :%v
 		ActualFee            :%v
 		ProposalId           :%v
-		Tags                 :%v
+		Events                 :%v
 		Msgs                 :%v
 		Signers              :%v
 		`, tx.Time, tx.Height, tx.TxHash, tx.From, tx.To, tx.Amount, tx.Type, tx.Fee, tx.Memo, tx.Status, tx.Code, tx.Log,
-		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.Msgs, tx.Signers)
+		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Events, tx.Msgs, tx.Signers)
 
 }
 

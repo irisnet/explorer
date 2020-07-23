@@ -8,12 +8,12 @@ import (
 
 func TestAssetsService_GetGatewayAsset(t *testing.T) {
 
-	ret, err := (&AssetsService{}).GetGatewayAsset(document.Tx_Asset_TxType_Issue, "", "", 0, 10, true)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	byteret, _ := json.Marshal(ret)
-	t.Log(string(byteret))
+	//ret, err := (&AssetsService{}).GetGatewayAsset(document.Tx_Asset_TxType_Issue, "", "", 0, 10, true)
+	//if err != nil {
+	//	t.Fatal(err.Error())
+	//}
+	//byteret, _ := json.Marshal(ret)
+	//t.Log(string(byteret))
 }
 
 func TestAssetsService_GetNativeAsset(t *testing.T) {

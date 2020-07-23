@@ -1,8 +1,6 @@
 package vo
 
-import (
-	"time"
-)
+import "time"
 
 type AssetsRespond struct {
 	Total     int        `json:"total"`
@@ -11,16 +9,16 @@ type AssetsRespond struct {
 }
 
 type AssetsVo struct {
-	TokenId         string    `json:"token_id"`
+	//TokenId         string    `json:"token_id"`
 	Type            string    `json:"type"`
 	Owner           string    `json:"owner"`
-	Gateway         string    `json:"gateway"`
+	//Gateway         string    `json:"gateway"`
 	Symbol          string    `json:"symbol"`
 	InitialSupply   int64     `json:"initial_supply,string"`
 	MaxSupply       int64     `json:"max_supply,string"`
 	Mintable        bool      `json:"mintable,string"`
-	Decimal         int32     `json:"decimal,string"`
-	CanonicalSymbol string    `json:"canonical_symbol"`
+	//Decimal         int32     `json:"decimal,string"`
+	//CanonicalSymbol string    `json:"canonical_symbol"`
 	SymbolMin       string    `json:"symbol_min"`
 	Name            string    `json:"name"`
 	MintTo          string    `json:"mint_to"`
@@ -46,31 +44,31 @@ type ActualFee struct {
 	Amount float64 `json:"amount"`
 }
 
-type AssetGateways struct {
-	Owner    string `json:"owner"`
-	Moniker  string `json:"moniker"`
-	Identity string `json:"identity"`
-	Details  string `json:"details"`
-	Website  string `json:"website"`
-	Icons    string `json:"icons"`
-}
+//type AssetGateways struct {
+//	Owner    string `json:"owner"`
+//	Moniker  string `json:"moniker"`
+//	Identity string `json:"identity"`
+//	Details  string `json:"details"`
+//	Website  string `json:"website"`
+//	Icons    string `json:"icons"`
+//}
 
 type AssetTokens struct {
-	TokenId         string         `json:"token_id"`
+	//TokenId         string         `json:"token_id"`
 	Owner           string         `json:"owner"`
-	Gateway         string         `json:"gateway"`
-	Family          string         `json:"family"`
+	//Gateway         string         `json:"gateway"`
+	//Family          string         `json:"family"`
 	TotalSupply     string         `json:"total_supply"`
 	InitialSupply   string         `json:"initial_supply"`
 	MaxSupply       string         `json:"max_supply"`
 	Mintable        bool           `json:"mintable,string"`
-	Decimal         int            `json:"decimal,string"`
+	//Decimal         int            `json:"decimal,string"`
 	Symbol          string         `json:"symbol"`
-	CanonicalSymbol string         `json:"canonical_symbol"`
+	//CanonicalSymbol string         `json:"canonical_symbol"`
 	Name            string         `json:"name"`
 	MinUnitAlias    string         `json:"min_unit_alias"`
-	Source          string         `json:"source"`
-	AssetGateway    *AssetGateways `json:"asset_gateway"`
+	//Source          string         `json:"source"`
+	//AssetGateway    *AssetGateways `json:"asset_gateway"`
 }
 
 type AssetTokensRespond []AssetTokens

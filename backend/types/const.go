@@ -129,34 +129,37 @@ const (
 )
 
 var (
-	TxTypeTransfer      = "Transfer"
-	TxTypeBurn          = "Burn"
-	TxTypeSetMemoRegexp = "SetMemoRegexp"
+	TxTypeTransfer  = "Transfer"
+	TxTypeMultiSend = "MultiSend"
+	//TxTypeBurn          = "Burn"
+	//TxTypeSetMemoRegexp = "SetMemoRegexp"
 
-	TxTypeStakeCreateValidator             = "CreateValidator"
-	TxTypeStakeEditValidator               = "EditValidator"
-	TxTypeStakeDelegate                    = "Delegate"
-	TxTypeStakeBeginUnbonding              = "BeginUnbonding"
-	TxTypeBeginRedelegate                  = "BeginRedelegate"
-	TxTypeUnjail                           = "Unjail"
-	TxTypeSetWithdrawAddress               = "SetWithdrawAddress"
-	TxTypeWithdrawDelegatorReward          = "WithdrawDelegatorReward"
-	TxTypeWithdrawDelegatorRewardsAll      = "WithdrawDelegatorRewardsAll"
-	TxTypeWithdrawValidatorRewardsAll      = "WithdrawValidatorRewardsAll"
-	TxTypeSubmitProposal                   = "SubmitProposal"
-	TxMsgTypeSubmitSoftwareUpgradeProposal = "SubmitSoftwareUpgradeProposal"
-	TxMsgTypeSubmitTaxUsageProposal        = "SubmitTaxUsageProposal"
-	TxMsgTypeSubmitTokenAdditionProposal   = "SubmitTokenAdditionProposal"
-	TxTypeDeposit                          = "Deposit"
-	TxTypeVote                             = "Vote"
+	TxTypeStakeCreateValidator    = "CreateValidator"
+	TxTypeStakeEditValidator      = "EditValidator"
+	TxTypeStakeDelegate           = "Delegate"
+	TxTypeStakeBeginUnbonding     = "BeginUnbonding"
+	TxTypeBeginRedelegate         = "BeginRedelegate"
+	TxTypeUnjail                  = "Unjail"
+	TxTypeSetWithdrawAddress      = "SetWithdrawAddress"
+	TxTypeWithdrawDelegatorReward = "WithdrawDelegatorReward"
+	//TxTypeWithdrawDelegatorRewardsAll      = "WithdrawDelegatorRewardsAll"
+	//TxTypeWithdrawValidatorRewardsAll      = "WithdrawValidatorRewardsAll"
+	TxTypeMsgFundCommunityPool           = "FundCommunityPool"
+	TxTypeMsgWithdrawValidatorCommission = "WithdrawValidatorCommission"
+	TxTypeSubmitProposal                 = "SubmitProposal"
+	//TxMsgTypeSubmitSoftwareUpgradeProposal = "SubmitSoftwareUpgradeProposal"
+	//TxMsgTypeSubmitTaxUsageProposal        = "SubmitTaxUsageProposal"
+	//TxMsgTypeSubmitTokenAdditionProposal   = "SubmitTokenAdditionProposal"
+	TxTypeDeposit = "Deposit"
+	TxTypeVote    = "Vote"
 
-	TxTypeIssueToken           = "IssueToken"
-	TxTypeEditToken            = "EditToken"
-	TxTypeMintToken            = "MintToken"
-	TxTypeTransferTokenOwner   = "TransferTokenOwner"
-	TxTypeCreateGateway        = "CreateGateway"
-	TxTypeEditGateway          = "EditGateway"
-	TxTypeTransferGatewayOwner = "TransferGatewayOwner"
+	TxTypeIssueToken         = "IssueToken"
+	TxTypeEditToken          = "EditToken"
+	TxTypeMintToken          = "MintToken"
+	TxTypeTransferTokenOwner = "TransferTokenOwner"
+	//TxTypeCreateGateway        = "CreateGateway"
+	//TxTypeEditGateway          = "EditGateway"
+	//TxTypeTransferGatewayOwner = "TransferGatewayOwner"
 
 	TxTypeAddProfiler    = "AddProfiler"
 	TxTypeAddTrustee     = "AddTrustee"
@@ -177,6 +180,35 @@ var (
 	TypeValStatusUnbonding = "Unbonding"
 	TypeValStatusBonded    = "Bonded"
 
+	TxTypeNFTMint     = "NFTMint"
+	TxTypeNFTEdit     = "NFTEdit"
+	TxTypeNFTTransfer = "NFTTransfer"
+	TxTypeNFTBurn     = "NFTBurn"
+	TxTypeIssueDenom  = "IssueDenom"
+
+	TxTypeDefineService          = "DefineService"          // type for MsgDefineService
+	TxTypeBindService            = "BindService"            // type for MsgBindService
+	TxTypeUpdateServiceBinding   = "UpdateServiceBinding"   // type for MsgUpdateServiceBinding
+	TxTypeSetWithdrawFeesAddress = "SetWithdrawFeesAddress" // type for SetWithdrawFeesAddress
+	TxTypeDisableServiceBinding  = "DisableServiceBinding"  // type for MsgDisableServiceBinding
+	TxTypeEnableServiceBinding   = "EnableServiceBinding"   // type for MsgEnableServiceBinding
+	TxTypeRefundServiceDeposit   = "RefundServiceDeposit"   // type for MsgRefundServiceDeposit
+	TxTypeCallService            = "CallService"            // type for MsgCallService
+	TxTypeRespondService         = "RespondService"         // type for MsgRespondService
+	TxTypePauseRequestContext    = "PauseRequestContext"    // type for MsgPauseRequestContext
+	TxTypeStartRequestContext    = "StartRequestContex"     // type for MsgStartRequestContext
+	TxTypeKillRequestContext     = "KillRequestContex"      // type for MsgKillRequestContext
+	TxTypeUpdateRequestContext   = "UpdateRequestContext"   // type for MsgUpdateRequestContext
+	TxTypeWithdrawEarnedFees     = "WithdrawEarnedFees"     // type for MsgWithdrawEarnedFees
+
+	TxTypeCreateFeed = "CreateFeed"
+	TxTypeEditFeed   = "EditFeed"
+	TxTypePauseFeed  = "PauseFeed"
+	TxTypeStartFeed  = "StartFeed"
+
+	TxTypeSubmitEvidence  = "SubmitEvidence"
+	TxTypeVerifyInvariant = "VerifyInvariant"
+
 	TxTypeStatus = "success"
 
 	Unbonded  = 0x00
@@ -189,9 +221,9 @@ var (
 
 	//RoleList = []string{RoleValidator, RoleCandidate, RoleJailed}
 
-	BankList        = []string{TxTypeTransfer, TxTypeBurn, TxTypeSetMemoRegexp}
+	BankList        = []string{TxTypeTransfer, TxTypeMultiSend}
 	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}
-	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
+	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeMsgFundCommunityPool, TxTypeMsgWithdrawValidatorCommission}
 	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
 	GuardianList    = []string{TxTypeAddProfiler, TxTypeAddTrustee, TxTypeDeleteProfiler, TxTypeDeleteTrustee}
 	HTLCList        = []string{TxTypeClaimHTLC, TxTypeCreateHTLC, TxTypeRefundHTLC}
@@ -199,8 +231,14 @@ var (
 
 	//ForwardList = []string{TxTypeBeginRedelegate}
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
-	AssetList = []string{TxTypeIssueToken, TxTypeEditToken, TxTypeMintToken, TxTypeTransferTokenOwner, TxTypeCreateGateway, TxTypeEditGateway, TxTypeTransferGatewayOwner}
-	RandList  = []string{TxTypeRequestRand}
+	AssetList   = []string{TxTypeIssueToken, TxTypeEditToken, TxTypeMintToken, TxTypeTransferTokenOwner}
+	RandList    = []string{TxTypeRequestRand}
+	OrcaleList  = []string{TxTypeCreateFeed, TxTypeStartFeed, TxTypeEditFeed, TxTypePauseFeed}
+	NftList     = []string{TxTypeNFTBurn, TxTypeNFTEdit, TxTypeNFTMint, TxTypeNFTTransfer, TxTypeIssueDenom}
+	ServiceList = []string{TxTypeDefineService, TxTypeBindService, TxTypeCallService, TxTypeRespondService,
+		TxTypeDisableServiceBinding, TxTypeEnableServiceBinding, TxTypeUpdateServiceBinding,
+		TxTypeStartRequestContext, TxTypeKillRequestContext, TxTypePauseRequestContext, TxTypeUpdateRequestContext,
+		TxTypeSetWithdrawFeesAddress, TxTypeRefundServiceDeposit, TxTypeWithdrawEarnedFees}
 
 	ProfilerAddrList = map[string]string{
 		"iaa1v6c3sa76s3grss3xu64tvn9nd556jlcw6azc85": "Genesis Profiler 1",

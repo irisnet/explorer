@@ -156,38 +156,6 @@
                 }
             }
         },
-        "/api/asset/gateways/{moniker}": {
-            "get": {
-                "description": "get gateway assets token detail",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "assets"
-                ],
-                "summary": "detail",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "moniker",
-                        "name": "moniker",
-                        "in": "path"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/vo.AssetGateways"
-                        }
-                    }
-                }
-            }
-        },
         "/api/asset/tokens": {
             "get": {
                 "description": "get asset tokens",
@@ -220,7 +188,7 @@
                 }
             }
         },
-        "/api/asset/tokens/{token_id}": {
+      "/api/asset/tokens/{symbol}": {
             "get": {
                 "description": "get assets token detail",
                 "consumes": [
@@ -236,8 +204,8 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "token_id",
-                        "name": "token_id",
+                      "description": "symbol",
+                      "name": "symbol",
                         "in": "path"
                     }
                 ],
@@ -247,80 +215,6 @@
                         "schema": {
                             "type": "object",
                             "$ref": "#/definitions/vo.AssetTokens"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/assets/gateway/txs": {
-            "get": {
-                "description": "get assets txs",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "assets"
-                ],
-                "summary": "gateway",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "page num",
-                        "name": "page",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "page size",
-                        "name": "size",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "txs type",
-                        "name": "tx_type",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "asset symbol",
-                        "name": "symbol",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "gateway",
-                        "name": "gateway",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "moniker",
-                        "name": "moniker",
-                        "in": "query"
-                    },
-                    {
-                        "enum": [
-                            "true",
-                            "false"
-                        ],
-                        "type": "string",
-                        "description": "if used count",
-                        "name": "total",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/vo.AssetsRespond"
                         }
                     }
                 }
@@ -2968,48 +2862,9 @@
                 }
             }
         },
-        "vo.AssetGateways": {
-            "type": "object",
-            "properties": {
-                "details": {
-                    "type": "string"
-                },
-                "icons": {
-                    "type": "string"
-                },
-                "identity": {
-                    "type": "string"
-                },
-                "moniker": {
-                    "type": "string"
-                },
-                "owner": {
-                    "type": "string"
-                },
-                "website": {
-                    "type": "string"
-                }
-            }
-        },
         "vo.AssetTokens": {
             "type": "object",
             "properties": {
-                "asset_gateway": {
-                    "type": "object",
-                    "$ref": "#/definitions/vo.AssetGateways"
-                },
-                "canonical_symbol": {
-                    "type": "string"
-                },
-                "decimal": {
-                    "type": "integer"
-                },
-                "family": {
-                    "type": "string"
-                },
-                "gateway": {
-                    "type": "string"
-                },
                 "initial_supply": {
                     "type": "string"
                 },
@@ -3023,21 +2878,19 @@
                     "type": "boolean"
                 },
                 "name": {
+                  "description": "CanonicalSymbol string         `json:\"canonical_symbol\"`",
                     "type": "string"
                 },
                 "owner": {
-                    "type": "string"
-                },
-                "source": {
+                  "description": "TokenId         string         `json:\"token_id\"`",
                     "type": "string"
                 },
                 "symbol": {
-                    "type": "string"
-                },
-                "token_id": {
+                  "description": "Decimal         int            `json:\"decimal,string\"`",
                     "type": "string"
                 },
                 "total_supply": {
+                  "description": "Gateway         string         `json:\"gateway\"`\nFamily          string         `json:\"family\"`",
                     "type": "string"
                 }
             }
@@ -3047,22 +2900,6 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "asset_gateway": {
-                        "type": "object",
-                        "$ref": "#/definitions/vo.AssetGateways"
-                    },
-                    "canonical_symbol": {
-                        "type": "string"
-                    },
-                    "decimal": {
-                        "type": "integer"
-                    },
-                    "family": {
-                        "type": "string"
-                    },
-                    "gateway": {
-                        "type": "string"
-                    },
                     "initial_supply": {
                         "type": "string"
                     },
@@ -3076,21 +2913,19 @@
                         "type": "boolean"
                     },
                     "name": {
+                      "description": "CanonicalSymbol string         `json:\"canonical_symbol\"`",
                         "type": "string"
                     },
                     "owner": {
-                        "type": "string"
-                    },
-                    "source": {
+                      "description": "TokenId         string         `json:\"token_id\"`",
                         "type": "string"
                     },
                     "symbol": {
-                        "type": "string"
-                    },
-                    "token_id": {
+                      "description": "Decimal         int            `json:\"decimal,string\"`",
                         "type": "string"
                     },
                     "total_supply": {
+                      "description": "Gateway         string         `json:\"gateway\"`\nFamily          string         `json:\"family\"`",
                         "type": "string"
                     }
                 }
@@ -3119,16 +2954,7 @@
                 "amount": {
                     "type": "integer"
                 },
-                "canonical_symbol": {
-                    "type": "string"
-                },
-                "decimal": {
-                    "type": "integer"
-                },
                 "dst_owner": {
-                    "type": "string"
-                },
-                "gateway": {
                     "type": "string"
                 },
                 "height": {
@@ -3156,15 +2982,14 @@
                     "type": "string"
                 },
                 "symbol": {
+                  "description": "Gateway         string    `json:\"gateway\"`",
                     "type": "string"
                 },
                 "symbol_min": {
+                  "description": "Decimal         int32     `json:\"decimal,string\"`\nCanonicalSymbol string    `json:\"canonical_symbol\"`",
                     "type": "string"
                 },
                 "timestamp": {
-                    "type": "string"
-                },
-                "token_id": {
                     "type": "string"
                 },
                 "tx_fee": {
@@ -3178,6 +3003,7 @@
                     "type": "string"
                 },
                 "type": {
+                  "description": "TokenId         string    `json:\"token_id\"`",
                     "type": "string"
                 }
             }
@@ -3637,6 +3463,17 @@
                 }
             }
         },
+      "vo.Event": {
+        "type": "object",
+        "properties": {
+          "attributes": {
+            "type": "object"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
         "vo.ExStaticMonthDataRespond": {
             "type": "object",
             "properties": {
@@ -4180,6 +4017,12 @@
                 "block_height": {
                     "type": "integer"
                 },
+              "events": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/vo.Event"
+                }
+              },
                 "fee": {
                     "type": "object",
                     "$ref": "#/definitions/utils.ActualFee"
@@ -4219,9 +4062,6 @@
                 },
                 "status": {
                     "type": "string"
-                },
-                "tags": {
-                    "type": "object"
                 },
                 "timestamp": {
                     "type": "string"

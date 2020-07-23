@@ -103,44 +103,6 @@ func registerNavigationBar(r *mux.Router) error {
 		funGroup = append(funGroup, queryBondedInfo)
 		group.Add(1)
 
-		//var getTokenStatCirculation = func() {
-		//	defer func() {
-		//		group.Done()
-		//		if r := recover(); r != nil {
-		//			logger.Error("getTokenStatCirculation error", logger.Any("err", r))
-		//		}
-		//	}()
-		//	if v, err := lcd.GetTokenStatsCirculation(); err != nil {
-		//		logger.Error("GetTokenStatsCirculation fail", logger.String("err", err.Error()))
-		//		result.Circulation = "0"
-		//	} else {
-		//		result.Circulation = v.Amount
-		//	}
-		//}
-		//funGroup = append(funGroup, getTokenStatCirculation)
-		//group.Add(1)
-
-		//var getTokenStatFoundationBonded = func() {
-		//defer func() {
-		//	group.Done()
-		//	if r := recover(); r != nil {
-		//		logger.Error("getTokenStatFoundationBonded error", logger.Any("err", r))
-		//	}
-		//}()
-
-		//accService := service.AccountService{}
-		//if conf.Get().Hub.Prefix.AccAddr == types.MainnetAccPrefix {
-		//res := accService.QueryDelegations(types.FoundationDelegatorAddr)
-		//foundationBondAmt := float64(0)
-		//for _, v := range res {
-		//	foundationBondAmt += v.Amount.Amount
-		//}
-		//result.FoundationBonded = utils.ParseStringFromFloat64(foundationBondAmt)
-		//}
-		//}
-		//funGroup = append(funGroup, getTokenStatFoundationBonded)
-		//group.Add(1)
-
 		var calculateAvgBlockTime = func() {
 			defer func() {
 				group.Done()

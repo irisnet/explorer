@@ -12,7 +12,6 @@ import (
 	"math/big"
 	"strings"
 	"sort"
-	"math"
 	"sync"
 )
 
@@ -38,7 +37,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 			defer group.Done()
 			res, err := lcd.Account(address)
 			if err == nil {
-				decimalMap := make(map[string]int, len(res.Coins))
+				//decimalMap := make(map[string]int, len(res.Coins))
 				var unit []string
 				var amount utils.Coins
 				for _, coinStr := range res.Coins {
@@ -47,21 +46,21 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 					amount = append(amount, coin)
 				}
 
-				assetkokens, err := document.AssetToken{}.GetAssetTokenDetailByTokenids(unit)
-				if err == nil {
-					for _, val := range assetkokens {
-						decimalMap[val.TokenId] = val.Decimal
-					}
-				}
+				//assetkokens, err := document.AssetToken{}.GetAssetTokenDetailBySymbols(unit)
+				//if err == nil {
+				//	for _, val := range assetkokens {
+				//		decimalMap[val.TokenId] = val.Decimal
+				//	}
+				//}
 
-				for i, val := range amount {
-					denom := strings.Split(val.Denom, types.AssetMinDenom)[0]
-					if dem, ok := decimalMap[denom]; ok && dem > 0 {
-						amount[i].Denom = denom
-						amount[i].Amount = amount[i].Amount / float64(math.Pow10(dem))
-					}
-
-				}
+				//for i, val := range amount {
+				//	denom := strings.Split(val.Denom, types.AssetMinDenom)[0]
+				//	if dem, ok := decimalMap[denom]; ok && dem > 0 {
+				//		amount[i].Denom = denom
+				//		amount[i].Amount = amount[i].Amount / float64(math.Pow10(dem))
+				//	}
+				//
+				//}
 				result.Amount = amount
 			}
 		}()
@@ -129,7 +128,10 @@ func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 	}
 
 	for index, acc := range result {
-		rate, _ := utils.NewRatFromFloat64(acc.Total.Amount / totalAmt).Float64()
+		rate := float64(1)
+		if totalAmt > 0 {
+			rate, _ = utils.NewRatFromFloat64(acc.Total.Amount / totalAmt).Float64()
+		}
 		accList = append(accList, vo.AccountInfo{
 			Rank:    index + 1,
 			Address: acc.Address,
