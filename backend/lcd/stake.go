@@ -13,17 +13,37 @@ import (
 )
 
 func Validator(address string) (result ValidatorVo, err error) {
-	url := fmt.Sprintf(UrlValidator, conf.Get().Hub.LcdUrl, address)
-	resBytes, err := utils.Get(url)
+	validator, err := client.Staking().QueryValidator(address)
 	if err != nil {
 		return result, err
 	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("get account error", logger.String("err", err.Error()))
-		return result, err
+	uptime, _ := time.Parse(time.RFC3339, validator.Commission.UpdateTime)
+	unbondtime, _ := time.Parse(time.RFC3339, validator.UnbondingTime)
+	result = ValidatorVo{
+		OperatorAddress: validator.OperatorAddress,
+		ConsensusPubkey: validator.ConsensusPubkey,
+		Jailed:          validator.Jailed,
+		Status:          BondStatusToInt(validator.Status),
+		Tokens:          validator.Tokens,
+		DelegatorShares: validator.DelegatorShares,
+		Description: Description{
+			Moniker:  validator.Description.Moniker,
+			Identity: validator.Description.Identity,
+			Details:  validator.Description.Details,
+			Website:  validator.Description.Website,
+		},
+		UnbondingHeight: fmt.Sprint(validator.UnbondingHeight),
+		UnbondingTime:   unbondtime,
+		Commission: Commission{
+			Rate:          validator.Commission.Rate,
+			MaxRate:       validator.Commission.MaxRate,
+			MaxChangeRate: validator.Commission.MaxChangeRate,
+			UpdateTime:    uptime,
+		},
 	}
-	return result, nil
+
+	return
 }
 
 func Validators(page, size int) (result []ValidatorVo) {
@@ -87,19 +107,22 @@ func QueryWithdrawAddr(address string) (result string) {
 	return
 }
 
-func GetDelegationsByDelAddr(delAddr string) (delegations []DelegationVo) {
+func GetDelegationsByDelAddr(delAddr string) (result []DelegationVo) {
 	if !strings.HasPrefix(delAddr, conf.Get().Hub.Prefix.AccAddr) {
 		return
 	}
-	url := fmt.Sprintf(UrlDelegationsByDelegator, conf.Get().Hub.LcdUrl, delAddr)
-	resAsBytes, err := utils.Get(url)
+	delegations, err := client.Staking().QueryDelegations(delAddr)
 	if err != nil {
-		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+		logger.Error("get delegations by delegator adr from rpc error", logger.String("err", err.Error()))
 		return
 	}
 
-	if err := json.Unmarshal(resAsBytes, &delegations); err != nil {
-		logger.Error("Unmarshal DelegationsByDelAddr error", logger.String("err", err.Error()), logger.String("URL", url))
+	for _, val := range delegations {
+		result = append(result, DelegationVo{
+			DelegatorAddr: val.Delegation.DelegatorAddress,
+			ValidatorAddr: val.Delegation.ValidatorAddress,
+			Shares:        val.Delegation.Shares,
+		})
 	}
 	return
 }
@@ -117,21 +140,6 @@ func GetDelegationsByDelAddr(delAddr string) (delegations []DelegationVo) {
 //	}
 //	return
 //}
-
-func GetDelegationsByValidatorAddr(valAddr string) (delegations []DelegationVo) {
-
-	url := fmt.Sprintf(UrlDelegationsByValidator, conf.Get().Hub.LcdUrl, valAddr)
-	resAsBytes, err := utils.Get(url)
-	if err != nil {
-		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
-		return
-	}
-
-	if err := json.Unmarshal(resAsBytes, &delegations); err != nil {
-		logger.Error("Unmarshal DelegationsByValidatorAddr error", logger.String("err", err.Error()), logger.String("URL", url))
-	}
-	return
-}
 
 func GetWithdrawAddressByValidatorAcc(validatorAcc string) (string, error) {
 
@@ -172,81 +180,97 @@ func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr
 	return rewards.Commission, rewards.Delegations, rewards.Total, nil
 }
 
-func GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(publicKey string) (string, string, string, error) {
+func GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(publicKey string) (string, string, int64, error) {
 
-	url := fmt.Sprintf(UrlValidatorsSigningInfoByConsensuPublicKey, conf.Get().Hub.LcdUrl, publicKey)
-	resAsBytes, err := utils.Get(url)
-	if err != nil {
-		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
-		return "", "", "", err
-	}
+	valSign := SignInfo(publicKey)
 
-	var valSign ValidatorSigningInfo
-
-	err = json.Unmarshal(resAsBytes, &valSign)
-	if err != nil {
-		return "", "", "", err
-	}
-
-	return valSign.JailedUntil, valSign.MissedBlocksCount, valSign.StartHeight, nil
+	return valSign.JailedUntil.String(), fmt.Sprint(valSign.MissedBlocksCounter), valSign.StartHeight, nil
 }
 
-func GetRedelegationsByValidatorAddr(valAddr string) (redelegations []ReDelegations) {
+func GetRedelegationsByValidatorAddr(valAddr string) (result []ReDelegation) {
 
-	url := fmt.Sprintf(UrlRedelegationsByValidator, conf.Get().Hub.LcdUrl, valAddr)
-	resAsBytes, err := utils.Get(url)
+	reDelegations, err := client.Staking().QueryRedelegationsFrom(valAddr)
 	if err != nil {
-		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+		logger.Error("get redelegations by validator adr from rpc error", logger.String("err", err.Error()))
 		return
 	}
-
-	if err := json.Unmarshal(resAsBytes, &redelegations); err != nil {
-		logger.Error("Unmarshal Redelegations error", logger.String("err", err.Error()), logger.String("URL", url))
+	for _, val := range reDelegations {
+		result = append(result, ReDelegation{
+			DelegatorAddr:    val.DelegatorAddr,
+			ValidatorDstAddr: val.ValidatorDstAddr,
+			ValidatorSrcAddr: val.ValidatorSrcAddr,
+			InitialBalance:   val.InitialBalance.String(),
+			MinTime:          utils.ParseIntWithDefault(val.MinTime, 0),
+			CreationHeight:   fmt.Sprint(val.CreationHeight),
+			Balance:          val.Balance.String(),
+			SharesDst:        val.SharesDst,
+			SharesSrc:        val.SharesSrc,
+		})
 	}
 	return
 }
 
-func GetUnbondingDelegationsByValidatorAddr(valAddr string) (unbondingDelegations []UnbondingDelegations) {
+func GetUnbondingDelegationsByValidatorAddr(valAddr string) (result []UnbondingDelegation) {
 
-	url := fmt.Sprintf(UrlUnbondingDelegationByValidator, conf.Get().Hub.LcdUrl, valAddr)
-	resAsBytes, err := utils.Get(url)
+	unbondingDelegations, err := client.Staking().QueryUnbondingDelegationsFrom(valAddr)
 	if err != nil {
-		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+		logger.Error("get unbonding delegations by delegator adr from rpc error", logger.String("err", err.Error()))
 		return
 	}
-
-	if err := json.Unmarshal(resAsBytes, &unbondingDelegations); err != nil {
-		logger.Error("Unmarshal UnbondingDelegationsByValidatorAddr error", logger.String("err", err.Error()), logger.String("URL", url))
+	for _, val := range unbondingDelegations {
+		data := UnbondingDelegation{
+			DelegatorAddr: val.DelegatorAddress,
+			ValidatorAddr: val.ValidatorAddress,
+		}
+		if len(val.Entries) > 0 {
+			data.MinTime = val.Entries[0].CompletionTime.String()
+			data.InitialBalance = val.Entries[0].InitialBalance.String()
+			data.CreationHeight = val.Entries[0].CreationHeight
+			data.Balance = val.Entries[0].Balance.String()
+		}
+		result = append(result, data)
 	}
 	return
 }
 
-func GetUnbondingDelegationsByDelegatorAddr(delAddr string) (unbondingDelegations []UnbondingDelegations) {
+func GetUnbondingDelegationsByDelegatorAddr(delAddr string) (result []UnbondingDelegation) {
 	if !strings.HasPrefix(delAddr, conf.Get().Hub.Prefix.AccAddr) {
 		return
 	}
-	url := fmt.Sprintf(UrlUnbondingDelegationByDelegator, conf.Get().Hub.LcdUrl, delAddr)
-	resAsBytes, err := utils.Get(url)
+	unbondingDelegations, err := client.Staking().QueryUnbondingDelegations(delAddr)
 	if err != nil {
-		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+		logger.Error("get delegations by delegator adr from rpc error", logger.String("err", err.Error()))
 		return
 	}
 
-	if err := json.Unmarshal(resAsBytes, &unbondingDelegations); err != nil {
-		logger.Error("Unmarshal UnbondingDelegationsByDelegatorAddr error", logger.String("err", err.Error()), logger.String("URL", url))
+	for _, val := range unbondingDelegations {
+		data := UnbondingDelegation{
+			DelegatorAddr: val.DelegatorAddress,
+			ValidatorAddr: val.ValidatorAddress,
+		}
+		if len(val.Entries) > 0 {
+			data.MinTime = val.Entries[0].CompletionTime.String()
+			data.InitialBalance = val.Entries[0].InitialBalance.String()
+			data.CreationHeight = val.Entries[0].CreationHeight
+			data.Balance = val.Entries[0].Balance.String()
+		}
+		result = append(result, data)
 	}
 	return
 }
 
-func DelegationByValidator(address string) (result []DelegationVo) {
-	url := fmt.Sprintf(UrlDelegationByVal, conf.Get().Hub.LcdUrl, address)
-	resBytes, err := utils.Get(url)
+func GetDelegationByValidator(address string) (result []DelegationVo) {
+	delegations, err := client.Staking().QueryDelegationsTo(address)
 	if err != nil {
-		return result
+		logger.Error("Query Delegation Rpc error", logger.String("err", err.Error()))
+		return
 	}
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("Unmarshal Delegation error", logger.String("err", err.Error()))
-		return result
+	for _, val := range delegations {
+		result = append(result, DelegationVo{
+			DelegatorAddr: val.Delegation.DelegatorAddress,
+			ValidatorAddr: val.Delegation.ValidatorAddress,
+			Shares:        val.Delegation.Shares,
+		})
 	}
 	return
 }

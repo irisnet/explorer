@@ -71,19 +71,12 @@ func AccountInfo(address string) (Account01411, error) {
 	if !strings.HasPrefix(address, conf.Get().Hub.Prefix.AccAddr) {
 		return acc, fmt.Errorf("address prefix is should %v", conf.Get().Hub.Prefix.AccAddr)
 	}
-	url := fmt.Sprintf(UrlAccount, conf.Get().Hub.LcdUrl, address)
-	resBytes, err := utils.Get(url)
+	account, err := client.Bank().QueryAccount(address)
 	if err != nil {
 		return acc, err
 	}
-	if len(resBytes) == 0 {
-		return acc, nil
-	}
-
-	if err := json.Unmarshal(resBytes, &acc); err != nil {
-		//logger.Error("get account error", logger.String("err", err.Error()))
-		return acc, err
-	}
+	data, _ := json.Marshal(account)
+	fmt.Println(data)
 	return acc, nil
 }
 func Faucet(req *http.Request) (bz []byte, err error) {

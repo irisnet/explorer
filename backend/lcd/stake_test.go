@@ -28,8 +28,7 @@ func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
 }
 
 func TestGetJailedUntilAndMissedBlocksCountByConsensusPublicKey(t *testing.T) {
-
-	jailedUntil, missedBlockCount, _, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("fcp1zcjduepqcjgmderfahnlyrse563r2hcc3d4vjpafw03axzn3e87kfuqznjcsur8xrq")
+	jailedUntil, missedBlockCount, _, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("iva1x98k5n7xj0h3udnf5dcdzw85tsfa75qm682jtg")
 
 	if err != nil {
 		t.Error(err)
@@ -39,7 +38,7 @@ func TestGetJailedUntilAndMissedBlocksCountByConsensusPublicKey(t *testing.T) {
 }
 
 func TestValidator(t *testing.T) {
-	address := "fva1k98nqnytl9u5ralns7ca7n8tpmacl8k25ymgyr"
+	address := "iva1x98k5n7xj0h3udnf5dcdzw85tsfa75qm682jtg"
 
 	if res, err := Validator(address); err != nil {
 		t.Fatal(err)
@@ -62,7 +61,7 @@ func TestQueryWithdrawAddr(t *testing.T) {
 }
 
 func TestGetDelegationsByDelAddr(t *testing.T) {
-	address := "faa192vef4442d07lqde59mx35dvmfv9v72wrsu84a"
+	address := "iaa18e2e9fxxrr88k78gg7fhuuqgccfv8self9ye65"
 	res := GetDelegationsByDelAddr(address)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
@@ -70,7 +69,7 @@ func TestGetDelegationsByDelAddr(t *testing.T) {
 
 func TestDelegationByValidator(t *testing.T) {
 	address := "fva1k98nqnytl9u5ralns7ca7n8tpmacl8k25ymgyr"
-	res := DelegationByValidator(address)
+	res := GetDelegationByValidator(address)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
 }
@@ -88,14 +87,7 @@ func TestSignInfo(t *testing.T) {
 	t.Log(string(resBytes))
 }
 
-func TestGetDelegationsByValidatorAddr(t *testing.T) {
 
-	delegations := GetDelegationsByValidatorAddr("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
-
-	for k, v := range delegations {
-		t.Logf("k: %v  v: %v \n", k, v)
-	}
-}
 
 func TestGetUnbondingDelegationsByValidatorAddr(t *testing.T) {
 

@@ -67,24 +67,18 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 		}
 	}
 
-	//decimalMap := make(map[string]int, len(txList))
-	//assetkokens, err := document.AssetToken{}.GetAssetTokenDetailBySymbols(unit)
-	//if err == nil {
-	//	for _, val := range assetkokens {
-	//		decimalMap[val.TokenId] = val.Decimal
-	//	}
-	//}
+	decimalMap := getDecimalMapData(unit)
 
-	//for i, val := range txList {
-	//	if len(val.Amount) == 0 {
-	//		continue
-	//	}
-	//	denom := strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0]
-	//	if dem, ok := decimalMap[denom]; ok && dem > 0 {
-	//		txList[i].Amount[0].Denom = denom
-	//		txList[i].Amount[0].Amount = txList[i].Amount[0].Amount / float64(dem)
-	//	}
-	//}
+	for i, val := range txList {
+		if len(val.Amount) == 0 {
+			continue
+		}
+		denom := strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0]
+		if dem, ok := decimalMap[denom]; ok && dem > 0 {
+			txList[i].Amount[0].Denom = denom
+			txList[i].Amount[0].Amount = txList[i].Amount[0].Amount / float64(dem)
+		}
+	}
 
 	data := buildTxVOsFromDoc(txList)
 	var baseData []interface{}
@@ -125,24 +119,18 @@ func (service *TxService) QueryHtlcTx(query bson.M, page, pageSize int, istotal 
 		}
 	}
 
-	//decimalMap := make(map[string]int, len(txList))
-	//assetkokens, err := document.AssetToken{}.GetAssetTokenDetailBySymbols(unit)
-	//if err == nil {
-	//	for _, val := range assetkokens {
-	//		decimalMap[val.TokenId] = val.Decimal
-	//	}
-	//}
+	decimalMap := getDecimalMapData(unit)
 
-	//for i, val := range txList {
-	//	if len(val.Amount) == 0 {
-	//		continue
-	//	}
-	//	denom := strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0]
-	//	if dem, ok := decimalMap[denom]; ok && dem > 0 {
-	//		txList[i].Amount[0].Denom = denom
-	//		txList[i].Amount[0].Amount = txList[i].Amount[0].Amount / float64(dem)
-	//	}
-	//}
+	for i, val := range txList {
+		if len(val.Amount) == 0 {
+			continue
+		}
+		denom := strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0]
+		if dem, ok := decimalMap[denom]; ok && dem > 0 {
+			txList[i].Amount[0].Denom = denom
+			txList[i].Amount[0].Amount = txList[i].Amount[0].Amount / float64(dem)
+		}
+	}
 
 	data := buildTxVOsFromDoc(txList)
 	var baseData []vo.HtlcTx

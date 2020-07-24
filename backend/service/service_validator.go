@@ -230,7 +230,7 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, size int, needpage bool, istotal bool) vo.DelegationsPage {
 
 	var lcdDelegations lcd.ValidatorDelegations
-	lcdDelegations = lcd.GetDelegationsByValidatorAddr(valAddr)
+	lcdDelegations = lcd.GetDelegationByValidator(valAddr)
 	var valaddrlist []string
 	totalShareAsRat := new(big.Rat)
 	for _, v := range lcdDelegations {
@@ -494,25 +494,21 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) vo.Val
 	if err != nil {
 		logger.Error("GetJailedUntilAndMissedBlocksCountByConsensusPublicKey", logger.String("consensus", validatorAsDoc.ConsensusPubkey), logger.String("err", err.Error()))
 	} else {
-		var startHeight, ok = utils.ParseInt(startHeight)
-		if !ok {
-			logger.Error("Format StartHeight", logger.String("err", err.Error()))
-		} else {
-			var lastBlock = lcd.BlockLatest()
-			var currentHeight = lastBlock.BlockMeta.Header.Height
 
-			signedBlocksWindow, err := document.GovParams{}.QueryOne("signed_blocks_window")
-			if err != nil {
-				logger.Error("Query signed_blocks_window", logger.String("err", err.Error()))
-			} else {
-				signedBlocksWindowCurrentValue, ok := utils.ParseInt(signedBlocksWindow.CurrentValue.(string))
-				if ok {
-					height := currentHeight - startHeight
-					if height < signedBlocksWindowCurrentValue {
-						statsBlocksWindow = strconv.FormatInt(height, 10)
-					} else {
-						statsBlocksWindow = strconv.FormatInt(signedBlocksWindowCurrentValue, 10)
-					}
+		var lastBlock = lcd.BlockLatest()
+		var currentHeight = lastBlock.BlockMeta.Header.Height
+
+		signedBlocksWindow, err := document.GovParams{}.QueryOne("signed_blocks_window")
+		if err != nil {
+			logger.Error("Query signed_blocks_window", logger.String("err", err.Error()))
+		} else {
+			signedBlocksWindowCurrentValue, ok := utils.ParseInt(signedBlocksWindow.CurrentValue.(string))
+			if ok {
+				height := currentHeight - startHeight
+				if height < signedBlocksWindowCurrentValue {
+					statsBlocksWindow = strconv.FormatInt(height, 10)
+				} else {
+					statsBlocksWindow = strconv.FormatInt(signedBlocksWindowCurrentValue, 10)
 				}
 			}
 		}
@@ -972,7 +968,7 @@ func Min(a, b int64) int64 {
 }
 
 func queryDelegationInfo(operatorAddress string) (string, int) {
-	delegations := lcd.DelegationByValidator(operatorAddress)
+	delegations := lcd.GetDelegationByValidator(operatorAddress)
 	var selfBond string
 	for _, d := range delegations {
 		addr := utils.Convert(conf.Get().Hub.Prefix.AccAddr, operatorAddress)

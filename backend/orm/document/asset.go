@@ -24,7 +24,7 @@ type AssetToken struct {
 	//Gateway         string        `bson:"gateway" json:"gateway"`
 	Symbol string `bson:"symbol" json:"symbol"`
 	Name   string `bson:"name" json:"name"`
-	//Decimal         int           `bson:"decimal" json:"decimal"`
+	Scale  int    `bson:"scale" json:"scale"`
 	//CanonicalSymbol string        `bson:"canonical_symbol" json:"canonical_symbol"`
 	MinUnitAlias  string `bson:"min_unit_alias" json:"min_unit_alias"`
 	InitialSupply string `bson:"initial_supply" json:"initial_supply"`

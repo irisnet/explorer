@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sort"
 	"sync"
+	"math"
 )
 
 type AccountService struct {
@@ -45,22 +46,15 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 					unit = append(unit, strings.Split(coin.Denom, types.AssetMinDenom)[0])
 					amount = append(amount, coin)
 				}
+				decimalMap := getDecimalMapData(unit)
+				for i, val := range amount {
+					denom := strings.Split(val.Denom, types.AssetMinDenom)[0]
+					if dem, ok := decimalMap[denom]; ok && dem > 0 {
+						amount[i].Denom = denom
+						amount[i].Amount = amount[i].Amount / float64(math.Pow10(dem))
+					}
 
-				//assetkokens, err := document.AssetToken{}.GetAssetTokenDetailBySymbols(unit)
-				//if err == nil {
-				//	for _, val := range assetkokens {
-				//		decimalMap[val.TokenId] = val.Decimal
-				//	}
-				//}
-
-				//for i, val := range amount {
-				//	denom := strings.Split(val.Denom, types.AssetMinDenom)[0]
-				//	if dem, ok := decimalMap[denom]; ok && dem > 0 {
-				//		amount[i].Denom = denom
-				//		amount[i].Amount = amount[i].Amount / float64(math.Pow10(dem))
-				//	}
-				//
-				//}
+				}
 				result.Amount = amount
 			}
 		}()
@@ -83,10 +77,20 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 
 	group.Wait()
 
-
 	result.IsProfiler = isProfiler(address)
 	result.Address = address
 	return result
+}
+
+func getDecimalMapData(unit []string) map[string]int {
+	decimalMap := make(map[string]int, len(unit))
+	assetkokens, err := document.AssetToken{}.GetAssetTokenDetailBySymbols(unit)
+	if err == nil {
+		for _, val := range assetkokens {
+			decimalMap[val.Symbol] = val.Scale
+		}
+	}
+	return decimalMap
 }
 
 func getValidatorStatus(validator document.Validator) string {

@@ -44,46 +44,7 @@ func (assets *AssetsService) GetNativeAsset(symbol, txtype string, page, size in
 	}, nil
 }
 
-//func (assets *AssetsService) GetGatewayAsset(symbol, gateway, txtype string, page, size int, istotal bool) (vo.AssetsRespond, error) {
-//
-//	if !isFieldTokenType(txtype) {
-//		txtype = ""
-//	}
-//
-//	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Gateway, txtype, symbol, gateway, page, size, istotal)
-//	if err != nil {
-//		logger.Error("GetGatewayAsset have error", logger.String("error", err.Error()))
-//		return vo.AssetsRespond{}, err
-//	}
-//	result := make([]vo.AssetsVo, 0, len(retassets))
-//	for _, asset := range retassets {
-//		result = append(result, LoadModelFromCommonTx(asset))
-//	}
-//
-//	return vo.AssetsRespond{
-//		Total:     total,
-//		Txs:       result,
-//		AssetType: document.Tx_AssetType_Gateway,
-//	}, nil
-//}
 
-//func (assets *AssetsService) GetTransferGatewayOwner(moniker string, page, size int, istotal bool) (vo.AssetsRespond, error) {
-//
-//	total, retassets, err := document.CommonTx{}.QueryTxTransferGatewayOwner(moniker, page, size, istotal)
-//	if err != nil {
-//		logger.Error("GetTransferGatewayOwner have error", logger.String("error", err.Error()))
-//		return vo.AssetsRespond{}, err
-//	}
-//	result := make([]vo.AssetsVo, 0, len(retassets))
-//	for _, asset := range retassets {
-//		result = append(result, LoadModelFromCommonTx(asset))
-//	}
-//
-//	return vo.AssetsRespond{
-//		Total: total,
-//		Txs:   result,
-//	}, nil
-//}
 
 func isFieldTokenType(tokentype string) bool {
 	return tokentype == document.Tx_Asset_TxType_Mint ||
@@ -109,23 +70,14 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 		if err := msgData.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(src.Msgs[0].MsgData)); err != nil {
 			logger.Error("LoadModelFromCommonTx have error", logger.String("err", err.Error()))
 		} else {
-			//dst.Gateway = msgData.Gateway
 			dst.Symbol = msgData.Symbol
-			//dst.CanonicalSymbol = msgData.CanonicalSymbol
 			dst.Name = msgData.Name
-			//dst.Decimal = msgData.Decimal
+			dst.Decimal = msgData.Scale
 			dst.InitialSupply = msgData.InitialSupply
 			dst.MaxSupply = msgData.MaxSupply
 			dst.Mintable = msgData.Mintable
 			dst.Owner = msgData.Owner
 			dst.SymbolMin = msgData.MinUnit
-			//source := msgData.UdInfo.Source
-			//if source == document.Tx_AssetType_Native {
-			//dst.SymbolMin = fmt.Sprintf("%s-min", msgData.UdInfo.Symbol)
-			//} else if source == document.Tx_AssetType_Gateway {
-			//	dst.SymbolMin = fmt.Sprintf("%s.%s-min", msgData.UdInfo.Gateway, msgData.UdInfo.Symbol)
-			//}
-			//dst = converModelTokenId(dst)
 		}
 
 	case types.TxTypeEditToken:
@@ -133,14 +85,11 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 		if err := msgData.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(src.Msgs[0].MsgData)); err != nil {
 			logger.Error("LoadModelFromCommonTx have error", logger.String("err", err.Error()))
 		} else {
-			//dst.TokenId = msgData.TokenId
 			dst.Owner = msgData.Owner
-			//dst.CanonicalSymbol = msgData.CanonicalSymbol
 			dst.MaxSupply = msgData.MaxSupply
 			dst.Mintable = msgData.Mintable
 			dst.Name = msgData.Name
 			dst.Symbol = msgData.Symbol
-			//dst.SymbolMin = msgData.TokenId
 		}
 
 	case types.TxTypeMintToken:
@@ -148,10 +97,8 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 		if err := msgData.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(src.Msgs[0].MsgData)); err != nil {
 			logger.Error("LoadModelFromCommonTx have error", logger.String("err", err.Error()))
 		} else {
-			//dst.TokenId = msgData.TokenId
 			dst.Owner = msgData.Owner
 			dst.Amount = msgData.Amount
-			//dst.SymbolMin = msgData.TokenId
 			dst.Symbol = msgData.Symbol
 			dst.MintTo = checkMintToAddress(msgData.Owner, msgData.To)
 		}
@@ -164,56 +111,14 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 			dst.SrcOwner = msgData.SrcOwner
 			dst.DstOwner = msgData.DstOwner
 			dst.Symbol = msgData.Symbol
-			//dst.TokenId = msgData.TokenId
-			//dst.SymbolMin = msgData.TokenId
 		}
 
-		//case types.TxTypeCreateGateway:
-		//	msgData := msgvo.TxMsgCreateGateway{}
-		//	if err := msgData.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(src.Msgs[0].MsgData)); err != nil {
-		//		logger.Error("LoadModelFromCommonTx have error", logger.String("err", err.Error()))
-		//	} else {
-		//		dst.Owner = msgData.Owner
-		//	}
-		//
-		//case types.TxTypeEditGateway:
-		//	msgData := msgvo.TxMsgEditGateway{}
-		//	if err := msgData.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(src.Msgs[0].MsgData)); err != nil {
-		//		logger.Error("LoadModelFromCommonTx have error", logger.String("err", err.Error()))
-		//	} else {
-		//		dst.Owner = msgData.Owner
-		//	}
-		//
-		//case types.TxTypeTransferGatewayOwner:
-		//	msgData := msgvo.TxMsgTransferGatewayOwner{}
-		//	if err := msgData.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(src.Msgs[0].MsgData)); err != nil {
-		//		logger.Error("LoadModelFromCommonTx have error", logger.String("err", err.Error()))
-		//	} else {
-		//		dst.SrcOwner = msgData.Owner
-		//		dst.DstOwner = msgData.To
-		//		dst.Gateway = msgData.Moniker
-		//	}
-		//
-		//case types.TxTypeSetMemoRegexp:
-		//	msgData := msgvo.TxMsgSetMemoRegexp{}
-		//	if err := msgData.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(src.Msgs[0].MsgData)); err != nil {
-		//		logger.Error("LoadModelFromCommonTx have error", logger.String("err", err.Error()))
-		//	} else {
-		//		dst.Owner = msgData.Owner
-		//	}
 
 	}
 
 	return
 }
 
-//func converModelTokenId(dst vo.AssetsVo) vo.AssetsVo {
-//	dst.TokenId = dst.Symbol
-//	if dst.Gateway != "" {
-//		dst.TokenId = dst.Gateway + "." + dst.Symbol
-//	}
-//	return dst
-//}
 
 func checkMintToAddress(owner, address string) string {
 	if len(owner) != len(address) {
@@ -297,7 +202,7 @@ func (service *AssetsService) UpdateAssetTokens(vs []document.AssetToken) error 
 func buildAssetTokens() []document.AssetToken {
 	res := lcd.GetAssetTokens()
 	var result []document.AssetToken
-	var buildAssetToken = func(v lcd.AssetTokens) (document.AssetToken, error) {
+	var buildAssetToken = func(v lcd.AssetToken) (document.AssetToken, error) {
 		var assetToken document.AssetToken
 		if err := utils.Copy(v.BaseToken, &assetToken); err != nil {
 			logger.Error("utils.copy assetToken failed")
@@ -316,7 +221,7 @@ func buildAssetTokens() []document.AssetToken {
 		asset_totalsupplyMap[val.Denom] = val.Amount
 	}
 
-	var genAssetTokens = func(va lcd.AssetTokens, result *[]document.AssetToken) {
+	var genAssetTokens = func(va lcd.AssetToken, result *[]document.AssetToken) {
 		assetToken, err := buildAssetToken(va)
 		if err != nil {
 			logger.Error("utils.copy assetToken failed")
@@ -326,11 +231,6 @@ func buildAssetTokens() []document.AssetToken {
 		if assetToken.Symbol == "stake" {
 			return
 		}
-		//else {
-		//	if len(assetToken.Gateway) > 0 {
-		//		denome = assetToken.Gateway + "." + denome
-		//	}
-		//}
 
 		if totalsupply, ok := asset_totalsupplyMap[denome]; ok {
 			assetToken.TotalSupply = totalsupply
@@ -345,15 +245,9 @@ func buildAssetTokens() []document.AssetToken {
 }
 
 func isDiffAssetToken(src, dst document.AssetToken) bool {
-	if
-	//src.TokenId != dst.TokenId ||
-	//src.Family != dst.Family ||
-	//src.Source != dst.Source ||
-	//src.Gateway != dst.Gateway ||
-	src.Symbol != dst.Symbol ||
+	if src.Symbol != dst.Symbol ||
 		src.Name != dst.Name ||
-	//src.Decimal != dst.Decimal ||
-	//src.CanonicalSymbol != dst.CanonicalSymbol ||
+		src.Scale != dst.Scale ||
 		src.MinUnitAlias != dst.MinUnitAlias ||
 		src.InitialSupply != dst.InitialSupply ||
 		src.MaxSupply != dst.MaxSupply ||
@@ -365,23 +259,6 @@ func isDiffAssetToken(src, dst document.AssetToken) bool {
 	return false
 }
 
-//
-//func (service *AssetsService) QueryAssetGatewayDetail(moniker string) (vo.AssetGateways, error) {
-//	res, err := document.AssetGateways{}.GetGatewayInfo(moniker)
-//	if err != nil {
-//		logger.Error("QueryAssetGateways", logger.String("err", err.Error()))
-//		return vo.AssetGateways{}, err
-//	}
-//
-//	return vo.AssetGateways{
-//		Owner:    res.Owner,
-//		Identity: res.Identity,
-//		Website:  res.Website,
-//		Details:  res.Details,
-//		Moniker:  res.Moniker,
-//		Icons:    res.Icons,
-//	}, nil
-//}
 
 func (service *AssetsService) QueryAssetTokens(source string) (vo.AssetTokensRespond, error) {
 	res, err := document.AssetToken{}.GetAssetTokens(source)
@@ -394,23 +271,15 @@ func (service *AssetsService) QueryAssetTokens(source string) (vo.AssetTokensRes
 
 	for _, v := range res {
 		tmp := vo.AssetTokens{
-			//TokenId:         v.TokenId,
-			Owner: v.Owner,
-			//Gateway:         v.Gateway,
-			//Family:          v.Family,
-			//TotalSupply:     utils.CovertAssetUnit(v.TotalSupply, v.Decimal),
-			//InitialSupply:   utils.CovertAssetUnit(v.InitialSupply, v.Decimal),
-			//MaxSupply:       utils.CovertAssetUnit(v.MaxSupply, v.Decimal),
-			TotalSupply:   v.TotalSupply,
-			InitialSupply: v.InitialSupply,
-			MaxSupply:     v.MaxSupply,
+			Owner:         v.Owner,
+			TotalSupply:   utils.CovertAssetUnit(v.TotalSupply, v.Scale),
+			InitialSupply: utils.CovertAssetUnit(v.InitialSupply, v.Scale),
+			MaxSupply:     utils.CovertAssetUnit(v.MaxSupply, v.Scale),
 			MinUnitAlias:  v.MinUnitAlias,
 			Mintable:      v.Mintable,
 			Name:          v.Name,
-			//CanonicalSymbol: v.CanonicalSymbol,
-			//Decimal:         v.Decimal,
-			Symbol: v.Symbol,
-			//Source:          v.Source,
+			Decimal:       v.Scale,
+			Symbol:        v.Symbol,
 		}
 		assetinfos = append(assetinfos, tmp)
 	}
@@ -426,39 +295,17 @@ func (service *AssetsService) QueryAssetTokenDetail(symbol string) (vo.AssetToke
 		return vo.AssetTokens{}, err
 	}
 	ret := vo.AssetTokens{
-		//TokenId:         res.TokenId,
-		Owner: res.Owner,
-		//Gateway:         res.Gateway,
-		//Family:          res.Family,
-		//TotalSupply:   utils.CovertAssetUnit(res.TotalSupply, res.Decimal),
-		//InitialSupply: utils.CovertAssetUnit(res.InitialSupply, res.Decimal),
-		//MaxSupply:     utils.CovertAssetUnit(res.MaxSupply, res.Decimal),
-		TotalSupply:   res.TotalSupply,
-		InitialSupply: res.InitialSupply,
-		MaxSupply:     res.MaxSupply,
+		Owner:         res.Owner,
+		TotalSupply:   utils.CovertAssetUnit(res.TotalSupply, res.Scale),
+		InitialSupply: utils.CovertAssetUnit(res.InitialSupply, res.Scale),
+		MaxSupply:     utils.CovertAssetUnit(res.MaxSupply, res.Scale),
 		MinUnitAlias:  res.MinUnitAlias,
 		Mintable:      res.Mintable,
 		Name:          res.Name,
-		//CanonicalSymbol: res.CanonicalSymbol,
-		//Decimal:         res.Decimal,
-		Symbol: res.Symbol,
-		//Source:          res.Source,
+		Decimal:       res.Scale,
+		Symbol:        res.Symbol,
 	}
-	//if res.Source == document.Tx_AssetType_Gateway {
-	//	gatewaydata, err := document.AssetGateways{}.GetGatewayInfo(res.Gateway)
-	//	if err != nil {
-	//		logger.Warn("GetGatewayInfo have error", logger.String("err", err.Error()))
-	//	}
-	//	ret.AssetGateway = &vo.AssetGateways{
-	//		Owner:    gatewaydata.Owner,
-	//		Identity: gatewaydata.Identity,
-	//		Website:  gatewaydata.Website,
-	//		Details:  gatewaydata.Details,
-	//		Moniker:  gatewaydata.Moniker,
-	//		Icons:    gatewaydata.Icons,
-	//	}
-	//
-	//}
+
 
 	return ret, nil
 }

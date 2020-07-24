@@ -523,7 +523,7 @@ type ValidatorSigningInfo struct {
 	MissedBlocksCount string `json:"missed_blocks_counter"`
 }
 
-type ReDelegations struct {
+type ReDelegation struct {
 	DelegatorAddr    string `json:"delegator_addr"`
 	ValidatorSrcAddr string `json:"validator_src_addr"`
 	ValidatorDstAddr string `json:"validator_dst_addr"`
@@ -535,7 +535,7 @@ type ReDelegations struct {
 	SharesDst        string `json:"shares_dst"`
 }
 
-type UnbondingDelegations struct {
+type UnbondingDelegation struct {
 	DelegatorAddr  string `json:"delegator_addr"`
 	ValidatorAddr  string `json:"validator_addr"`
 	InitialBalance string `json:"initial_balance"`
@@ -544,7 +544,7 @@ type UnbondingDelegations struct {
 	MinTime        string `json:"min_time"`
 }
 
-func (un UnbondingDelegations) String() string {
+func (un UnbondingDelegation) String() string {
 	return fmt.Sprintf(`
 		DelegatorAddr  :%v
 		ValidatorAddr  :%v
@@ -627,7 +627,10 @@ type Tx struct {
 	} `json:"value"`
 }
 
-type AssetTokens struct {
+type (
+	AssetToken struct {
+		BaseToken BaseToken `json:"base_token"`
+	}
 	BaseToken struct {
 		Id              string `json:"id"`
 		Family          string `json:"family"`
@@ -635,15 +638,15 @@ type AssetTokens struct {
 		Gateway         string `json:"gateway"`
 		Symbol          string `json:"symbol"`
 		Name            string `json:"name"`
-		Decimal         int    `json:"decimal"`
+		Scale           int    `json:"scale"`
 		CanonicalSymbol string `json:"canonical_symbol"`
 		MinUnitAlias    string `json:"min_unit_alias"`
 		InitialSupply   string `json:"initial_supply"`
 		MaxSupply       string `json:"max_supply"`
 		Mintable        bool   `json:"mintable"`
 		Owner           string `json:"owner"`
-	} `json:"base_token"`
-}
+	}
+)
 
 type AssetGateways struct {
 	Owner    string `json:"owner"`
