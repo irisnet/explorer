@@ -82,7 +82,7 @@ func TestStakePool(t *testing.T) {
 }
 
 func TestSignInfo(t *testing.T) {
-	pubKey := "fcp1zcjduepqy5ygunecsppr7ye9fnjm3tsd82k7t3pmaqcpk3z9tegwz2kaxctsc3d4cj"
+	pubKey := "icp1zcjduepq6tfg639yglaxnxxst8mk058g86zuqlvnr0ql7d6setzj0x0flrysr6de8x"
 	res := SignInfo(pubKey)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))

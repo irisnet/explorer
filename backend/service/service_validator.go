@@ -944,7 +944,7 @@ func computeUptime(valPub string, height int64) float32 {
 	if err != nil {
 		logger.Error("GetGovSlashingParam have failed", logger.String("err", err.Error()))
 	}
-	startHeight := utils.ParseIntWithDefault(result.StartHeight, 0)
+	startHeight := result.StartHeight
 
 	var stats_blocks_window int64
 	if _, ok := govSlashingParamMap["signed_blocks_window"]; ok {
@@ -958,7 +958,7 @@ func computeUptime(valPub string, height int64) float32 {
 		stats_blocks_window = height - startHeight + 1
 	}
 
-	missedBlocksCounter := utils.ParseIntWithDefault(result.MissedBlocksCounter, 0)
+	missedBlocksCounter := result.MissedBlocksCounter
 
 	tmp := float32(missedBlocksCounter) / float32(stats_blocks_window)
 	return 1 - tmp
@@ -1035,8 +1035,7 @@ func getTotalVotingPower() int64 {
 	var total = int64(0)
 	var set = lcd.LatestValidatorSet()
 	for _, v := range set.Validators {
-		votingPower := utils.ParseIntWithDefault(v.VotingPower, 0)
-		total += votingPower
+		total += v.VotingPower
 	}
 	return total
 }

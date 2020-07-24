@@ -8,35 +8,9 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/utils"
-	sdk "github.com/weichang-bianjie/irishub-sdk-go"
-	"github.com/weichang-bianjie/irishub-sdk-go/types"
 	ctypes "github.com/irisnet/explorer/backend/types"
 	"time"
-	"path/filepath"
 )
-
-var (
-	client sdk.Client
-)
-
-func init() {
-	path := filepath.Join("/User/user/go/", "test")
-	client = sdk.NewClient(types.ClientConfig{
-		NodeURI: conf.Get().Hub.NodeUrl,
-		Network: types.Testnet,
-		ChainID: conf.Get().Hub.ChainId,
-		Mode:    types.Commit,
-		Timeout: time.Duration(10 * time.Second),
-		Fee: []types.DecCoin{
-			{Denom: "iris", Amount: types.NewDecimal(1)},
-		},
-		Gas:       2000000,
-		KeyDAO:    types.NewMemoryDB(), //default keybase
-		StoreType: types.PrivKey,
-		Level:     "info",
-		DBRootDir: path,
-	})
-}
 
 func Validator(address string) (result ValidatorVo, err error) {
 	url := fmt.Sprintf(UrlValidator, conf.Get().Hub.LcdUrl, address)
@@ -61,8 +35,8 @@ func Validators(page, size int) (result []ValidatorVo) {
 	}
 
 	for _, val := range validators {
-		uptime, _ := time.Parse(utils.TimeLayout, val.Commission.UpdateTime)
-		unbondtime, _ := time.Parse(utils.TimeLayout, val.UnbondingTime)
+		uptime, _ := time.Parse(time.RFC3339, val.Commission.UpdateTime)
+		unbondtime, _ := time.Parse(time.RFC3339, val.UnbondingTime)
 		result = append(result, ValidatorVo{
 			OperatorAddress: val.OperatorAddress,
 			ConsensusPubkey: val.ConsensusPubkey,
@@ -278,27 +252,34 @@ func DelegationByValidator(address string) (result []DelegationVo) {
 }
 
 func StakePool() (result StakePoolVo) {
-	url := fmt.Sprintf(UrlStakePool, conf.Get().Hub.LcdUrl)
-	resBytes, err := utils.Get(url)
+	stakepool, err := client.Staking().QueryPool()
 	if err != nil {
+		logger.Error("RPC Query Pool error", logger.String("err", err.Error()))
 		return result
 	}
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("Unmarshal StakePool error", logger.String("err", err.Error()))
-		return result
+	//data,_ := json.Marshal(stakepool)
+	//fmt.Println(data)
+	result = StakePoolVo{
+		LooseTokens:  stakepool.LooseTokens,
+		BondedTokens: stakepool.BondedTokens,
+		//TotalSupply:,
+		//BondedRatio:,
 	}
 	return
 }
 
 func SignInfo(consensusPubkey string) (result SignInfoVo) {
-	url := fmt.Sprintf(UrlSignInfo, conf.Get().Hub.LcdUrl, consensusPubkey)
-	resBytes, err := utils.Get(url)
+
+	signinfo, err := client.Slashing().QueryValidatorSigningInfo(consensusPubkey)
 	if err != nil {
+		logger.Error("RPC Query Validator Signing Info error", logger.String("err", err.Error()))
 		return result
 	}
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("Unmarshal SignInfoVo error", logger.String("err", err.Error()))
-		return result
+	result = SignInfoVo{
+		StartHeight:         signinfo.StartHeight,
+		IndexOffset:         signinfo.IndexOffset,
+		JailedUntil:         signinfo.JailedUntil,
+		MissedBlocksCounter: signinfo.MissedBlocksCounter,
 	}
 	return
 }

@@ -39,10 +39,6 @@ func registerNavigationBar(r *mux.Router) error {
 		if block.BlockMeta.Header.Height == 0 {
 			return nil
 		}
-		//var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
-		//if !ok {
-		//	panic(types.CodeNotFound)
-		//}
 		height := block.BlockMeta.Header.Height
 		var result = NavigationData{
 			BlockHeight: height,
@@ -65,14 +61,16 @@ func registerNavigationBar(r *mux.Router) error {
 			var voteVp = int64(0)
 			var voteValNum = 0
 			for i, commit := range block.Block.LastCommit.Precommits {
-				var vp = utils.ParseIntWithDefault(validatorSet.Validators[i].VotingPower, 0)
+				var vp = validatorSet.Validators[i].VotingPower
 				if len(commit.Height) > 0 {
 					voteVp += vp
 					voteValNum++
 				}
 				totalVp += vp
 			}
-			result.VotingRatio = float32(voteVp) / float32(totalVp)
+			if totalVp > 0 {
+				result.VotingRatio = float32(voteVp) / float32(totalVp)
+			}
 			result.VotingTokens = strconv.FormatInt(voteVp, 10)
 			result.VoteValNum = voteValNum
 			result.ActiveValNum = len(validatorSet.Validators)

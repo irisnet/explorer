@@ -10,7 +10,6 @@ import (
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
 	"strings"
-	"time"
 )
 
 var (
@@ -320,8 +319,9 @@ func Block(height int64) (result BlockVo) {
 	if err != nil {
 		return result
 	}
+	//data,_ := json.Marshal(block)
+	//fmt.Println(string(data))
 
-	timeData, _ := time.Parse(utils.TimeLayout, block.Header.Time.String())
 	result = BlockVo{
 		BlockMeta: BlockMeta{
 			BlockID: BlockID{
@@ -330,7 +330,7 @@ func Block(height int64) (result BlockVo) {
 			Header: BlockHeader{
 				Height:          block.Header.Height,
 				ProposerAddress: block.Header.ProposerAddress.String(),
-				Time:            timeData,
+				Time:            block.Header.Time,
 				NumTxs:          fmt.Sprint(len(block.Data.Txs)),
 			},
 		},
@@ -353,8 +353,9 @@ func BlockLatest() (result BlockVo) {
 	if err != nil {
 		return result
 	}
+	//data,_ := json.Marshal(block)
+	//fmt.Println(string(data))
 
-	timeData, _ := time.Parse(utils.TimeLayout, block.Header.Time.String())
 	result = BlockVo{
 		BlockMeta: BlockMeta{
 			BlockID: BlockID{
@@ -363,7 +364,7 @@ func BlockLatest() (result BlockVo) {
 			Header: BlockHeader{
 				Height:          block.Header.Height,
 				ProposerAddress: block.Header.ProposerAddress.String(),
-				Time:            timeData,
+				Time:            block.Header.Time,
 				NumTxs:          fmt.Sprint(len(block.Data.Txs)),
 			},
 		},
@@ -382,14 +383,21 @@ func BlockLatest() (result BlockVo) {
 }
 
 func ValidatorSet(height int64) (result ValidatorSetVo) {
-	url := fmt.Sprintf(UrlValidatorSet, conf.Get().Hub.LcdUrl, height)
-	resBytes, err := utils.Get(url)
+	validatorset, err := client.Tendermint().QueryValidators(height)
 	if err != nil {
 		return result
 	}
+	result = ValidatorSetVo{
+		BlockHeight: fmt.Sprint(validatorset.BlockHeight),
+	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
+	for _, val := range validatorset.Validators {
+		result.Validators = append(result.Validators, StakeValidatorVo{
+			Address:          val.Bech32Address,
+			PubKey:           val.Bech32PubKey,
+			ProposerPriority: val.ProposerPriority,
+			VotingPower:      val.VotingPower,
+		})
 	}
 	return result
 }
@@ -409,15 +417,26 @@ func LatestValidatorSet() (result ValidatorSetVo) {
 
 func BlockResult(height int64) (result BlockResultVo) {
 
-	url := fmt.Sprintf(UrlBlocksResult, conf.Get().Hub.LcdUrl, height)
-	resBytes, err := utils.Get(url)
+	//url := fmt.Sprintf(UrlBlocksResult, conf.Get().Hub.LcdUrl, height)
+	//resBytes, err := utils.Get(url)
+	//if err != nil {
+	//	return result
+	//}
+	//
+	//if err := json.Unmarshal(resBytes, &result); err != nil {
+	//	return result
+	//}
+
+	blockresult, err := client.Tendermint().QueryBlockResult(height)
 	if err != nil {
 		return result
 	}
+	fmt.Println(blockresult)
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
+	result = BlockResultVo{
+
 	}
+
 	return result
 
 }

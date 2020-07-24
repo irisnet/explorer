@@ -51,8 +51,8 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) vo.Va
 		if k >= page*size && k < (page+1)*size {
 			var tmp vo.BlockValidator
 			tmp.Consensus = v.Address
-			tmp.VotingPower = v.VotingPower
-			tmp.ProposerPriority = v.ProposerPriority
+			tmp.VotingPower = fmt.Sprint(v.VotingPower)
+			tmp.ProposerPriority = fmt.Sprint(v.ProposerPriority)
 			for _, validator := range validatorArr {
 				if validator.ConsensusPubkey == v.PubKey {
 					tmp.OperatorAddress = validator.OperatorAddress
@@ -98,10 +98,8 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 	nextBlock := lcd.Block(height + 1)
 	var totalVotingPower, precommitVotingPower, precommitValidatorNum int
 	for k, v := range lcdValidators.Validators {
-		powerAsInt, err := strconv.Atoi(v.VotingPower)
-		if err != nil {
-			logger.Error("strconv VotingPower err", logger.String("error", err.Error()), service.GetTraceLog())
-		}
+		powerAsInt := int(v.VotingPower)
+
 		totalVotingPower += powerAsInt
 
 		if nextBlock.Block.Header.Height != 0 {
@@ -267,7 +265,6 @@ func (service *BlockService) QueryRecent() vo.BlockInfoVoRespond {
 	}
 	return result
 }
-
 
 func (service *BlockService) QueryLatestHeight() (result vo.LatestHeightRespond) {
 	var block = lcd.BlockLatest()

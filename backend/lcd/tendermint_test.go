@@ -56,7 +56,7 @@ func TestGetGenesisAppStateGovParam(t *testing.T) {
 }
 
 func TestBlock(t *testing.T) {
-	height := int64(1034)
+	height := int64(13474)
 	res := Block(height)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
