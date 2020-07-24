@@ -6,7 +6,7 @@ import (
 
 func TestGetValidatorSet(t *testing.T) {
 
-	validatorPage := new(BlockService).GetValidatorSet(1000, 0, 100)
+	validatorPage := blockService.GetValidatorSet(1000, 0, 100)
 
 	t.Logf("total: %v \n", validatorPage.Total)
 
@@ -17,14 +17,14 @@ func TestGetValidatorSet(t *testing.T) {
 
 func TestQueryBlockInfo(t *testing.T) {
 
-	blockInfo := new(BlockService).QueryBlockInfo(100)
+	blockInfo := blockService.QueryBlockInfo(100)
 	t.Logf("block info: %v \n", blockInfo)
 
 }
 
 func TestQueryRecent(t *testing.T) {
 
-	blockList := new(BlockService).QueryRecent()
+	blockList := blockService.QueryRecent()
 
 	for k, v := range blockList {
 		t.Logf("k: %v  v: %v \n", k, v)
@@ -32,6 +32,6 @@ func TestQueryRecent(t *testing.T) {
 }
 
 func TestBlockService_QueryLatestHeight(t *testing.T) {
-	block := new(BlockService).QueryLatestHeight()
+	block := blockService.QueryLatestHeight()
 	t.Log(block)
 }

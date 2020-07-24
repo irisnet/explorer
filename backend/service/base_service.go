@@ -26,53 +26,6 @@ var (
 	ValidatorsHashHasNotInit  = utils.Md5Encryption([]byte("nil"))
 )
 
-const (
-	_         Module = iota
-	Account
-	Block
-	Common
-	Proposal
-	Tx
-	Delegator
-	GovParams
-	Validator
-	Asset
-	Htlc
-)
-
-type Module int
-
-func Get(m Module) Service {
-	switch m {
-	case Account:
-		return accountService
-	case Block:
-		return blockService
-	case Common:
-		return commonService
-	case Proposal:
-		return proposalService
-		// case Candidate:
-		// 	return stakeService
-	case Tx:
-		return txService
-	case Delegator:
-		return delegatorService
-	case GovParams:
-		return govParamsService
-	case Validator:
-		return validatorService
-	case Asset:
-		return assetsService
-	case Htlc:
-		return htlcService
-	}
-	return nil
-}
-
-type Service interface {
-	GetModule() Module
-}
 
 type BaseService struct {
 	tid string

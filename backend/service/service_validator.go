@@ -19,10 +19,6 @@ type ValidatorService struct {
 	BaseService
 }
 
-func (service *ValidatorService) GetModule() Module {
-	return Validator
-}
-
 func (service *ValidatorService) GetValidators(typ, origin string, page, size int, istotal bool) interface{} {
 	if origin == "browser" {
 		var result []lcd.ValidatorVo

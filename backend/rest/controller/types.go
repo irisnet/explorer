@@ -12,7 +12,7 @@ var (
 	tx           service.TxService
 	tokenstats   service.TokenStatsService
 	bondedtokens service.BondedTokensService
-	asset        service.AssetsService
+	assets       service.AssetsService
 	htlc         service.HtlcService
 	caculate     service.CaculateService
 )

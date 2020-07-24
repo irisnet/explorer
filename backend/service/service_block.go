@@ -17,9 +17,6 @@ type BlockService struct {
 	BaseService
 }
 
-func (service *BlockService) GetModule() Module {
-	return Block
-}
 
 func (service *BlockService) GetValidatorSet(height int64, page, size int) vo.ValidatorSet {
 	lcdValidators := lcd.ValidatorSet(height)

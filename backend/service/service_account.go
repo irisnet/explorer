@@ -20,10 +20,6 @@ type AccountService struct {
 	BaseService
 }
 
-func (service *AccountService) GetModule() Module {
-	return Account
-}
-
 func (service *AccountService) Query(address string) (result vo.AccountVo) {
 	var group sync.WaitGroup
 	prefix, _, _ := utils.DecodeAndConvert(address)

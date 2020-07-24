@@ -26,10 +26,6 @@ type ProposalService struct {
 	BaseService
 }
 
-func (service *ProposalService) GetModule() Module {
-	return Proposal
-}
-
 func (service *ProposalService) QueryProposalsByHeight(height int64) []vo.ProposalInfoVo {
 
 	resp := []vo.ProposalInfoVo{}

@@ -2,14 +2,12 @@ package controller
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"strings"
 )
 
-var assets service.AssetsService
 
 func RegisterAssets(r *mux.Router) error {
 	funs := []func(*mux.Router) error{

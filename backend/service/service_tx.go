@@ -19,10 +19,6 @@ type TxService struct {
 	BaseService
 }
 
-func (service *TxService) GetModule() Module {
-	return Tx
-}
-
 // get tx list
 func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal bool) vo.PageVo {
 

@@ -16,9 +16,6 @@ type AssetsService struct {
 	BaseService
 }
 
-func (asset AssetsService) GetModule() Module {
-	return Asset
-}
 
 func (assets *AssetsService) GetNativeAsset(symbol, txtype string, page, size int, istotal bool) (vo.AssetsRespond, error) {
 
@@ -51,7 +48,6 @@ func isFieldTokenType(tokentype string) bool {
 		tokentype == document.Tx_Asset_TxType_Issue ||
 		tokentype == document.Tx_Asset_TxType_Edit ||
 		tokentype == document.Tx_Asset_TxType_TransferOwner
-	//tokentype == document.Tx_Asset_TxType_TransferGatewayOwner
 }
 
 func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {

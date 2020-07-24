@@ -33,7 +33,7 @@ func (task UpdateAssetTokens) DoTask(fn func(string) chan bool) error {
 		return err
 	}
 
-	assetService := service.Get(service.Asset).(*service.AssetsService)
+	var assetService service.AssetsService
 	if err := assetService.UpdateAssetTokens(assetTokens); err != nil {
 		return err
 	}

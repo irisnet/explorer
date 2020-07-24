@@ -12,10 +12,6 @@ type CommonService struct {
 	BaseService
 }
 
-func (service *CommonService) GetModule() Module {
-	return Common
-}
-
 func (service CommonService) QueryText(text string) vo.ResultVo {
 	result := vo.ResultVo{}
 	i, isUint := utils.ParseInt(text)

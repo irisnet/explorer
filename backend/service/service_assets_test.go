@@ -8,7 +8,7 @@ import (
 
 func TestAssetsService_GetGatewayAsset(t *testing.T) {
 
-	//ret, err := (&AssetsService{}).GetGatewayAsset(document.Tx_Asset_TxType_Issue, "", "", 0, 10, true)
+	//ret, err := assetsService.GetGatewayAsset(document.Tx_Asset_TxType_Issue, "", "", 0, 10, true)
 	//if err != nil {
 	//	t.Fatal(err.Error())
 	//}
@@ -17,7 +17,7 @@ func TestAssetsService_GetGatewayAsset(t *testing.T) {
 }
 
 func TestAssetsService_GetNativeAsset(t *testing.T) {
-	ret, err := (&AssetsService{}).GetNativeAsset(document.Tx_Asset_TxType_Edit, "", 0, 10, true)
+	ret, err := assetsService.GetNativeAsset(document.Tx_Asset_TxType_Edit, "", 0, 10, true)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -36,7 +36,7 @@ func TestAssetsServiceisFieldTokenType(t *testing.T) {
 
 func TestAssetService_QueryAssetTokens(t *testing.T) {
 	source := "gateway"
-	res, _ := new(AssetsService).QueryAssetTokens(source)
+	res, _ := assetsService.QueryAssetTokens(source)
 
 	for k, v := range res {
 		t.Logf("k: %v \nv: %v\n", k, v)
@@ -45,7 +45,7 @@ func TestAssetService_QueryAssetTokens(t *testing.T) {
 
 func TestAssetsService_QueryAssetTokenDetail(t *testing.T) {
 	tokenid := "shark.fly"
-	res, _ := new(AssetsService).QueryAssetTokenDetail(tokenid)
+	res, _ := assetsService.QueryAssetTokenDetail(tokenid)
 
 	bytesmsg, _ := json.Marshal(res)
 	t.Log(string(bytesmsg))
@@ -53,7 +53,7 @@ func TestAssetsService_QueryAssetTokenDetail(t *testing.T) {
 
 func TestAssetService_UpdateAssetTokens(t *testing.T) {
 	dst := []document.AssetToken{}
-	err := new(AssetsService).UpdateAssetTokens(dst)
+	err := assetsService.UpdateAssetTokens(dst)
 
 	if err != nil {
 		t.Fatal(err)

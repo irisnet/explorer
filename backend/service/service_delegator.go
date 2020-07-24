@@ -14,10 +14,6 @@ type DelegatorService struct {
 	BaseService
 }
 
-func (service *DelegatorService) GetModule() Module {
-	return Delegator
-}
-
 func (service *DelegatorService) QueryDelegation(valAddr string) (utils.Coin, utils.Coin) {
 	validator, err := lcd.Validator(valAddr)
 	if err != nil {

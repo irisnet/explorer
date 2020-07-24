@@ -34,7 +34,7 @@ func (task UpdateValidator) DoTask(fn func(string) chan bool) error {
 		return err
 	}
 
-	validatorService := service.Get(service.Validator).(*service.ValidatorService)
+	var validatorService service.ValidatorService
 	err = validatorService.UpdateValidators(validators)
 
 	if err != nil {
