@@ -6,6 +6,8 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
+	"gopkg.in/mgo.v2/txn"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type GovParamsService struct {
@@ -75,7 +77,7 @@ func (_ GovParamsService) GetGovStakeParamList(genesisMap, currentMap map[string
 		}
 
 		tmp := document.GovParams{
-			Module:       lcd.GovModuleStake,
+			Module:       lcd.GovModuleStaking,
 			Key:          k,
 			Range:        v.Range,
 			Description:  v.Description,
@@ -249,32 +251,32 @@ func (gov GovParamsService) GetDbInitGovModuleParamList(genesisMap, currentMap m
 }
 
 func init() {
-	//var initParams = func() {
-	//	var ops []txn.Op
-	//	genGovModuleMap, err := lcd.GetGenesisGovModuleParamMap()
-	//
-	//	if err != nil {
-	//		panic(fmt.Sprintf("get module genesis param err: %v \n", err.Error()))
-	//	}
-	//
-	//	currentParamMap, _ := lcd.GetAllGovModuleParam()
-	//	govParamList, _ := GovParamsService{}.GetDbInitGovModuleParamList(genGovModuleMap, currentParamMap)
-	//
-	//	for _, v := range govParamList {
-	//		ops = append(ops, txn.Op{
-	//			C:      document.CollectionNmGovParams,
-	//			Id:     bson.NewObjectId(),
-	//			Insert: v,
-	//		})
-	//	}
-	//
-	//	err = document.GovParams{}.Batch(ops)
-	//
-	//	if err != nil {
-	//		logger.Error("init gov_params data error", logger.String("err", err.Error()))
-	//	}
-	//}
-	//if data := govParamsService.QueryAll(); len(data) == 0 {
-	//	initParams()
-	//}
+	var initParams = func() {
+		var ops []txn.Op
+		genGovModuleMap, err := lcd.GetGenesisGovModuleParamMap()
+
+		if err != nil {
+			panic(fmt.Sprintf("get module genesis param err: %v \n", err.Error()))
+		}
+
+		currentParamMap := lcd.GetAllGovModuleParam()
+		govParamList, _ := GovParamsService{}.GetDbInitGovModuleParamList(genGovModuleMap, currentParamMap)
+
+		for _, v := range govParamList {
+			ops = append(ops, txn.Op{
+				C:      document.CollectionNmGovParams,
+				Id:     bson.NewObjectId(),
+				Insert: v,
+			})
+		}
+
+		err = document.GovParams{}.Batch(ops)
+
+		if err != nil {
+			logger.Error("init gov_params data error", logger.String("err", err.Error()))
+		}
+	}
+	if data := govParamsService.QueryAll(); len(data) == 0 {
+		initParams()
+	}
 }

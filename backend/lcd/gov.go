@@ -12,7 +12,7 @@ import (
 const (
 	//module
 	GovModuleAuth     = "auth"
-	GovModuleStake    = "staking"
+	GovModuleStaking  = "staking"
 	GovModuleMint     = "mint"
 	GovModuleDistr    = "distribution"
 	GovModuleSlashing = "slashing"
@@ -23,12 +23,12 @@ const (
 	GovModuleRand     = "rand"
 	GovModuleOrcale   = "oracle"
 	GovModuleCoinSwap = "coinswap"
-	GovModuleCoinGov  = "gov"
-	GovModuleCoinNft  = "nft"
+	GovModuleGov      = "gov"
+	GovModuleNft      = "nft"
 	GovModuleCrisis   = "crisis"
 	//auth key
-	GovModuleAuthGasPriceThreshold string = "gas_price_threshold"
-	GovModuleAuthTxSize            string = "tx_size"
+	GovModuleAuthGasPriceThreshold = "gas_price_threshold"
+	GovModuleAuthTxSize            = "tx_size"
 	//stake key
 	GovModuleStakeUnbondingTime = "unbonding_time"
 	GovModuleStakeMaxValidators = "max_validators"
@@ -40,25 +40,26 @@ const (
 	GovModuleDistrBonusProposerReward = "bonus_proposer_reward"
 
 	//slashing key
-	GovModuleSlashingSlashFractionCensorship = "slash_fraction_censorship"
-	GovModuleSlashingMaxEvidenceAge          = "max_evidence_age"
-	GovModuleSlashingSignedBlocksWindow      = "signed_blocks_window"
-	GovModuleSlashingDoubleSignJailDuration  = "double_sign_jail_duration"
-	GovModuleSlashingMinSignedPerWindow      = "min_signed_per_window"
-	GovModuleSlashingCensorshipJailDuration  = "censorship_jail_duration"
+	//GovModuleSlashingSlashFractionCensorship = "slash_fraction_censorship"
+	//GovModuleSlashingMaxEvidenceAge          = "max_evidence_age"
+	GovModuleSlashingSignedBlocksWindow = "signed_blocks_window"
+	//GovModuleSlashingDoubleSignJailDuration  = "double_sign_jail_duration"
+	GovModuleSlashingMinSignedPerWindow = "min_signed_per_window"
+	//GovModuleSlashingCensorshipJailDuration  = "censorship_jail_duration"
 	GovModuleSlashingSlashFractionDoubleSign = "slash_fraction_double_sign"
 	GovModuleSlashingSlashFractionDowntime   = "slash_fraction_downtime"
 	GovModuleSlashingDowntimJailDuration     = "downtime_jail_duration"
 
 	//asset key
-	GovModuleAssetAssetTaxRate         = "asset_tax_rate"
-	GovModuleAssetIssueTokenBaseFee    = "issue_token_base_fee"
-	GovModuleAssetMintTokenFeeRatio    = "mint_token_fee_ratio"
-	GovModuleAssetCreateGatewayBaseFee = "create_gateway_base_fee"
-	GovModuleAssetGatewayAssetFeeRatio = "gateway_asset_fee_ratio"
+	GovModuleAssetAssetTaxRate      = "token_tax_rate"
+	GovModuleAssetIssueTokenBaseFee = "issue_token_base_fee"
+	GovModuleAssetMintTokenFeeRatio = "mint_token_fee_ratio"
+	//GovModuleAssetCreateGatewayBaseFee = "create_gateway_base_fee"
+	//GovModuleAssetGatewayAssetFeeRatio = "gateway_asset_fee_ratio"
 )
 
-var GovModuleList = []string{GovModuleAuth, GovModuleStake, GovModuleMint, GovModuleDistr, GovModuleSlashing}
+var GovModuleList = []string{GovModuleAuth, GovModuleStaking, GovModuleMint, GovModuleDistr, GovModuleSlashing, GovModuleAsset}
+//GovModuleIBC, GovModuleHtlc, GovModuleService, GovModuleCoinSwap, GovModuleCrisis, GovModuleNft, GovModuleOrcale, GovModuleGov}
 
 type RangeDescription struct {
 	Range        string
@@ -103,12 +104,12 @@ func GetMintKeyWithRangeMap() map[string]RangeDescription {
 func GetSlashingKeyWithRangeMap() map[string]RangeDescription {
 	result := map[string]RangeDescription{}
 
-	result[GovModuleSlashingSlashFractionCensorship] = RangeDescription{Range: "0,0.1", Description: "Slash ratio of Censorship"}
-	result[GovModuleSlashingMaxEvidenceAge] = RangeDescription{Range: "34560,", Description: "Acceptable earliest time of the evidence"}
+	//result[GovModuleSlashingSlashFractionCensorship] = RangeDescription{Range: "0,0.1", Description: "Slash ratio of Censorship"}
+	//result[GovModuleSlashingMaxEvidenceAge] = RangeDescription{Range: "34560,", Description: "Acceptable earliest time of the evidence"}
 	result[GovModuleSlashingSignedBlocksWindow] = RangeDescription{Range: "100,140000", Description: "Number of blocks for slash statistics window"}
-	result[GovModuleSlashingDoubleSignJailDuration] = RangeDescription{Range: "0,1209600000000000", Description: "Jail duration of DoubleSign"}
+	//result[GovModuleSlashingDoubleSignJailDuration] = RangeDescription{Range: "0,1209600000000000", Description: "Jail duration of DoubleSign"}
 	result[GovModuleSlashingMinSignedPerWindow] = RangeDescription{Range: "0.5,0.9", Description: "Minimum voting ratio in the slash window"}
-	result[GovModuleSlashingCensorshipJailDuration] = RangeDescription{Range: "0,1209600000000000", Description: "Jail duration of Censorship"}
+	//result[GovModuleSlashingCensorshipJailDuration] = RangeDescription{Range: "0,1209600000000000", Description: "Jail duration of Censorship"}
 	result[GovModuleSlashingSlashFractionDoubleSign] = RangeDescription{Range: "0,0.1", Description: "Slash ratio of DoubleSign"}
 	result[GovModuleSlashingSlashFractionDowntime] = RangeDescription{Range: "0,0.1", Description: "Slash ratio of  Downtime"}
 	result[GovModuleSlashingDowntimJailDuration] = RangeDescription{Range: "0,604800000000000", Description: "Jail duration of Downtime"}
@@ -120,8 +121,8 @@ func GetAssetKeyWithRangeMap() map[string]RangeDescription {
 	result[GovModuleAssetAssetTaxRate] = RangeDescription{InitialValue: "0.4", Range: "0,1", Description: "Community Tax rate for issuing or minting assets"}
 	result[GovModuleAssetIssueTokenBaseFee] = RangeDescription{InitialValue: "60000", Range: "0,", Description: "Benchmark fees for issuing Fungible Token"}
 	result[GovModuleAssetMintTokenFeeRatio] = RangeDescription{InitialValue: "0.1", Range: "0,1", Description: "Fungible Token mint rate (relative to the issue fee)"}
-	result[GovModuleAssetCreateGatewayBaseFee] = RangeDescription{InitialValue: "120000", Range: "0,", Description: "Benchmark fees for creating Gateways"}
-	result[GovModuleAssetGatewayAssetFeeRatio] = RangeDescription{InitialValue: "0.1", Range: "0,1", Description: "Rate of issuing gateway tokens (relative to the issue fee of native tokens)"}
+	//result[GovModuleAssetCreateGatewayBaseFee] = RangeDescription{InitialValue: "120000", Range: "0,", Description: "Benchmark fees for creating Gateways"}
+	//result[GovModuleAssetGatewayAssetFeeRatio] = RangeDescription{InitialValue: "0.1", Range: "0,1", Description: "Rate of issuing gateway tokens (relative to the issue fee of native tokens)"}
 	return result
 }
 
@@ -148,7 +149,7 @@ func GetGovAuthParam() (map[string]interface{}, error) {
 }
 
 func GetGovStakeParam() (map[string]interface{}, error) {
-	return GetGovModuleParamMap(GovModuleStake)
+	return GetGovModuleParamMap(GovModuleStaking)
 }
 
 func GetGovMintParam() (map[string]interface{}, error) {
@@ -167,55 +168,73 @@ func GetGovAssetParam() (map[string]interface{}, error) {
 	return GetGovModuleParamMap(GovModuleAsset)
 }
 
-func GetAllGovModuleParam() (map[string]interface{}, error) {
+//func GetAllGovModuleParam() (map[string]interface{}, error) {
+//
+//	result := map[string]interface{}{}
+//
+//	authMap, err := GetGovAuthParam()
+//	if err != nil {
+//		return nil, err
+//	}
+//	stakeMap, err := GetGovStakeParam()
+//	if err != nil {
+//		return nil, err
+//	}
+//	mintMap, err := GetGovMintParam()
+//	if err != nil {
+//		return nil, err
+//	}
+//	distrMap, err := GetGovDistrParam()
+//	if err != nil {
+//		return nil, err
+//	}
+//	slashingMap, err := GetGovSlashingParam()
+//	if err != nil {
+//		return nil, err
+//	}
+//	assetMap, err := GetGovAssetParam()
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	for k, v := range authMap {
+//		result[k] = v
+//	}
+//
+//	for k, v := range stakeMap {
+//		result[k] = v
+//	}
+//	for k, v := range mintMap {
+//		result[k] = v
+//	}
+//	for k, v := range distrMap {
+//		result[k] = v
+//	}
+//	for k, v := range slashingMap {
+//		result[k] = v
+//	}
+//	for k, v := range assetMap {
+//		result[k] = v
+//	}
+//	return result, nil
+//}
 
+func GetAllGovModuleParam() map[string]interface{} {
 	result := map[string]interface{}{}
-
-	authMap, err := GetGovAuthParam()
-	if err != nil {
-		return nil, err
+	for _, module := range GovModuleList {
+		if value, err := GetGovModuleParamMap(module); err == nil {
+			if data, ok := value["params"]; ok {
+				for k, v := range data.(map[string]interface{}) {
+					result[k] = v
+				}
+			} else {
+				for k, v := range value {
+					result[k] = v
+				}
+			}
+		}
 	}
-	stakeMap, err := GetGovStakeParam()
-	if err != nil {
-		return nil, err
-	}
-	mintMap, err := GetGovMintParam()
-	if err != nil {
-		return nil, err
-	}
-	distrMap, err := GetGovDistrParam()
-	if err != nil {
-		return nil, err
-	}
-	slashingMap, err := GetGovSlashingParam()
-	if err != nil {
-		return nil, err
-	}
-	assetMap, err := GetGovAssetParam()
-	if err != nil {
-		return nil, err
-	}
-
-	for k, v := range authMap {
-		result[k] = v
-	}
-
-	for k, v := range stakeMap {
-		result[k] = v
-	}
-	for k, v := range mintMap {
-		result[k] = v
-	}
-	for k, v := range distrMap {
-		result[k] = v
-	}
-	for k, v := range slashingMap {
-		result[k] = v
-	}
-	for k, v := range assetMap {
-		result[k] = v
-	}
-	return result, nil
+	return result
 }
 
 func GetProposalVoters(proposalid uint64) (result []Voterinfo, err error) {

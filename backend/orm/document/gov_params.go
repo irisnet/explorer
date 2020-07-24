@@ -15,6 +15,7 @@ const (
 	GovParamsFieldModule            = "module"
 	GovParamsFieldKey               = "key"
 	GovParamsFieldCurrentValue      = "current_value"
+	GovParamsFieldType              = "type"
 	EQ                         Sign = "eq"
 	NEQ                        Sign = "neq"
 )
@@ -104,21 +105,22 @@ func (_ GovParams) UpdateCurrentModuleParamValue(kv map[string]interface{}) erro
 	bulk := collection.Bulk()
 
 	for k, v := range kv {
+		typeStr := fmt.Sprintf("%T", v)
 		vStr := ""
 		update := bson.M{}
 		switch vType := v.(type) {
 		case string:
 			vStr = vType
-			update["$set"] = bson.M{GovParamsFieldCurrentValue: vStr}
+			update["$set"] = bson.M{GovParamsFieldCurrentValue: vStr, GovParamsFieldType: typeStr}
 		case map[string]interface{}:
 			currentValueMap := AmountCurrentValue{}
 			if err := currentValueMap.BuildAmountCurrentValueByUnmarshalJson(utils.MarshalJsonIgnoreErr(vType)); err != nil {
 				logger.Error("BuildAmountCurrentValueByUnmarshalJson have error", logger.String("err", err.Error()))
 			}
-			update["$set"] = bson.M{GovParamsFieldCurrentValue: currentValueMap}
+			update["$set"] = bson.M{GovParamsFieldCurrentValue: currentValueMap, GovParamsFieldType: typeStr}
 		default:
 			vStr = fmt.Sprintf("%v", vType)
-			update["$set"] = bson.M{GovParamsFieldCurrentValue: vStr}
+			update["$set"] = bson.M{GovParamsFieldCurrentValue: vStr, GovParamsFieldType: typeStr}
 		}
 		sel := bson.M{GovParamsFieldKey: k}
 

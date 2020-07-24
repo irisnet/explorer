@@ -283,7 +283,7 @@ func GetGenesisGovModuleParamMap() (map[string]interface{}, error) {
 	authMap := appStateMap[GovModuleAuth].(map[string]interface{})
 	authParamMap := authMap["params"].(map[string]interface{})
 
-	stakeMap := appStateMap[GovModuleStake].(map[string]interface{})
+	stakeMap := appStateMap[GovModuleStaking].(map[string]interface{})
 	stakeParamMap := stakeMap["params"].(map[string]interface{})
 
 	mintMap := appStateMap[GovModuleMint].(map[string]interface{})

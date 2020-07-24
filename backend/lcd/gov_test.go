@@ -59,7 +59,7 @@ func TestGetGovStakeParam(t *testing.T) {
 	if err != nil {
 		t.Errorf("GetGovAuthParam err: %v\n", err)
 	}
-	t.Log(lcd.GovModuleStake)
+	t.Log(lcd.GovModuleStaking)
 	printMap(stakeMap, t)
 }
 
@@ -95,11 +95,8 @@ func TestGetGovSlashingParam(t *testing.T) {
 
 func TestGetAllGovModuleParam(t *testing.T) {
 
-	paramMap, err := lcd.GetAllGovModuleParam()
+	paramMap := lcd.GetAllGovModuleParam()
 
-	if err != nil {
-		t.Errorf("query all gov module err: %v \n", err)
-	}
 	t.Logf("total: %v \n", len(paramMap))
 	printMap(paramMap, t)
 }
