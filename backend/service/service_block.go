@@ -17,7 +17,6 @@ type BlockService struct {
 	BaseService
 }
 
-
 func (service *BlockService) GetValidatorSet(height int64, page, size int) vo.ValidatorSet {
 	lcdValidators := lcd.ValidatorSet(height)
 	if page > 0 {

@@ -223,14 +223,14 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 		logger.Error("get proposal level by type", logger.String("err", err.Error()), logger.String("param", data.Type))
 	}
 	l.Name = name
-	passThreshold, vetoThreshold, participation, _, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
+	passThreshold, vetoThreshold, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
 	if err != nil {
 		logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", data.Type))
 	}
 	l.GovParam = vo.GovParam{
 		PassThreshold: passThreshold,
 		VetoThreshold: vetoThreshold,
-		Participation: participation,
+		//Participation: participation,
 	}
 	tmp.Level = l
 
@@ -335,7 +335,7 @@ func formatProposalStatusVotingData(proposalStatusVotingData []document.Proposal
 		}
 		l.Name = name
 
-		passThreshold, vetoThreshold, participation, _, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(propo.Type)
+		passThreshold, vetoThreshold, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(propo.Type)
 
 		if err != nil {
 			logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", propo.Type))
@@ -343,7 +343,7 @@ func formatProposalStatusVotingData(proposalStatusVotingData []document.Proposal
 		l.GovParam = vo.GovParam{
 			PassThreshold: passThreshold,
 			VetoThreshold: vetoThreshold,
-			Participation: participation,
+			//Participation: participation,
 		}
 
 		tmp.Level = l
@@ -669,7 +669,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		coinsAsUtils = append(coinsAsUtils, tmp)
 	}
 
-	passThreshold, vetoThreshold, participation, penalty, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
+	passThreshold, vetoThreshold, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
 	if err != nil {
 		logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", data.Type))
 	}
@@ -692,16 +692,16 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		TotalDeposit:    coinsAsUtils,
 		YesThreshold:    passThreshold,
 		VetoThreshold:   vetoThreshold,
-		Participation:   participation,
-		Penalty:         penalty,
+		//Participation:   participation,
+		//Penalty:         penalty,
 		Level:           level,
 	}
 
 	if data.Status == document.ProposalStatusPassed || data.Status == document.ProposalStatusRejected {
-		systemVotingPower, err := strconv.ParseFloat(data.FinalVotes.SystemVotingPower, 64)
-		if err != nil {
-			logger.Error(" SystemVotingPower Covert to Float fail", logger.String("err", err.Error()))
-		}
+		//systemVotingPower, err := strconv.ParseFloat(data.FinalVotes.SystemVotingPower, 64)
+		//if err != nil {
+		//	logger.Error(" SystemVotingPower Covert to Float fail", logger.String("err", err.Error()))
+		//}
 
 		var votedNum float64
 		var noWithVeto float64
@@ -725,16 +725,17 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		} else {
 			logger.Error("ParseStringToFloat abstain fail", logger.String("err", err.Error()))
 		}
-		participationFloat, _ := utils.ParseStringToFloat(participation)
+		//participationFloat, _ := utils.ParseStringToFloat(participation)
 		vetoThresholdFloat, _ := utils.ParseStringToFloat(vetoThreshold)
-		isParticipation := false
-		if systemVotingPower > 0 {
-			isParticipation = bool((votedNum / systemVotingPower) > participationFloat)
-		}
+		//isParticipation := false
+		//if systemVotingPower > 0 {
+		//	isParticipation = bool((votedNum / systemVotingPower) > participationFloat)
+		//}
 
 		isRejectVote := false
 		if votedNum > 0 {
-			isRejectVote = bool(isParticipation && bool((noWithVeto / votedNum) > vetoThresholdFloat))
+			isRejectVote = bool(bool((noWithVeto / votedNum) > vetoThresholdFloat))
+			//isRejectVote = bool(isParticipation && bool((noWithVeto / votedNum) > vetoThresholdFloat))
 		}
 		burnPercent, err := lcd.GetProposalBurnPercentByResult(data.Status, isRejectVote)
 		if err != nil {

@@ -69,7 +69,7 @@ func TestBlockLatest(t *testing.T) {
 }
 
 func TestValidatorSet(t *testing.T) {
-	height := int64(1034)
+	height := int64(22150)
 	res := ValidatorSet(height)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))

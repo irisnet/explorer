@@ -259,7 +259,7 @@ func isDiffAssetToken(src, dst document.AssetToken) bool {
 func (service *AssetsService) QueryAssetTokens(source string) (vo.AssetTokensRespond, error) {
 	res, err := document.AssetToken{}.GetAssetTokens(source)
 	if err != nil {
-		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))
+		logger.Error("Query AssetTokens", logger.String("err", err.Error()))
 		return []vo.AssetTokens{}, err
 	}
 
@@ -287,7 +287,7 @@ func (service *AssetsService) QueryAssetTokenDetail(symbol string) (vo.AssetToke
 
 	res, err := document.AssetToken{}.GetAssetTokenDetail(symbol)
 	if err != nil {
-		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))
+		logger.Error("Query AssetTokenDetail", logger.String("err", err.Error()))
 		return vo.AssetTokens{}, err
 	}
 	ret := vo.AssetTokens{

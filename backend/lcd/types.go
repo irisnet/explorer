@@ -441,9 +441,9 @@ type (
 		//		Hash  string `json:"hash"`
 		//	} `json:"parts"`
 		//} `json:"block_id"`
-		Precommits Precommits `json:"precommits"`
+		Precommits []Precommit `json:"precommits"`
 	}
-	Precommits []struct {
+	Precommit struct {
 		//	Type    int    `json:"type"`
 		Height string `json:"height"`
 		//	Round   string `json:"round"`
@@ -454,10 +454,10 @@ type (
 		//			Hash  string `json:"hash"`
 		//		} `json:"parts"`
 		//	} `json:"block_id"`
-		//	Timestamp        time.Time `json:"timestamp"`
+		//Timestamp        time.Time `json:"timestamp"`
 		ValidatorAddress string `json:"validator_address"`
 		ValidatorIndex   string `json:"validator_index"`
-		//	Signature        string    `json:"signature"`
+		//Signature        string    `json:"signature"`
 	}
 )
 
@@ -475,8 +475,8 @@ type StakeValidatorVo struct {
 type StakePoolVo struct {
 	LooseTokens  string `json:"loose_tokens"`
 	BondedTokens string `json:"bonded_tokens"`
-	TotalSupply  string `json:"total_supply"`
-	BondedRatio  string `json:"bonded_ratio"`
+	//TotalSupply  string `json:"total_supply"`
+	//BondedRatio  string `json:"bonded_ratio"`
 }
 
 type DelegationVo struct {
@@ -572,8 +572,11 @@ type SignInfoVo struct {
 	MissedBlocksCounter int64     `json:"missed_blocks_counter"`
 }
 
-type BlockResultVo struct {
-	//Height string `json:"height"`
+type (
+	BlockResultVo struct {
+		//Height string `json:"height"`
+		Results Results `json:"results"`
+	}
 	Results struct {
 		//DeliverTx []struct {
 		//	Code      int         `json:"code"`
@@ -601,14 +604,15 @@ type BlockResultVo struct {
 		//		Value string `json:"value"`
 		//	} `json:"tags"`
 		//} `json:"end_block"`
-		BeginBlock struct {
-			Tags []struct {
-				Key   string `json:"key"`
-				Value string `json:"value"`
-			} `json:"tags"`
-		} `json:"begin_block"`
-	} `json:"results"`
-}
+		BeginBlock BeginBlock `json:"begin_block"`
+	}
+	BeginBlock struct {
+		Tags []struct {
+			Key   string `json:"key"`
+			Value string `json:"value"`
+		} `json:"tags"`
+	}
+)
 
 type BlockCoinFlowVo struct {
 	Height   string   `json:"height"`

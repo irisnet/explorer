@@ -33,7 +33,7 @@ func TestGetTokenStatsSupply(t *testing.T) {
 }
 
 func TestGetTokens(t *testing.T) {
-	res := []*Coin{{Denom: utils.CoinTypeAtto, Amount: "925050600000000000000000"}, {Denom: "kai-min", Amount: "800"}}
+	res := []*Coin{{Denom: utils.CoinTypeStake, Amount: "925050600000000000000000"}, {Denom: "kai-min", Amount: "800"}}
 	coin := GetTokens(res)
 	t.Log(coin)
 }

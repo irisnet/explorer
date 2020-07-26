@@ -3,6 +3,8 @@ package lcd
 import (
 	"encoding/json"
 	"testing"
+	"strconv"
+	"fmt"
 )
 
 func TestGetRedelegationsByValidatorAddr(t *testing.T) {
@@ -76,6 +78,9 @@ func TestDelegationByValidator(t *testing.T) {
 
 func TestStakePool(t *testing.T) {
 	res := StakePool()
+	a, _ := strconv.ParseFloat(res.BondedTokens, 64)
+	b, _ := strconv.ParseFloat(res.LooseTokens, 64)
+	fmt.Println(a + b)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
 }

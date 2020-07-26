@@ -58,7 +58,7 @@ const (
 	//GovModuleAssetGatewayAssetFeeRatio = "gateway_asset_fee_ratio"
 )
 
-var GovModuleList = []string{GovModuleAuth, GovModuleStaking, GovModuleMint, GovModuleDistr, GovModuleSlashing, GovModuleAsset}
+var GovModuleList = []string{GovModuleAuth, GovModuleStaking, GovModuleMint, GovModuleDistr, GovModuleSlashing, GovModuleAsset, GovModuleGov}
 //GovModuleIBC, GovModuleHtlc, GovModuleService, GovModuleCoinSwap, GovModuleCrisis, GovModuleNft, GovModuleOrcale, GovModuleGov}
 
 type RangeDescription struct {

@@ -195,17 +195,20 @@ func GetRedelegationsByValidatorAddr(valAddr string) (result []ReDelegation) {
 		return
 	}
 	for _, val := range reDelegations {
-		result = append(result, ReDelegation{
-			DelegatorAddr:    val.DelegatorAddr,
-			ValidatorDstAddr: val.ValidatorDstAddr,
-			ValidatorSrcAddr: val.ValidatorSrcAddr,
-			InitialBalance:   val.InitialBalance.String(),
-			MinTime:          utils.ParseIntWithDefault(val.MinTime, 0),
-			CreationHeight:   fmt.Sprint(val.CreationHeight),
-			Balance:          val.Balance.String(),
-			SharesDst:        val.SharesDst,
-			SharesSrc:        val.SharesSrc,
-		})
+		reDelegation := ReDelegation{
+			DelegatorAddr:    val.Redelegation.DelegatorAddress,
+			ValidatorDstAddr: val.Redelegation.ValidatorDstAddress,
+			ValidatorSrcAddr: val.Redelegation.ValidatorSrcAddress,
+		}
+		if len(val.Entries) > 0 {
+			reDelegation.Balance = val.Entries[0].Balance.String()
+			reDelegation.InitialBalance = val.Entries[0].RedelegationEntry.InitialBalance.String()
+			reDelegation.CreationHeight = fmt.Sprint(val.Entries[0].RedelegationEntry.CreationHeight)
+			reDelegation.MinTime = val.Entries[0].RedelegationEntry.CompletionTime.Unix()
+			reDelegation.SharesDst = val.Entries[0].RedelegationEntry.SharesDst.String()
+
+		}
+		result = append(result, reDelegation)
 	}
 	return
 }
@@ -281,12 +284,12 @@ func StakePool() (result StakePoolVo) {
 		logger.Error("RPC Query Pool error", logger.String("err", err.Error()))
 		return result
 	}
-	//data,_ := json.Marshal(stakepool)
-	//fmt.Println(data)
+	//data, _ := json.Marshal(stakepool)
+	//fmt.Println(string(data))
 	result = StakePoolVo{
 		LooseTokens:  stakepool.LooseTokens,
 		BondedTokens: stakepool.BondedTokens,
-		//TotalSupply:,
+		//TotalSupply: ,
 		//BondedRatio:,
 	}
 	return

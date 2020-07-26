@@ -28,7 +28,7 @@ func GetBankTokenStats() (TokenStats, error) {
 func GetTokens(data []*Coin) Coin {
 
 	for _, val := range data {
-		if val.Denom == utils.CoinTypeAtto {
+		if val.Denom == utils.CoinTypeStake {
 			return Coin{Denom: val.Denom, Amount: val.Amount}
 		}
 	}
@@ -42,7 +42,7 @@ func GetTokenStatsCirculation() (Coin, error) {
 	}
 	return Coin{
 		Amount: string(resBytes),
-		Denom:  utils.CoinTypeIris,
+		Denom:  utils.CoinTypeStake,
 	}, nil
 }
 
@@ -53,7 +53,7 @@ func GetTokenStatsSupply() (Coin, error) {
 	}
 	return Coin{
 		Amount: string(resBytes),
-		Denom:  utils.CoinTypeIris,
+		Denom:  utils.CoinTypeStake,
 	}, nil
 }
 func GetCommunityTax() (Coin, error) {

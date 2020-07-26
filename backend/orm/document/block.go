@@ -169,15 +169,15 @@ type BlockMeta struct {
 	Header Header `bson:"header"`
 }
 
-type BlockID struct {
-	Hash        string        `bson:"hash"`
-	PartsHeader PartSetHeader `bson:"parts"`
-}
+//type BlockID struct {
+//	Hash        string        `bson:"hash"`
+//	PartsHeader PartSetHeader `bson:"parts"`
+//}
 
-type PartSetHeader struct {
-	Total int    `bson:"total"`
-	Hash  string `bson:"hash"`
-}
+//type PartSetHeader struct {
+//	Total int    `bson:"total"`
+//	Hash  string `bson:"hash"`
+//}
 
 type Header struct {
 	// basic block info
@@ -219,19 +219,19 @@ type Commit struct {
 // Represents a prevote, precommit, or commit vote from validators for consensus.
 type Vote struct {
 	ValidatorAddress string `bson:"validator_address"`
-	//ValidatorIndex   int       `bson:"validator_index"`
-	//Height           int64     `bson:"height"`
+	ValidatorIndex   int    `bson:"validator_index"`
+	Height           int64  `bson:"height"`
 	//Round            int       `bson:"round"`
-	//Timestamp        time.Time `bson:"timestamp"`
+	Timestamp time.Time `bson:"timestamp"`
 	//Type             byte      `bson:"type"`
 	//BlockID          BlockID   `bson:"block_id"` // zero if vote is nil.
 	//Signature        Signature `bson:"signature"`
 }
 
-type Signature struct {
-	Type  string `bson:"type"`
-	Value string `bson:"value"`
-}
+//type Signature struct {
+//	Type  string `bson:"type"`
+//	Value string `bson:"value"`
+//}
 
 type TmValidator struct {
 	Address     string `bson:"address"`
@@ -305,7 +305,7 @@ func (d Block) PkKvPair() map[string]interface{} {
 	return bson.M{Block_Field_Height: d.Height}
 }
 
-type ResValidatorPreCommits struct {
-	Address       string `bson:"_id"`
-	PreCommitsNum int64  `bson:"num"`
-}
+//type ResValidatorPreCommits struct {
+//	Address       string `bson:"_id"`
+//	PreCommitsNum int64  `bson:"num"`
+//}

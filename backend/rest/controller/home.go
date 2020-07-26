@@ -96,8 +96,6 @@ func registerNavigationBar(r *mux.Router) error {
 			}()
 			var poolStake = lcd.StakePool()
 			result.BondedTokens = poolStake.BondedTokens
-			result.BondedRatio = poolStake.BondedRatio
-			result.TotalSupply = poolStake.TotalSupply
 		}
 		funGroup = append(funGroup, queryBondedInfo)
 		group.Add(1)
@@ -147,7 +145,7 @@ type NavigationData struct {
 	BondedTokens     string    `json:"bonded_tokens"`
 	TotalSupply      string    `json:"total_supply"`
 	Circulation      string    `json:"circulation"`
-	FoundationBonded string    `json:"foundation_bonded"`
+	//FoundationBonded string    `json:"foundation_bonded"`
 	Moniker          string    `json:"moniker"`
 	OperatorAddr     string    `json:"operator_addr"`
 	ValidatorIcon    string    `json:"validator_icon"`
