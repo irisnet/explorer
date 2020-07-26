@@ -3,18 +3,30 @@ package lcd
 import (
 	"github.com/irisnet/explorer/backend/logger"
 	"fmt"
-	"encoding/json"
 )
 
-func GetAssetTokens() (result []AssetToken) {
+func GetAssetTokens(address string) (result []AssetToken) {
 
-	tokens, err := client.Asset().QueryTokens("")
+	tokens, err := client.Asset().QueryTokens(address)
 	if err != nil {
 		logger.Error("Query Asset Token error", logger.String("err", err.Error()))
 		return
 	}
-	data, _ := json.Marshal(tokens)
-	fmt.Println(string(data))
+	for _, val := range tokens {
+		result = append(result, AssetToken{
+			BaseToken: BaseToken{
+				Name:          val.Value.Name,
+				Scale:         int(val.Value.Scale),
+				Symbol:        val.Value.Symbol,
+				Mintable:      val.Value.Mintable,
+				MaxSupply:     fmt.Sprint(val.Value.MaxSupply),
+				Owner:         val.Value.Owner,
+				InitialSupply: fmt.Sprint(val.Value.InitialSupply),
+				MinUnitAlias:  val.Value.MinUnit,
+			},
+		})
+	}
+
 	return
 }
 
@@ -27,7 +39,6 @@ func GetAssetTokens() (result []AssetToken) {
 //	for _, val := range tokens {
 //		result = append(result, AssetToken{BaseToken: BaseToken{
 //			Symbol:        val.Symbol,
-//			Name:          val.Name,
 //			Scale:         int(val.Scale),
 //			MinUnitAlias:  val.MinUnit,
 //			InitialSupply: fmt.Sprint(val.InitialSupply),

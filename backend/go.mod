@@ -16,7 +16,7 @@ require (
         github.com/stretchr/testify v1.5.1
 	github.com/swaggo/swag v1.6.3
         github.com/tendermint/tendermint v0.33.6
-        github.com/weichang-bianjie/irishub-sdk-go v0.0.0-20200726074647-5bd011f0f67b
+        github.com/weichang-bianjie/irishub-sdk-go v0.0.0-20200726141046-51ef8a778761
         go.uber.org/zap v1.13.0
         golang.org/x/crypto v0.0.0-20200406173513-056763e48d71
         golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e

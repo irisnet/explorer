@@ -69,8 +69,8 @@ func registerAssetTokens(r *mux.Router) error {
 	doApi(r, types.UrlRegisterAssetTokens, "GET", func(request vo.IrisReq) interface{} {
 		assets.SetTid(request.TraceId)
 		//symbol := QueryParam(request, "symbol")
-		source := QueryParam(request, "source")
-		result, err := assets.QueryAssetTokens(source)
+		//source := QueryParam(request, "source")
+		result, err := assets.QueryAssetTokens()
 		if err != nil {
 			return vo.NewResponse("-1", err.Error(), nil)
 		}

@@ -9,13 +9,12 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"gopkg.in/mgo.v2/bson"
-	"gopkg.in/mgo.v2/txn"
+	"gopkg.in/mgo.v2"
 )
 
 type AssetsService struct {
 	BaseService
 }
-
 
 func (assets *AssetsService) GetNativeAsset(symbol, txtype string, page, size int, istotal bool) (vo.AssetsRespond, error) {
 
@@ -40,8 +39,6 @@ func (assets *AssetsService) GetNativeAsset(symbol, txtype string, page, size in
 		AssetType: document.Tx_AssetType_Native,
 	}, nil
 }
-
-
 
 func isFieldTokenType(tokentype string) bool {
 	return tokentype == document.Tx_Asset_TxType_Mint ||
@@ -109,12 +106,10 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 			dst.Symbol = msgData.Symbol
 		}
 
-
 	}
 
 	return
 }
-
 
 func checkMintToAddress(owner, address string) string {
 	if len(owner) != len(address) {
@@ -151,113 +146,63 @@ func convertModelActualFee(actfee document.ActualFee) vo.ActualFee {
 	}
 }
 
-func (service *AssetsService) UpdateAssetTokens(vs []document.AssetToken) error {
-	var vMap = make(map[string]document.AssetToken)
-	for _, v := range vs {
-		vMap[v.Symbol] = v
-	}
+func (service *AssetsService) UpdateAssetTokens(accs []document.Account) {
 
-	dstAssetTokens := buildAssetTokens()
-	var txs []txn.Op
-	for _, v := range dstAssetTokens {
-		if it, ok := vMap[v.Symbol]; ok {
-			if isDiffAssetToken(it, v) {
-				v.ID = it.ID
-				txs = append(txs, txn.Op{
-					C:  document.CollectionNmAsset,
-					Id: it.ID,
-					Update: bson.M{
-						"$set": v,
-					},
-				})
-			}
-			delete(vMap, v.Symbol)
-		} else {
-			v.ID = bson.NewObjectId()
-			txs = append(txs, txn.Op{
-				C:      document.CollectionNmAsset,
-				Id:     bson.NewObjectId(),
-				Insert: v,
-			})
-		}
+	for _, val := range accs {
+		handleAssetTokens(val.Address)
 	}
-
-	if len(vMap) > 0 {
-		for symbol := range vMap {
-			v := vMap[symbol]
-			txs = append(txs, txn.Op{
-				C:      document.CollectionNmAsset,
-				Id:     v.ID,
-				Remove: true,
-			})
-		}
-	}
-	return document.AssetToken{}.Batch(txs)
 }
 
-func buildAssetTokens() []document.AssetToken {
-	res := lcd.GetAssetTokens()
-	var result []document.AssetToken
-	var buildAssetToken = func(v lcd.AssetToken) (document.AssetToken, error) {
-		var assetToken document.AssetToken
-		if err := utils.Copy(v.BaseToken, &assetToken); err != nil {
-			logger.Error("utils.copy assetToken failed")
-			return assetToken, err
-		}
-		return assetToken, nil
-	}
-
-	tokenstats, err := lcd.GetBankTokenStats()
-	if err != nil {
-		logger.Error("buildAssetTokens GetBankTokenStats failed")
-		return nil
-	}
-	asset_totalsupplyMap := make(map[string]string, len(tokenstats.TotalSupply))
-	for _, val := range tokenstats.TotalSupply {
-		asset_totalsupplyMap[val.Denom] = val.Amount
-	}
-
-	var genAssetTokens = func(va lcd.AssetToken, result *[]document.AssetToken) {
-		assetToken, err := buildAssetToken(va)
-		if err != nil {
-			logger.Error("utils.copy assetToken failed")
-			panic(err)
-		}
-		denome := assetToken.Symbol + "-min"
-		if assetToken.Symbol == "stake" {
-			return
-		}
-
-		if totalsupply, ok := asset_totalsupplyMap[denome]; ok {
-			assetToken.TotalSupply = totalsupply
-		}
-		*result = append(*result, assetToken)
-	}
+func handleAssetTokens(address string) {
+	var assetModel document.AssetToken
+	res := lcd.GetAssetTokens(address)
 	for _, v := range res {
+		item := document.AssetToken{
+			Symbol:        v.BaseToken.Symbol,
+			Scale:         v.BaseToken.Scale,
+			AssetName:     v.BaseToken.Name,
+			MinUnitAlias:  v.BaseToken.MinUnitAlias,
+			MaxSupply:     v.BaseToken.MaxSupply,
+			Mintable:      v.BaseToken.Mintable,
+			Owner:         v.BaseToken.Owner,
+			InitialSupply: v.BaseToken.InitialSupply,
+		}
+		one, err := assetModel.GetAssetTokenDetail(v.BaseToken.Symbol)
+		if err != nil && err == mgo.ErrNotFound {
+			item.ID = bson.NewObjectId()
+			if err := assetModel.Save(item); err != nil {
+				logger.Error("asset token save failed",
+					logger.String("err", err.Error()))
+			}
+		} else {
+			if isDiffAssetToken(one, item) {
+				item.ID = one.ID
+				if err := assetModel.Update(item); err != nil {
+					logger.Error("asset token update failed",
+						logger.String("err", err.Error()))
+				}
+			}
+		}
 
-		genAssetTokens(v, &result)
 	}
-	return result
 }
 
 func isDiffAssetToken(src, dst document.AssetToken) bool {
 	if src.Symbol != dst.Symbol ||
-		src.Name != dst.Name ||
+		src.AssetName != dst.AssetName ||
 		src.Scale != dst.Scale ||
 		src.MinUnitAlias != dst.MinUnitAlias ||
 		src.InitialSupply != dst.InitialSupply ||
 		src.MaxSupply != dst.MaxSupply ||
-		src.TotalSupply != dst.TotalSupply ||
-		src.Mintable != dst.Mintable ||
+	//src.TotalSupply != dst.TotalSupply ||
 		src.Owner != dst.Owner {
 		return true
 	}
 	return false
 }
 
-
-func (service *AssetsService) QueryAssetTokens(source string) (vo.AssetTokensRespond, error) {
-	res, err := document.AssetToken{}.GetAssetTokens(source)
+func (service *AssetsService) QueryAssetTokens() (vo.AssetTokensRespond, error) {
+	res, err := document.AssetToken{}.GetAssetTokens()
 	if err != nil {
 		logger.Error("Query AssetTokens", logger.String("err", err.Error()))
 		return []vo.AssetTokens{}, err
@@ -267,13 +212,13 @@ func (service *AssetsService) QueryAssetTokens(source string) (vo.AssetTokensRes
 
 	for _, v := range res {
 		tmp := vo.AssetTokens{
-			Owner:         v.Owner,
-			TotalSupply:   utils.CovertAssetUnit(v.TotalSupply, v.Scale),
+			Owner: v.Owner,
+			//TotalSupply:   utils.CovertAssetUnit(v.TotalSupply, v.Scale),
 			InitialSupply: utils.CovertAssetUnit(v.InitialSupply, v.Scale),
 			MaxSupply:     utils.CovertAssetUnit(v.MaxSupply, v.Scale),
 			MinUnitAlias:  v.MinUnitAlias,
 			Mintable:      v.Mintable,
-			Name:          v.Name,
+			Name:          v.AssetName,
 			Decimal:       v.Scale,
 			Symbol:        v.Symbol,
 		}
@@ -291,17 +236,16 @@ func (service *AssetsService) QueryAssetTokenDetail(symbol string) (vo.AssetToke
 		return vo.AssetTokens{}, err
 	}
 	ret := vo.AssetTokens{
-		Owner:         res.Owner,
-		TotalSupply:   utils.CovertAssetUnit(res.TotalSupply, res.Scale),
+		Owner: res.Owner,
+		//TotalSupply:   utils.CovertAssetUnit(res.TotalSupply, res.Scale),
 		InitialSupply: utils.CovertAssetUnit(res.InitialSupply, res.Scale),
 		MaxSupply:     utils.CovertAssetUnit(res.MaxSupply, res.Scale),
 		MinUnitAlias:  res.MinUnitAlias,
 		Mintable:      res.Mintable,
-		Name:          res.Name,
+		Name:          res.AssetName,
 		Decimal:       res.Scale,
 		Symbol:        res.Symbol,
 	}
-
 
 	return ret, nil
 }

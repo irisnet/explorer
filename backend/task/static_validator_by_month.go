@@ -396,18 +396,4 @@ func (task *StaticValidatorByMonthTask) getValidatorsInPeriod(timelastcur, timed
 	return validators, nil
 }
 
-//func (task *StaticValidatorByMonthTask) saveOps(datas []document.ExStaticValidatorMonth) ([]txn.Op) {
-//	var ops = make([]txn.Op, 0, len(datas))
-//	for _, val := range datas {
-//		val.Id = bson.NewObjectId()
-//		val.CreateAt = time.Now().Unix()
-//		val.UpdateAt = time.Now().Unix()
-//		op := txn.Op{
-//			C:      task.mStaticModel.Name(),
-//			Id:     bson.NewObjectId(),
-//			Insert: val,
-//		}
-//		ops = append(ops, op)
-//	}
-//	return ops
-//}
+

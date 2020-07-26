@@ -11,6 +11,7 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
+	"math/big"
 )
 
 func RegisterHome(r *mux.Router) error {
@@ -95,7 +96,16 @@ func registerNavigationBar(r *mux.Router) error {
 				}
 			}()
 			var poolStake = lcd.StakePool()
+			loose, _ := new(big.Rat).SetString(poolStake.LooseTokens)
+			bonded, _ := new(big.Rat).SetString(poolStake.BondedTokens)
+			total := new(big.Rat).Add(loose, bonded)
+			if total.Cmp(new(big.Rat).SetInt64(0)) == 1 && total.Cmp(bonded) >= 0 {
+				ratio := new(big.Rat).Quo(bonded, total)
+				result.BondedRatio = ratio.FloatString(2)
+			}
+
 			result.BondedTokens = poolStake.BondedTokens
+			result.TotalSupply = total.FloatString(18)
 		}
 		funGroup = append(funGroup, queryBondedInfo)
 		group.Add(1)

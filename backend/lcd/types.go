@@ -636,19 +636,19 @@ type (
 		BaseToken BaseToken `json:"base_token"`
 	}
 	BaseToken struct {
-		Id              string `json:"id"`
-		Family          string `json:"family"`
-		Source          string `json:"source"`
-		Gateway         string `json:"gateway"`
-		Symbol          string `json:"symbol"`
-		Name            string `json:"name"`
-		Scale           int    `json:"scale"`
-		CanonicalSymbol string `json:"canonical_symbol"`
-		MinUnitAlias    string `json:"min_unit_alias"`
-		InitialSupply   string `json:"initial_supply"`
-		MaxSupply       string `json:"max_supply"`
-		Mintable        bool   `json:"mintable"`
-		Owner           string `json:"owner"`
+		Id string `json:"id"`
+		//Family          string `json:"family"`
+		//Source          string `json:"source"`
+		//Gateway         string `json:"gateway"`
+		Symbol string `json:"symbol"`
+		Name   string `json:"name"`
+		Scale  int    `json:"scale"`
+		//CanonicalSymbol string `json:"canonical_symbol"`
+		MinUnitAlias  string `json:"min_unit_alias"`
+		InitialSupply string `json:"initial_supply"`
+		MaxSupply     string `json:"max_supply"`
+		Mintable      bool   `json:"mintable"`
+		Owner         string `json:"owner"`
 	}
 )
 

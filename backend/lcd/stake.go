@@ -284,8 +284,6 @@ func StakePool() (result StakePoolVo) {
 		logger.Error("RPC Query Pool error", logger.String("err", err.Error()))
 		return result
 	}
-	//data, _ := json.Marshal(stakepool)
-	//fmt.Println(string(data))
 	result = StakePoolVo{
 		LooseTokens:  stakepool.LooseTokens,
 		BondedTokens: stakepool.BondedTokens,

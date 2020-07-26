@@ -28,15 +28,13 @@ func (task UpdateAssetTokens) Start() {
 func (task UpdateAssetTokens) DoTask(fn func(string) chan bool) error {
 	stop := fn(task.Name())
 	defer HeartQuit(stop)
-	assetTokens, err := document.AssetToken{}.GetAllAssets()
+	accs, err := document.Account{}.GetAllAccount()
 	if err != nil {
 		return err
 	}
 
 	var assetService service.AssetsService
-	if err := assetService.UpdateAssetTokens(assetTokens); err != nil {
-		return err
-	}
+	assetService.UpdateAssetTokens(accs)
 
 	return nil
 }
