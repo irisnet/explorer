@@ -7,7 +7,6 @@ import (
 
 	"errors"
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
@@ -48,21 +47,26 @@ func buildAccountVo(acc Account01411) AccountVo {
 	res.PublicKey.Type = acc.Value.PublicKey.Type
 	res.PublicKey.Value = acc.Value.PublicKey.Value
 
-	coinsStrArr := []string{}
-	for _, v := range acc.Value.Coins {
-		coinsStrArr = append(coinsStrArr, v.Amount+v.Denom)
-	}
-	res.Coins = coinsStrArr
 	return res
 }
 
 func Account(address string) (result AccountVo, err error) {
-	acc, err := AccountInfo(address)
+	//acc, err := AccountInfo(address)
+	//if err != nil {
+	//	logger.Error("get account error", logger.String("err", err.Error()))
+	//	return result, err
+	//}
+	//result = buildAccountVo(acc)
+	ret, err := AccountBalances(address)
 	if err != nil {
-		logger.Error("get account error", logger.String("err", err.Error()))
 		return result, err
 	}
-	result = buildAccountVo(acc)
+	coinsStrArr := []string{}
+	for _, v := range ret {
+		coinsStrArr = append(coinsStrArr, v.Amount+v.Denom)
+	}
+	result.Address = address
+	result.Coins = coinsStrArr
 	return result, nil
 }
 
@@ -78,6 +82,21 @@ func AccountInfo(address string) (Account01411, error) {
 	data, _ := json.Marshal(account)
 	fmt.Println(data)
 	return acc, nil
+}
+
+func AccountBalances(address string) ([]Coin, error) {
+	balances, err := client.Bank().QueryBalances(address, "")
+	if err != nil {
+		return nil, err
+	}
+	var res []Coin
+	for _, val := range balances {
+		res = append(res, Coin{
+			Denom:  val.Denom,
+			Amount: val.Amount,
+		})
+	}
+	return res, nil
 }
 func Faucet(req *http.Request) (bz []byte, err error) {
 	uri := fmt.Sprintf(types.UrlFaucetAccountService, conf.Get().Server.FaucetUrl)
