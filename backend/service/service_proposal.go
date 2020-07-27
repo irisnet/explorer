@@ -263,11 +263,6 @@ func formatProposalStatusVotingData(proposalStatusVotingData []document.Proposal
 			if address, ok := voterValAddrArr[valdator.OperatorAddress]; ok && address != "" {
 				addrVoterMonikerMap[address] = valdator.Description.Moniker
 			}
-
-			//addrAsMultiTypeMap, err = service.GetValidatorPublicKeyMonikerFromProposalVoter(voterAddrArr)
-			//if err != nil {
-			//	logger.Error("query GetValidatorPublicKeyMonikerFromProposalVoter", logger.String("err", err.Error()), logger.Any("voterAddrArr", voterAddrArr))
-			//}
 		}
 	}
 
@@ -698,10 +693,10 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	}
 
 	if data.Status == document.ProposalStatusPassed || data.Status == document.ProposalStatusRejected {
-		//systemVotingPower, err := strconv.ParseFloat(data.FinalVotes.SystemVotingPower, 64)
-		//if err != nil {
-		//	logger.Error(" SystemVotingPower Covert to Float fail", logger.String("err", err.Error()))
-		//}
+		systemVotingPower, err := strconv.ParseFloat(data.FinalVotes.SystemVotingPower, 64)
+		if err != nil {
+			logger.Error(" SystemVotingPower Covert to Float fail", logger.String("err", err.Error()))
+		}
 
 		var votedNum float64
 		var noWithVeto float64
@@ -725,17 +720,17 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		} else {
 			logger.Error("ParseStringToFloat abstain fail", logger.String("err", err.Error()))
 		}
-		//participationFloat, _ := utils.ParseStringToFloat(participation)
+		participationFloat, _ := utils.ParseStringToFloat(participation)
 		vetoThresholdFloat, _ := utils.ParseStringToFloat(vetoThreshold)
-		//isParticipation := false
-		//if systemVotingPower > 0 {
-		//	isParticipation = bool((votedNum / systemVotingPower) > participationFloat)
-		//}
+		isParticipation := false
+		if systemVotingPower > 0 {
+			isParticipation = bool((votedNum / systemVotingPower) > participationFloat)
+		}
 
 		isRejectVote := false
 		if votedNum > 0 {
 			isRejectVote = bool(bool((noWithVeto / votedNum) > vetoThresholdFloat))
-			//isRejectVote = bool(isParticipation && bool((noWithVeto / votedNum) > vetoThresholdFloat))
+			isRejectVote = bool(isParticipation && bool((noWithVeto / votedNum) > vetoThresholdFloat))
 		}
 		burnPercent, err := lcd.GetProposalBurnPercentByResult(data.Status, isRejectVote)
 		if err != nil {
@@ -760,49 +755,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	return
 }
 
-//func (_ ProposalService) GetValidatorPublicKeyMonikerFromProposalVoter(addrArrAsAa []string) (map[string]AddrAsMultiType, error) {
-//
-//	if len(addrArrAsAa) == 0 {
-//		return nil, nil
-//	}
-//	AddrAsMultiTypeMap := map[string]AddrAsMultiType{}
-//
-//	addrArrAsVa := make([]string, 0, len(addrArrAsAa))
-//
-//	for _, v := range addrArrAsAa {
-//		va := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v)
-//		addrArrAsVa = append(addrArrAsVa, va)
-//		AddrAsMultiTypeMap[v] = AddrAsMultiType{
-//			Va: va,
-//		}
-//	}
-//
-//	validatorsDoc, err := document.Validator{}.QueryValidatorMonikerOpAddrConsensusPubkey(addrArrAsVa)
-//
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	for _, validator := range validatorsDoc {
-//		for k, v := range AddrAsMultiTypeMap {
-//			if v.Va == validator.OperatorAddress {
-//				v.ConsensusPubKey = validator.ConsensusPubkey
-//				_, bytes, err := utils.DecodeAndConvert(validator.ConsensusPubkey)
-//				if err != nil {
-//					logger.Error("DecodeAndConvert", logger.String("err", err.Error()), logger.String("param", validator.ConsensusPubkey))
-//					continue
-//				}
-//				v.ConsensusHex = strings.ToUpper(hex.EncodeToString(bytes))
-//				v.Moniker = validator.Description.Moniker
-//				v.Status = validator.Status
-//				v.VotingPower = validator.VotingPower
-//				AddrAsMultiTypeMap[k] = v
-//			}
-//		}
-//	}
-//
-//	return AddrAsMultiTypeMap, nil
-//}
 
 func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint64]vo.Coin, error) {
 

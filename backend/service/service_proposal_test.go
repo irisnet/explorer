@@ -36,11 +36,11 @@ func TestProposalQuery(t *testing.T) {
 	t.Logf("proposal: %v \n", proposal)
 }
 
-//func TestProposalService_GetVoteTxs(t *testing.T) {
-//	res := proposalService.GetVoteTxs(1, 1, 10, true)
-//	resBytes, _ := json.MarshalIndent(res, "", "\t")
-//	t.Log(string(resBytes))
-//}
+func TestProposalService_GetVoteTxs(t *testing.T) {
+	res := proposalService.GetVoteTxs(6, 1, 10, true,"all")
+	resBytes, _ := json.MarshalIndent(res, "", "\t")
+	t.Log(string(resBytes))
+}
 
 func TestProposalService_GetDepositTxs(t *testing.T) {
 	res := proposalService.GetDepositTxs(1, 1, 10, true)
