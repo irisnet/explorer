@@ -35,17 +35,17 @@ const (
 	Tx_Field_Msgs       = "msgs"
 
 	//Tx_Field_Msgs_UdInfo         = "msgs.msg.ud_info.source"
-	Tx_Field_Msgs_Moniker        = "msgs.msg.moniker"
+	Tx_Field_Msgs_Moniker = "msgs.msg.moniker"
 	//Tx_Field_Msgs_UdInfo_Symbol  = "msgs.msg.ud_info.symbol"
 	//Tx_Field_Msgs_UdInfo_Gateway = "msgs.msg.ud_info.gateway"
-	Tx_Field_Msgs_Hashcode       = "msgs.msg.hash_lock"
-	Tx_AssetType_Native          = "native"
+	Tx_Field_Msgs_Hashcode = "msgs.msg.hash_lock"
+	Tx_AssetType_Native    = "native"
 	//Tx_AssetType_Gateway         = "gateway"
 
-	Tx_Asset_TxType_Issue                = "IssueToken"
-	Tx_Asset_TxType_Edit                 = "EditToken"
-	Tx_Asset_TxType_Mint                 = "MintToken"
-	Tx_Asset_TxType_TransferOwner        = "TransferTokenOwner"
+	Tx_Asset_TxType_Issue         = "IssueToken"
+	Tx_Asset_TxType_Edit          = "EditToken"
+	Tx_Asset_TxType_Mint          = "MintToken"
+	Tx_Asset_TxType_TransferOwner = "TransferTokenOwner"
 	//Tx_Asset_TxType_TransferGatewayOwner = "TransferGatewayOwner"
 )
 
@@ -297,6 +297,18 @@ func (_ CommonTx) GetTxCountByDuration(startTime, endTime time.Time) (int, error
 	query := bson.M{}
 	query = FilterUnknownTxs(query)
 	query["time"] = bson.M{"$gte": startTime, "$lt": endTime}
+
+	return txStore.Find(query).Count()
+}
+
+func (_ CommonTx) GetTxCount() (int, error) {
+	db := orm.GetDatabase()
+	defer db.Session.Close()
+
+	txStore := db.C(CollectionNmCommonTx)
+
+	query := bson.M{}
+	query = FilterUnknownTxs(query)
 
 	return txStore.Find(query).Count()
 }

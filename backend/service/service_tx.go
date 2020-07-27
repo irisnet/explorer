@@ -691,7 +691,13 @@ func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []in
 
 	return items
 }
+func (service *TxService) TxCount() int {
 
+	if num, err := (document.CommonTx{}).GetTxCount(); err == nil {
+		return num
+	}
+	return 0
+}
 func (service *TxService) buildTxs(txs []vo.CommonTx) []interface{} {
 	var txList []interface{}
 

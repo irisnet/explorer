@@ -46,14 +46,11 @@ const (
 )
 
 type AccountVo struct {
-	Address string   `json:"address"`
-	Coins   []string `json:"coins"`
-	PublicKey struct {
-		Type  string `json:"type"`
-		Value string `json:"value"`
-	} `json:"public_key"`
-	AccountNumber string `json:"account_number"`
-	Sequence      string `json:"sequence"`
+	Address       string   `json:"address"`
+	Coins         []string `json:"coins"`
+	PublicKey     string   `json:"public_key"`
+	AccountNumber uint64   `json:"account_number"`
+	Sequence      string   `json:"sequence"`
 }
 
 type ValidatorVo struct {
@@ -384,7 +381,7 @@ type (
 		Height   int64     `json:"height"`
 		Time     time.Time `json:"time"`
 		NumTxs   string    `json:"num_txs"`
-		TotalTxs string    `json:"total_txs"`
+		//TotalTxs string    `json:"total_txs"`
 		//	LastBlockID struct {
 		//		Hash  string `json:"hash"`
 		//		Parts struct {

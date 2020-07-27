@@ -713,11 +713,11 @@ func (service *ValidatorService) convert(validator document.Validator) vo.Valida
 		details = desc.Details
 	}
 
-	bondHeightAsInt64, err := strconv.ParseInt(validator.BondHeight, 10, 64)
-
-	if err != nil {
-		logger.Error("convert string to int64", logger.String("err", err.Error()))
-	}
+	//bondHeightAsInt64, err := strconv.ParseInt(validator.BondHeight, 10, 64)
+	//
+	//if err != nil {
+	//	logger.Error("convert string to int64", logger.String("err", err.Error()))
+	//}
 
 	return vo.Validator{
 		Address:     validator.OperatorAddress,
@@ -725,7 +725,7 @@ func (service *ValidatorService) convert(validator document.Validator) vo.Valida
 		Owner:       utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
 		Jailed:      validator.Jailed,
 		Status:      strconv.Itoa(validator.Status),
-		BondHeight:  bondHeightAsInt64,
+		//BondHeight:  bondHeightAsInt64,
 		VotingPower: validator.VotingPower,
 		Description: vo.Description{
 			Moniker:  moniker,

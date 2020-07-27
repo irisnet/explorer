@@ -37,26 +37,16 @@ type (
 	}
 )
 
-func buildAccountVo(acc Account01411) AccountVo {
-
-	res := AccountVo{}
-
-	res.Address = acc.Value.Address
-	res.Sequence = acc.Value.Sequence
-	res.AccountNumber = acc.Value.AccountNum
-	res.PublicKey.Type = acc.Value.PublicKey.Type
-	res.PublicKey.Value = acc.Value.PublicKey.Value
-
-	return res
-}
 
 func Account(address string) (result AccountVo, err error) {
-	//acc, err := AccountInfo(address)
-	//if err != nil {
-	//	logger.Error("get account error", logger.String("err", err.Error()))
-	//	return result, err
-	//}
-	//result = buildAccountVo(acc)
+	acc, err := AccountInfo(address)
+	if err != nil {
+		return result, err
+	}
+	result.Address = acc.Address
+	result.Sequence = acc.Sequence
+	result.AccountNumber = acc.AccountNumber
+	result.PublicKey = acc.PublicKey
 	ret, err := AccountBalances(address)
 	if err != nil {
 		return result, err
@@ -70,8 +60,8 @@ func Account(address string) (result AccountVo, err error) {
 	return result, nil
 }
 
-func AccountInfo(address string) (Account01411, error) {
-	acc := Account01411{}
+func AccountInfo(address string) (AccountVo, error) {
+	acc := AccountVo{}
 	if !strings.HasPrefix(address, conf.Get().Hub.Prefix.AccAddr) {
 		return acc, fmt.Errorf("address prefix is should %v", conf.Get().Hub.Prefix.AccAddr)
 	}
@@ -79,8 +69,13 @@ func AccountInfo(address string) (Account01411, error) {
 	if err != nil {
 		return acc, err
 	}
-	data, _ := json.Marshal(account)
-	fmt.Println(data)
+	acc = AccountVo{
+		Address:       account.Address.String(),
+		AccountNumber: account.AccountNumber,
+		PublicKey:     string(account.PubKey),
+		Sequence:      fmt.Sprint(account.Sequence),
+	}
+
 	return acc, nil
 }
 

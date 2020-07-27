@@ -9,7 +9,6 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"math/big"
 )
@@ -43,7 +42,7 @@ func registerNavigationBar(r *mux.Router) error {
 		height := block.BlockMeta.Header.Height
 		var result = NavigationData{
 			BlockHeight: height,
-			TotalTxs:    utils.ParseIntWithDefault(block.BlockMeta.Header.TotalTxs, 0),
+			TotalTxs:    int64(tx.TxCount()),
 			BlockTime:   block.BlockMeta.Header.Time,
 		}
 		var proposer = block.BlockMeta.Header.ProposerAddress
