@@ -17,9 +17,11 @@ func Validator(address string) (result ValidatorVo, err error) {
 	if err != nil {
 		return result, err
 	}
+	//data,_ := json.Marshal(validator)
+	//fmt.Println(string(data))
 
-	uptime, _ := time.Parse(time.RFC3339, validator.Commission.UpdateTime)
-	unbondtime, _ := time.Parse(time.RFC3339, validator.UnbondingTime)
+	uptime, _ := time.Parse(ctypes.TimeLayout1, validator.Commission.UpdateTime)
+	unbondtime, _ := time.Parse(ctypes.TimeLayout1, validator.UnbondingTime)
 	result = ValidatorVo{
 		OperatorAddress: validator.OperatorAddress,
 		ConsensusPubkey: validator.ConsensusPubkey,
@@ -55,8 +57,8 @@ func Validators(page, size int) (result []ValidatorVo) {
 	}
 
 	for _, val := range validators {
-		uptime, _ := time.Parse(time.RFC3339, val.Commission.UpdateTime)
-		unbondtime, _ := time.Parse(time.RFC3339, val.UnbondingTime)
+		uptime, _ := time.Parse(ctypes.TimeLayout1, val.Commission.UpdateTime)
+		unbondtime, _ := time.Parse(ctypes.TimeLayout1, val.UnbondingTime)
 		result = append(result, ValidatorVo{
 			OperatorAddress: val.OperatorAddress,
 			ConsensusPubkey: val.ConsensusPubkey,
@@ -163,19 +165,19 @@ func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr
 	if !strings.HasPrefix(validatorAcc, conf.Get().Hub.Prefix.AccAddr) {
 		return nil, nil, nil, fmt.Errorf("address prefix is should %v", conf.Get().Hub.Prefix.AccAddr)
 	}
-	url := fmt.Sprintf(UrlDistributionRewardsByValidatorAcc, conf.Get().Hub.LcdUrl, validatorAcc)
-	resAsBytes, err := utils.Get(url)
-	if err != nil {
-		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
-		return nil, nil, nil, err
-	}
+	//url := fmt.Sprintf(UrlDistributionRewardsByValidatorAcc, conf.Get().Hub.LcdUrl, validatorAcc)
+	//resAsBytes, err := utils.Get(url)
+	//if err != nil {
+	//	logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+	//	return nil, nil, nil, err
+	//}
 
 	var rewards DistributionRewards
-
-	err = json.Unmarshal(resAsBytes, &rewards)
-	if err != nil {
-		return nil, nil, nil, err
-	}
+	//
+	//err = json.Unmarshal(resAsBytes, &rewards)
+	//if err != nil {
+	//	return nil, nil, nil, err
+	//}
 
 	return rewards.Commission, rewards.Delegations, rewards.Total, nil
 }

@@ -13,6 +13,7 @@ import (
 	"math/big"
 	"strconv"
 	"sort"
+	"gopkg.in/mgo.v2"
 )
 
 type ValidatorService struct {
@@ -720,11 +721,11 @@ func (service *ValidatorService) convert(validator document.Validator) vo.Valida
 	//}
 
 	return vo.Validator{
-		Address:     validator.OperatorAddress,
-		PubKey:      utils.Convert(conf.Get().Hub.Prefix.ConsPub, validator.ConsensusPubkey),
-		Owner:       utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
-		Jailed:      validator.Jailed,
-		Status:      strconv.Itoa(validator.Status),
+		Address: validator.OperatorAddress,
+		PubKey:  utils.Convert(conf.Get().Hub.Prefix.ConsPub, validator.ConsensusPubkey),
+		Owner:   utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
+		Jailed:  validator.Jailed,
+		Status:  strconv.Itoa(validator.Status),
 		//BondHeight:  bondHeightAsInt64,
 		VotingPower: validator.VotingPower,
 		Description: vo.Description{
@@ -790,54 +791,49 @@ func (service *ValidatorService) UpdateDescription(vs []document.Validator) {
 //	}
 //}
 
-func (service *ValidatorService) UpdateValidators(vs []document.Validator) error {
-	var vMap = make(map[string]document.Validator)
-	for _, v := range vs {
-		vMap[v.OperatorAddress] = v
-	}
+//func (service *ValidatorService) UpdateValidators() {
 
-	var txs []txn.Op
-	dstValidators := buildValidators()
-	service.UpdateDescription(dstValidators)
-	for _, v := range dstValidators {
-		if v1, ok := vMap[v.OperatorAddress]; ok {
-			v.ID = v1.ID
-			v.Icons = v1.Icons
-			if isDiffValidator(v1, v) {
-				// set staticInfo, see detail: buildValidatorStaticInfo
-				v.Uptime = v1.Uptime
-				v.SelfBond = v1.SelfBond
-				v.DelegatorNum = v1.DelegatorNum
-				txs = append(txs, txn.Op{
-					C:  document.CollectionNmValidator,
-					Id: v.ID,
-					Update: bson.M{
-						"$set": v,
-					},
-				})
-			}
-			delete(vMap, v.OperatorAddress)
-		} else {
-			v.ID = bson.NewObjectId()
-			txs = append(txs, txn.Op{
-				C:      document.CollectionNmValidator,
-				Id:     bson.NewObjectId(),
-				Insert: v,
-			})
-		}
-	}
-	if len(vMap) > 0 {
-		for addr := range vMap {
-			v := vMap[addr]
-			txs = append(txs, txn.Op{
-				C:      document.CollectionNmValidator,
-				Id:     v.ID,
-				Remove: true,
-			})
-		}
-	}
-	return document.Validator{}.Batch(txs)
-}
+//var txs []txn.Op
+//service.HandleValidators()
+//for _, v := range dstValidators {
+//	if v1, ok := vMap[v.OperatorAddress]; ok {
+//		v.ID = v1.ID
+//		v.Icons = v1.Icons
+//		if isDiffValidator(v1, v) {
+//			// set staticInfo, see detail: buildValidatorStaticInfo
+//			v.Uptime = v1.Uptime
+//			v.SelfBond = v1.SelfBond
+//			v.DelegatorNum = v1.DelegatorNum
+//			txs = append(txs, txn.Op{
+//				C:  document.CollectionNmValidator,
+//				Id: v.ID,
+//				Update: bson.M{
+//					"$set": v,
+//				},
+//			})
+//		}
+//		delete(vMap, v.OperatorAddress)
+//	} else {
+//		v.ID = bson.NewObjectId()
+//		txs = append(txs, txn.Op{
+//			C:      document.CollectionNmValidator,
+//			Id:     bson.NewObjectId(),
+//			Insert: v,
+//		})
+//	}
+//}
+//if len(vMap) > 0 {
+//	for addr := range vMap {
+//		v := vMap[addr]
+//		txs = append(txs, txn.Op{
+//			C:      document.CollectionNmValidator,
+//			Id:     v.ID,
+//			Remove: true,
+//		})
+//	}
+//}
+//return document.Validator{}.Batch(txs)
+//}
 
 func (service *ValidatorService) UpdateValidatorStaticInfo() error {
 	var validatorModel document.Validator
@@ -881,14 +877,21 @@ func (service *ValidatorService) QueryValidatorByConAddr(address string) documen
 	return validator
 }
 
-func buildValidators() []document.Validator {
+func (service *ValidatorService) HandleValidators() {
+	var vMap map[string]bson.ObjectId
+	validators, err := document.Validator{}.GetAllValidator()
+	if err == nil {
+		vMap = make(map[string]bson.ObjectId, len(validators))
+		for _, val := range validators {
+			vMap[val.OperatorAddress] = val.ID
+		}
+	}
 
 	res := lcd.Validators(1, 100)
 	if res2 := lcd.Validators(2, 100); len(res2) > 0 {
 		res = append(res, res2...)
 	}
 
-	var result []document.Validator
 	var buildValidator = func(v lcd.ValidatorVo) (document.Validator, error) {
 		var validator document.Validator
 		if err := utils.Copy(v, &validator); err != nil {
@@ -904,14 +907,67 @@ func buildValidators() []document.Validator {
 		return validator, nil
 	}
 
+	var checkDiffer = func(des0, des1 document.Description) bool {
+		return des0.Moniker != des1.Moniker || des0.Website == des1.Website ||
+			des0.Identity != des1.Identity || des0.Details != des1.Details
+	}
 	for _, v := range res {
 		if validator, err := buildValidator(v); err == nil {
-			result = append(result, validator)
+			one, err := document.GetValidatorByAddr(v.OperatorAddress)
+			if err != nil && err == mgo.ErrNotFound {
+				validator.ID = bson.NewObjectId()
+				if err := validatorModel.Save(validator); err != nil {
+					logger.Error("save validator failed",
+						logger.String("operator_address", validator.OperatorAddress),
+						logger.String("err", err.Error()))
+				}
+			} else {
+				if err == nil && isDiffValidator(one, validator) {
+					validator.ID = one.ID
+					validator.Icons = one.Icons
+					// set staticInfo, see detail: buildValidatorStaticInfo
+					validator.Uptime = one.Uptime
+					validator.SelfBond = one.SelfBond
+					validator.DelegatorNum = one.DelegatorNum
+					if err := validatorModel.UpdateByPk(validator); err != nil {
+						logger.Error("update validator failed",
+							logger.String("operator_address", validator.OperatorAddress),
+							logger.String("err", err.Error()))
+					}
+
+				}
+				delete(vMap, v.OperatorAddress)
+			}
+			if val, ok := ValidatorsDescriptionMap[v.OperatorAddress]; ok {
+				if checkDiffer(val, one.Description) {
+					ValidatorsDescriptionMap[v.OperatorAddress] = one.Description
+				}
+			} else {
+				ValidatorsDescriptionMap[v.OperatorAddress] = one.Description
+			}
 		} else {
 			logger.Error("build validator fail", logger.String("err", err.Error()))
 		}
 	}
-	return result
+	//clear no exist validator
+	if len(vMap) > 0 {
+		var txs []txn.Op
+		for addr := range vMap {
+			v := vMap[addr]
+			txs = append(txs, txn.Op{
+				C:      document.CollectionNmValidator,
+				Id:     v,
+				Remove: true,
+			})
+		}
+		if len(txs) > 0 {
+			err := document.Validator{}.Batch(txs)
+			if err != nil {
+				logger.Error("clean no exist validator is failed", logger.String("err", err.Error()))
+			}
+		}
+	}
+
 }
 
 // update validator static info

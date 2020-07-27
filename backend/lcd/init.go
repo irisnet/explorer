@@ -21,7 +21,7 @@ func init() {
 		Mode:    types.Commit,
 		Timeout: time.Duration(10 * time.Second),
 		Fee: []types.DecCoin{
-			{Denom: "iris", Amount: types.NewDecimal(1)},
+			{Denom: "stake", Amount: types.NewDecimal(1)},
 		},
 		Gas:       2000000,
 		KeyDAO:    types.NewMemoryDB(), //default keybase
@@ -30,6 +30,6 @@ func init() {
 		DBRootDir: path,
 	})
 
-	types.SetNetwork(types.Mainnet)
+	//types.SetNetwork(types.Mainnet)
 
 }

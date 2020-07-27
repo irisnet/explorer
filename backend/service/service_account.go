@@ -202,7 +202,7 @@ func getValidators(valaddrlist []string) (validatorMap map[string]document.Valid
 func computeVotingPower(validator document.Validator, shares string) utils.Coin {
 	rate, err := utils.QuoByStr(validator.Tokens, validator.DelegatorShares)
 	if err != nil {
-		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
+		logger.Warn("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
 		rate, _ = new(big.Rat).SetString("1")
 	}
 	sharesAsRat, ok := new(big.Rat).SetString(shares)

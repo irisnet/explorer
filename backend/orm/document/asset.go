@@ -4,6 +4,7 @@ import (
 	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/txn"
 )
 
 const (
@@ -123,4 +124,8 @@ func (a AssetToken) Save(token AssetToken) error {
 		return err
 	}
 	return nil
+}
+
+func (a AssetToken) Batch(txs []txn.Op) error {
+	return orm.Batch(txs)
 }

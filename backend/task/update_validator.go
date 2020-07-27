@@ -3,7 +3,6 @@ package task
 import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/utils"
 )
@@ -28,18 +27,9 @@ func (task UpdateValidator) Start() {
 func (task UpdateValidator) DoTask(fn func(string) chan bool) error {
 	stop := fn(task.Name())
 	defer HeartQuit(stop)
-	validators, err := document.Validator{}.GetAllValidator()
-
-	if err != nil {
-		return err
-	}
 
 	var validatorService service.ValidatorService
-	err = validatorService.UpdateValidators(validators)
-
-	if err != nil {
-		return err
-	}
+	validatorService.HandleValidators()
 
 	return nil
 }

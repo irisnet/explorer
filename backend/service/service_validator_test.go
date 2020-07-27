@@ -10,12 +10,11 @@ import (
 	"encoding/json"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/explorer/backend/orm/document"
 )
 
 func TestGetDelegationsFromLcd(t *testing.T) {
 
-	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5, false, true)
+	delegationPage := new(ValidatorService).GetDelegationsFromLcd("iva18e2e9fxxrr88k78gg7fhuuqgccfv8selu5wk8n", 1, 5, false, true)
 	t.Logf(" %v \n", delegationPage)
 }
 
@@ -94,18 +93,18 @@ func TestValidatorService_UpdateValidatorStaticData(t *testing.T) {
 }
 func TestValidatorService_UpdateValidators(t *testing.T) {
 
-	validators, _ := document.Validator{}.GetAllValidator()
-	//fmt.Println(validators)
-	if err := validatorService.UpdateValidators(validators); err != nil {
-		t.Fatal(err)
-	} else {
-		t.Log("success")
-	}
+	//validators, _ := document.Validator{}.GetAllValidator()
+	////fmt.Println(validators)
+	//if err := validatorService.UpdateValidators(validators); err != nil {
+	//	t.Fatal(err)
+	//} else {
+	//	t.Log("success")
+	//}
 }
 
 func TestBuildValidators(t *testing.T) {
-	res := buildValidators()
-	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
+	validatorService.HandleValidators()
+	//t.Log(string(utils.MarshalJsonIgnoreErr(res)))
 }
 
 

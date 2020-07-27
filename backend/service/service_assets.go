@@ -10,6 +10,7 @@ import (
 	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/txn"
 )
 
 type AssetsService struct {
@@ -154,6 +155,16 @@ func (service *AssetsService) UpdateAssetTokens(accs []document.Account) {
 }
 
 func handleAssetTokens(address string) {
+
+	var vMap map[string]bson.ObjectId
+	validators, err := document.AssetToken{}.GetAllAssets()
+	if err == nil {
+		vMap = make(map[string]bson.ObjectId, len(validators))
+		for _, val := range validators {
+			vMap[val.Symbol] = val.ID
+		}
+	}
+
 	var assetModel document.AssetToken
 	res := lcd.GetAssetTokens(address)
 	for _, v := range res {
@@ -175,15 +186,34 @@ func handleAssetTokens(address string) {
 					logger.String("err", err.Error()))
 			}
 		} else {
-			if isDiffAssetToken(one, item) {
+			if err == nil && isDiffAssetToken(one, item) {
 				item.ID = one.ID
 				if err := assetModel.Update(item); err != nil {
 					logger.Error("asset token update failed",
 						logger.String("err", err.Error()))
 				}
 			}
+			delete(vMap, item.Symbol)
 		}
 
+	}
+	//clear no exist asset
+	if len(vMap) > 0 {
+		var txs []txn.Op
+		for sym := range vMap {
+			v := vMap[sym]
+			txs = append(txs, txn.Op{
+				C:      document.CollectionNmAsset,
+				Id:     v,
+				Remove: true,
+			})
+		}
+		if len(txs) > 0 {
+			err := document.AssetToken{}.Batch(txs)
+			if err != nil {
+				logger.Error("clean no exist tokens is failed", logger.String("err", err.Error()))
+			}
+		}
 	}
 }
 

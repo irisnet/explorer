@@ -109,6 +109,7 @@ const (
 	Format = "2006/01/02T15:04:05Z07:00"
 
 	TimeLayout             = "2006-01-02T15:04:05"
+	TimeLayout1            = "2006-01-02 15:04:05 +0000 UTC"
 	DelegatorRewardTag     = "DelegatorReward"
 	ValidatorRewardTag     = "ValidatorReward"
 	ValidatorCommissionTag = "ValidatorCommission"

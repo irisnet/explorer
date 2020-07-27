@@ -44,6 +44,7 @@ func (task UpdateAccount) DoTask(fn func(string) chan bool) error {
 		if !strings.HasPrefix(accounts[i].Address, conf.Get().Hub.Prefix.AccAddr) {
 			continue
 		}
+		//fmt.Println(accounts[i].Address)
 		if err := updateAccount(&accounts[i]); err != nil {
 			logger.Warn("get AccountInfo failed", logger.String("err", err.Error()))
 		}
@@ -69,11 +70,10 @@ func updateAccount(account *document.Account) error {
 func getAccountInfo(account *document.Account) (*document.Account, error) {
 	balance, res, err := getBalance(account)
 	if err != nil {
-		logger.Error("lcd getBalance Info have error", logger.String("err", err.Error()))
+		//logger.Error("lcd getBalance Info have error", logger.String("err", err.Error()))
 		return account, err
-	} else {
-		account = res
 	}
+	account = res
 
 	delegation, err := getDelegationInfo(account.Address)
 	if err != nil {
@@ -92,7 +92,6 @@ func getAccountInfo(account *document.Account) (*document.Account, error) {
 	if len(rewards) > 0 {
 		newrewards := loadRewards(rewards)
 		account.Rewards = newrewards
-		//account.Total.Amount += account.Rewards.Amount
 	} else {
 		account.Rewards = utils.Coin{Denom: account.Rewards.Denom}
 	}
@@ -134,11 +133,15 @@ func getBalance(account *document.Account) (utils.Coin, *document.Account, error
 	var balance utils.Coin
 	ret, err := lcd.AccountInfo(account.Address)
 	if err != nil {
-		logger.Warn("lcd AccountInfo Info have error", logger.String("err", err.Error()))
 		return balance, account, err
 	}
 
-	for _, val := range ret.Value.Coins {
+	coins, err := lcd.AccountBalances(account.Address)
+	if err != nil {
+		logger.Warn("lcd Account Balances Info have error", logger.String("err", err.Error()))
+	}
+
+	for _, val := range coins {
 		if val.Denom == types.IRISAttoUint {
 			balance.Denom = val.Denom
 			amount, _ := utils.ParseStringToFloat(val.Amount)
@@ -148,9 +151,7 @@ func getBalance(account *document.Account) (utils.Coin, *document.Account, error
 			break
 		}
 	}
-	if number, ok := utils.ParseUint(ret.Value.AccountNum); ok {
-		account.AccountNumber = number
-	}
+	account.AccountNumber = ret.AccountNumber
 	return balance, account, nil
 }
 
