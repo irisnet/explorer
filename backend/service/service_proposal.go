@@ -223,14 +223,14 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 		logger.Error("get proposal level by type", logger.String("err", err.Error()), logger.String("param", data.Type))
 	}
 	l.Name = name
-	passThreshold, vetoThreshold, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
+	passThreshold, vetoThreshold, participation, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
 	if err != nil {
 		logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", data.Type))
 	}
 	l.GovParam = vo.GovParam{
 		PassThreshold: passThreshold,
 		VetoThreshold: vetoThreshold,
-		//Participation: participation,
+		Participation: participation,
 	}
 	tmp.Level = l
 
@@ -335,7 +335,7 @@ func formatProposalStatusVotingData(proposalStatusVotingData []document.Proposal
 		}
 		l.Name = name
 
-		passThreshold, vetoThreshold, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(propo.Type)
+		passThreshold, vetoThreshold, participation, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(propo.Type)
 
 		if err != nil {
 			logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", propo.Type))
@@ -343,7 +343,7 @@ func formatProposalStatusVotingData(proposalStatusVotingData []document.Proposal
 		l.GovParam = vo.GovParam{
 			PassThreshold: passThreshold,
 			VetoThreshold: vetoThreshold,
-			//Participation: participation,
+			Participation: participation,
 		}
 
 		tmp.Level = l
@@ -669,7 +669,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		coinsAsUtils = append(coinsAsUtils, tmp)
 	}
 
-	passThreshold, vetoThreshold, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
+	passThreshold, vetoThreshold, participation, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
 	if err != nil {
 		logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", data.Type))
 	}
@@ -692,9 +692,9 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		TotalDeposit:    coinsAsUtils,
 		YesThreshold:    passThreshold,
 		VetoThreshold:   vetoThreshold,
-		//Participation:   participation,
+		Participation:   participation,
 		//Penalty:         penalty,
-		Level:           level,
+		Level: level,
 	}
 
 	if data.Status == document.ProposalStatusPassed || data.Status == document.ProposalStatusRejected {

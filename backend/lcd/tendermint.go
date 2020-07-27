@@ -27,10 +27,10 @@ var (
 	//ImportantVeto          string
 	//ImportantPenalty       string
 
-	NormalThreshold  string
-	NormalMinDeposit document.Coin
-	//NormalParticipation string
-	NormalVeto string
+	NormalThreshold     string
+	NormalMinDeposit    document.Coin
+	NormalParticipation string
+	NormalVeto          string
 	//NormalPenalty       string
 )
 
@@ -52,8 +52,8 @@ const (
 
 	NormalMinDepositKey = "min_deposit"
 	NormalThresholdKey  = "threshold"
-	//NormalParticipationKey = "normal_participation"
-	NormalVetoKey = "veto"
+	NormalQuorumKey     = "quorum"
+	NormalVetoKey       = "veto"
 	//NormalPenaltyKey       = "normal_penalty"
 
 	Critical  = "Critical"
@@ -112,14 +112,14 @@ func GetMinDepositByProposalType(proposalType string) (document.Coin, error) {
 
 }
 
-func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string, string, error) {
+func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string, string, string, error) {
 
 	switch proposalType {
 	case ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText:
-		return NormalThreshold, NormalVeto, nil
+		return NormalThreshold, NormalVeto, NormalParticipation, nil
 
 	default:
-		return "", "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v ,but actual: %v",
+		return "", "", "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v ,but actual: %v",
 			ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText, proposalType))
 	}
 }
@@ -139,6 +139,9 @@ func init() {
 			}
 			if veto, ok := data[NormalVetoKey].(string); ok {
 				NormalVeto = veto
+			}
+			if quorum, ok := data[NormalQuorumKey].(string); ok {
+				NormalParticipation = quorum
 			}
 
 		}

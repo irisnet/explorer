@@ -44,7 +44,6 @@ func (task UpdateAccount) DoTask(fn func(string) chan bool) error {
 		if !strings.HasPrefix(accounts[i].Address, conf.Get().Hub.Prefix.AccAddr) {
 			continue
 		}
-		//fmt.Println(accounts[i].Address)
 		if err := updateAccount(&accounts[i]); err != nil {
 			logger.Warn("get AccountInfo failed", logger.String("err", err.Error()))
 		}

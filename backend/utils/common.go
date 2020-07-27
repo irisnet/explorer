@@ -17,8 +17,6 @@ import (
 const (
 	StatusFailed = "failed"
 	StatusFail   = "fail"
-
-	TimeLayout = "2006-01-02T15:04:05"
 )
 func RemoveDuplicationStrArr(list []string) []string {
 	unique_set := make(map[string]bool, len(list))
