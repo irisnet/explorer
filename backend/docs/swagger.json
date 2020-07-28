@@ -1766,30 +1766,6 @@
                 }
             }
         },
-        "/api/task/asset_gateways": {
-            "put": {
-                "description": "update asset gateways",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "task"
-                ],
-                "summary": "update asset_gateways",
-                "responses": {
-                    "200": {
-                        "description": "success",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/types.BizCode"
-                        }
-                    }
-                }
-            }
-        },
         "/api/task/asset_tokens": {
             "put": {
                 "description": "update asset tokens",
@@ -2865,6 +2841,9 @@
         "vo.AssetTokens": {
             "type": "object",
             "properties": {
+                "decimal": {
+                    "type": "integer"
+                },
                 "initial_supply": {
                     "type": "string"
                 },
@@ -2896,6 +2875,9 @@
             "items": {
                 "type": "object",
                 "properties": {
+                    "decimal": {
+                        "type": "integer"
+                    },
                     "initial_supply": {
                         "type": "string"
                     },
@@ -2969,6 +2951,9 @@
                 },
                 "owner": {
                     "type": "string"
+                },
+                "scale": {
+                    "type": "integer"
                 },
                 "src_owner": {
                     "type": "string"

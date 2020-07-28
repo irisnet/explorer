@@ -326,6 +326,8 @@ definitions:
     type: object
   vo.AssetTokens:
     properties:
+      decimal:
+        type: integer
       initial_supply:
         type: string
       max_supply:
@@ -346,6 +348,8 @@ definitions:
   vo.AssetTokensRespond:
     items:
       properties:
+        decimal:
+          type: integer
         initial_supply:
           type: string
         max_supply:
@@ -395,6 +399,8 @@ definitions:
         type: string
       owner:
         type: string
+      scale:
+        type: integer
       src_owner:
         type: string
       symbol:
@@ -2650,22 +2656,6 @@ paths:
       summary: sysdate
       tags:
       - common
-  /api/task/asset_gateways:
-    put:
-      consumes:
-      - application/json
-      description: update asset gateways
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            $ref: '#/definitions/types.BizCode'
-            type: object
-      summary: update asset_gateways
-      tags:
-      - task
   /api/task/asset_tokens:
     put:
       consumes:
