@@ -42,9 +42,14 @@ func (task StaticDelegatorTask) DoTask(fn func(string) chan bool) error {
 }
 
 func (task StaticDelegatorTask) getRewardsFromLcd(address string) (utils.CoinsAsStr, []lcd.RewardsFromDelegations, utils.CoinsAsStr, error) {
-	commissionrewards, delegationrewards, totalrewards, err := lcd.GetDistributionRewardsByValidatorAcc(address)
+	delegationrewards, totalrewards, err := lcd.GetDistributionRewardsByValidatorAcc(address)
 	if err != nil {
-		logger.Error("GetDistributionRewardsByValidatorAcc have error", logger.String("err", err.Error()))
+		logger.Error("GetDistributionRewardshave error", logger.String("err", err.Error()))
+		return nil, nil, nil, err
+	}
+	commissionrewards ,err := lcd.GetDistributionCommissionRewardsByAddress(address)
+	if err != nil {
+		logger.Error("GetDistribution CommissionRewards  have error", logger.String("err", err.Error()))
 		return nil, nil, nil, err
 	}
 	return commissionrewards, delegationrewards, totalrewards, nil

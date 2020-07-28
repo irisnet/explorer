@@ -69,7 +69,6 @@ func updateAccount(account *document.Account) error {
 func getAccountInfo(account *document.Account) (*document.Account, error) {
 	balance, res, err := getBalance(account)
 	if err != nil {
-		//logger.Error("lcd getBalance Info have error", logger.String("err", err.Error()))
 		return account, err
 	}
 	account = res
@@ -83,7 +82,7 @@ func getAccountInfo(account *document.Account) (*document.Account, error) {
 		logger.Warn("update UnbondingDelegation Info have error", logger.String("err", err.Error()))
 	}
 	//rewards
-	_, _, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(account.Address)
+	_, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(account.Address)
 	if err != nil {
 		logger.Warn("update GetDistributionRewards Info have error", logger.String("err", err.Error()))
 	}

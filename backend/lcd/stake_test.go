@@ -19,7 +19,7 @@ func TestGetRedelegationsByValidatorAddr(t *testing.T) {
 
 func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
 
-	rewards, _, _, err := GetDistributionRewardsByValidatorAcc("iva1x98k5n7xj0h3udnf5dcdzw85tsfa75qm682jtg")
+	rewards,err := GetDistributionCommissionRewardsByAddress("iva1x98k5n7xj0h3udnf5dcdzw85tsfa75qm682jtg")
 	if err != nil {
 		t.Error(err)
 	}

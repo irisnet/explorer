@@ -252,10 +252,14 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 
 func (service *AccountService) QueryRewards(address string) (result vo.AccountRewardsVo) {
 
-	commissionrewards, delegationrewards, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(address)
+	delegationrewards, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(address)
 	if err != nil {
-		logger.Error("GetDistributionRewardsByValidatorAcc have error", logger.String("err", err.Error()))
-		return
+		logger.Error("GetDistribution RewardsByValidatorAcc have error", logger.String("err", err.Error()))
+	}
+
+	commissionrewards, err := lcd.GetDistributionCommissionRewardsByAddress(address)
+	if err != nil {
+		logger.Error("GetDistribution CommissionRewardsByValidatorAcc have error", logger.String("err", err.Error()))
 	}
 
 	result.CommissionRewards = commissionrewards

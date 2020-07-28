@@ -139,18 +139,17 @@ func GetWithdrawAddressByAddress(validatorAcc string) (string, error) {
 	return withdrawAddr, nil
 }
 
-func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr, []RewardsFromDelegations, utils.CoinsAsStr, error) {
+func GetDistributionRewardsByValidatorAcc(validatorAcc string) ([]RewardsFromDelegations, utils.CoinsAsStr, error) {
 
 	rewards, err := client.Distr().QueryRewards(validatorAcc)
 	if err != nil {
 		logger.Error("get delegations by delegator adr from rpc error", logger.String("err", err.Error()))
-		return nil, nil, nil, err
+		return nil, nil, err
 	}
 
 	var (
 		total       utils.CoinsAsStr
 		delegations []RewardsFromDelegations
-		commission  utils.CoinsAsStr
 	)
 
 	for _, val := range rewards.Total {
@@ -164,18 +163,26 @@ func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr
 		delegations = append(delegations, item)
 	}
 
+	return  delegations, total, nil
+}
+
+func GetDistributionCommissionRewardsByAddress(validatorAcc string) (utils.CoinsAsStr, error) {
+
+	var (
+		commission utils.CoinsAsStr
+	)
+
 	commissionData, err := client.Distr().QueryCommission(validatorAcc)
 	if err != nil {
-		logger.Error("get delegations by delegator adr from rpc error", logger.String("err", err.Error()))
-		return nil, nil, nil, err
+		logger.Error("get commisssions by delegator adr from rpc error", logger.String("err", err.Error()))
+		return nil, err
 	}
 	for _, val := range commissionData.Commission {
 		commission = append(commission, utils.CoinAsStr{Denom: val.Denom, Amount: val.Amount.String()})
 	}
 
-	return commission, delegations, total, nil
+	return commission, nil
 }
-
 func GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(publicKey string) (string, string, int64, error) {
 
 	valSign := SignInfo(publicKey)

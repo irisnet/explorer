@@ -382,11 +382,11 @@ func (service *ValidatorService) GetWithdrawAddrByValidatorAddr(valAddr string) 
 	}
 }
 
-func (service *ValidatorService) GetDistributionRewardsByValidatorAddr(valAddr string) utils.CoinsAsStr {
+func (service *ValidatorService) GetDistributionCommissionRewardsByAddr(valAddr string) utils.CoinsAsStr {
 
-	rewardsCoins, _, _, err := lcd.GetDistributionRewardsByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
+	rewardsCoins, err := lcd.GetDistributionCommissionRewardsByAddress(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
 	if err != nil {
-		logger.Error("GetDistributionRewardsByValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
+		logger.Error("GetDistribution Commission RewardsByValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
 	}
 
 	return rewardsCoins
