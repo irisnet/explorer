@@ -120,8 +120,7 @@ const (
 	TxTag_WithDrawRewardFromValidator = "withdraw-reward-from-validator-"
 	//TxTag_WithDrawAddress             = "withdraw-address"
 
-	IRISUint      = "stake"
-	IRISAttoUint  = "stake"
+	StakeUint     = "stake"
 	AssetMinDenom = "-min"
 	Unknown       = "unknown"
 

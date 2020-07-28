@@ -68,7 +68,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 
 	go func() {
 		defer group.Done()
-		result.WithdrawAddress = lcd.QueryWithdrawAddr(address)
+		result.WithdrawAddress, _ = lcd.GetWithdrawAddressByAddress(address)
 	}()
 
 	group.Wait()
@@ -117,7 +117,7 @@ func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 		//AccountAmtMap[acc.Address] = acc.Total.Amount
 		//_,_,rewards,err := lcd.GetDistributionRewardsByValidatorAcc(acc.Address)
 		//if err == nil && len(rewards) > 0 {
-		//	if rewards[0].Denom == types.IRISAttoUint {
+		//	if rewards[0].Denom == types.StakeUint {
 		//		rewardsAmt,_ := strconv.ParseFloat(rewards[0].Amount,64)
 		//		AccountAmtMap[acc.Address] += rewardsAmt
 		//		totalAmt += rewardsAmt
@@ -217,7 +217,7 @@ func computeVotingPower(validator document.Validator, shares string) utils.Coin 
 
 	return utils.Coin{
 		Amount: amount,
-		Denom:  types.IRISUint,
+		Denom:  types.StakeUint,
 	}
 }
 

@@ -58,7 +58,7 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 	}
 	var unit []string
 	for _, val := range txList {
-		if len(val.Amount) > 0 && val.Amount[0].Denom != types.IRISAttoUint {
+		if len(val.Amount) > 0 && val.Amount[0].Denom != types.StakeUint {
 			unit = append(unit, strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0])
 		}
 	}
@@ -110,7 +110,7 @@ func (service *TxService) QueryHtlcTx(query bson.M, page, pageSize int, istotal 
 	}
 	var unit []string
 	for _, val := range txList {
-		if len(val.Amount) > 0 && val.Amount[0].Denom != types.IRISAttoUint {
+		if len(val.Amount) > 0 && val.Amount[0].Denom != types.StakeUint {
 			unit = append(unit, strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0])
 		}
 	}

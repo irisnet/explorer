@@ -19,7 +19,7 @@ func TestGetRedelegationsByValidatorAddr(t *testing.T) {
 
 func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
 
-	rewards, _, _, err := GetDistributionRewardsByValidatorAcc("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
+	rewards, _, _, err := GetDistributionRewardsByValidatorAcc("iva1x98k5n7xj0h3udnf5dcdzw85tsfa75qm682jtg")
 	if err != nil {
 		t.Error(err)
 	}
@@ -30,7 +30,7 @@ func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
 }
 
 func TestGetJailedUntilAndMissedBlocksCountByConsensusPublicKey(t *testing.T) {
-	jailedUntil, missedBlockCount, _, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("iva1x98k5n7xj0h3udnf5dcdzw85tsfa75qm682jtg")
+	jailedUntil, missedBlockCount, _, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("")
 
 	if err != nil {
 		t.Error(err)
@@ -56,11 +56,7 @@ func TestValidators(t *testing.T) {
 	t.Log(string(resBytes))
 }
 
-func TestQueryWithdrawAddr(t *testing.T) {
-	address := "faa1k98nqnytl9u5ralns7ca7n8tpmacl8k2p438ey"
-	res := QueryWithdrawAddr(address)
-	t.Log(res)
-}
+
 
 func TestGetDelegationsByDelAddr(t *testing.T) {
 	address := "iaa18e2e9fxxrr88k78gg7fhuuqgccfv8self9ye65"

@@ -92,7 +92,9 @@ func TestTxService_checkTags(t *testing.T) {
 }
 
 func TestTxService_QueryBaseList(t *testing.T) {
-	res := new(TxService).QueryBaseList(bson.M{"from": "faa174qyl02cupyqq77cqqtdl0frda6dl3rpjcrgnp"}, 1, 10, false)
+
+	res := new(TxService).QueryBaseList(bson.M{"$or": []bson.M{{"signers.addr_bech32": "iaa1x98k5n7xj0h3udnf5dcdzw85tsfa75qm0kqak0"},
+		{"to": "iaa1x98k5n7xj0h3udnf5dcdzw85tsfa75qm0kqak0"}}}, 1, 10, true)
 	bytestr, _ := json.Marshal(res)
 	t.Logf(" %v \n", string(bytestr))
 }

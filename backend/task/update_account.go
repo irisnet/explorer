@@ -120,7 +120,7 @@ func getAccountInfo(account *document.Account) (*document.Account, error) {
 func loadRewards(coins utils.CoinsAsStr) utils.Coin {
 	var retcoin utils.Coin
 	for _, val := range coins {
-		if val.Denom == types.IRISAttoUint {
+		if val.Denom == types.StakeUint {
 			rewardsAmt, _ := utils.ParseStringToFloat(val.Amount)
 			return utils.Coin{Denom: val.Denom, Amount: rewardsAmt}
 		}
@@ -141,7 +141,7 @@ func getBalance(account *document.Account) (utils.Coin, *document.Account, error
 	}
 
 	for _, val := range coins {
-		if val.Denom == types.IRISAttoUint {
+		if val.Denom == types.StakeUint {
 			balance.Denom = val.Denom
 			amount, _ := utils.ParseStringToFloat(val.Amount)
 			if amount > 0 {

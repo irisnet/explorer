@@ -17,7 +17,7 @@ func TestGetValidatorSet(t *testing.T) {
 
 func TestQueryBlockInfo(t *testing.T) {
 
-	blockInfo := blockService.QueryBlockInfo(100)
+	blockInfo := blockService.QueryBlockInfo(34433)
 	t.Logf("block info: %v \n", blockInfo)
 
 }

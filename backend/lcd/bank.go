@@ -1,9 +1,8 @@
 package lcd
 
 import (
-	"encoding/json"
 	"github.com/irisnet/explorer/backend/utils"
-	"fmt"
+	"github.com/irisnet/explorer/backend/types"
 )
 
 type TokenStats struct {
@@ -13,17 +12,17 @@ type TokenStats struct {
 	TotalSupply  []*Coin `json:"total_supply"`
 }
 
-func GetBankTokenStats() (TokenStats, error) {
-
-	var result TokenStats
-	tokens, err := client.Bank().QueryTokenStats("")
-	if err != nil {
-		return result, err
-	}
-	data, _ := json.Marshal(tokens)
-	fmt.Println(data)
-	return result, nil
-}
+//func GetBankTokenStats() (TokenStats, error) {
+//
+//	var result TokenStats
+//	tokens, err := client.Bank().QueryTokenStats("")
+//	if err != nil {
+//		return result, err
+//	}
+//	data, _ := json.Marshal(tokens)
+//	fmt.Println(data)
+//	return result, nil
+//}
 
 func GetTokens(data []*Coin) Coin {
 
@@ -57,17 +56,23 @@ func GetTokenStatsSupply() (Coin, error) {
 	}, nil
 }
 func GetCommunityTax() (Coin, error) {
-	account, err := client.Bank().QueryAccount(CommunityTaxAddr)
+	balances, err := client.Bank().QueryBalances(CommunityTaxAddr, "")
 	if err != nil {
 		return Coin{}, err
 	}
-	data, _ := json.Marshal(account)
-	fmt.Println(data)
-	acc := Account01411{
 
+	var res Coin
+	for _, val := range balances {
+		if val.Denom != types.StakeUint {
+			continue
+		}
+		res = Coin{
+			Denom:  val.Denom,
+			Amount: val.Amount,
+		}
 	}
 
-	return GetTokens(acc.Value.Coins), nil
+	return res, nil
 }
 
 //func GetTokenInitSupply() Coin {

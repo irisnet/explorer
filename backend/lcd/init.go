@@ -4,8 +4,11 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/weichang-bianjie/irishub-sdk-go"
 	"github.com/weichang-bianjie/irishub-sdk-go/types"
+	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/logger"
 	"time"
 	"path/filepath"
+	"fmt"
 )
 
 var (
@@ -30,6 +33,41 @@ func init() {
 		DBRootDir: path,
 	})
 
-	//types.SetNetwork(types.Mainnet)
+
+	govParamMap, err := GetGovModuleParamMap(GovModule)
+	if err != nil {
+		logger.Error(err.Error())
+		return
+	}
+
+	if v, ok := govParamMap["tally_params"]; ok {
+		if data, ok := v.(map[string]interface{}); ok {
+			if threshold, ok := data[NormalThresholdKey].(string); ok {
+				NormalThreshold = threshold
+			}
+			if veto, ok := data[NormalVetoKey].(string); ok {
+				NormalVeto = veto
+			}
+			if quorum, ok := data[NormalQuorumKey].(string); ok {
+				NormalParticipation = quorum
+			}
+
+		}
+	}
+
+	if v, ok := govParamMap["deposit_params"]; ok {
+		if data, ok := v.(map[string]interface{}); ok {
+			depositparams, ok := data[NormalMinDepositKey].([]interface{})
+			if ok {
+
+				if len(depositparams) > 0 {
+					first := depositparams[0].(map[string]interface{})
+					coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+					NormalMinDeposit.Amount = coinAsUtils.Amount
+					NormalMinDeposit.Denom = coinAsUtils.Denom
+				}
+			}
+		}
+	}
 
 }

@@ -158,7 +158,7 @@ func (task *StaticDelegatorByMonthTask) calculateWork() ([]document.ExStaticDele
 				Address:            addr,
 				Total:              []document.Rewards{{Iris: 0, IrisAtto: "0"}},
 				DelegationsRewards: []document.Rewards{{Iris: 0, IrisAtto: "0"}},
-				Delegation:         utils.Coin{Denom: types.IRISAttoUint, Amount: 0},
+				Delegation:         utils.Coin{Denom: types.StakeUint, Amount: 0},
 			}
 		}
 		one, err := task.getStaticDelegator(startTimeGetRewards, val, txs)
@@ -208,7 +208,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(startTime time.Time, 
 		startdelagation.Address = terminalval.Address
 		startdelagation.Date = startTime
 		startdelagation.Delegation = utils.Coin{
-			Denom: types.IRISAttoUint,
+			Denom: types.StakeUint,
 		}
 	}
 
@@ -221,7 +221,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(startTime time.Time, 
 	if len(startdelagation.Commission) > 0 {
 		task.AddrBeginCommission[startdelagation.Address] = document.Coin{
 			Amount: startdelagation.Commission[0].Iris * math.Pow10(18),
-			Denom:  types.IRISAttoUint,
+			Denom:  types.StakeUint,
 		}
 	}
 	if len(startdelagation.DelegationsRewards) == 0 {
@@ -232,7 +232,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(startTime time.Time, 
 	if len(terminalval.Commission) > 0 {
 		task.AddrTerminalCommission[terminalval.Address] = document.Coin{
 			Amount: terminalval.Commission[0].Iris * math.Pow10(18),
-			Denom:  types.IRISAttoUint,
+			Denom:  types.StakeUint,
 		}
 	}
 

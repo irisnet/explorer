@@ -198,7 +198,7 @@ func handleAssetTokens(address string) {
 
 	}
 	//clear no exist asset
-	if len(vMap) > 0 {
+	if len(vMap) > 0 && len(res) > 0 {
 		var txs []txn.Op
 		for sym := range vMap {
 			v := vMap[sym]

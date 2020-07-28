@@ -23,7 +23,8 @@ func TestQueryByAddr(t *testing.T) {
 }
 
 func TestQueryTxByPage(t *testing.T) {
-	total, txList, err := CommonTx{}.QueryByPage(nil, 0, 20, true)
+	total, txList, err := CommonTx{}.QueryByPage(bson.M{"$or": []bson.M{{"signers.addr_bech32": "iaa1x98k5n7xj0h3udnf5dcdzw85tsfa75qm0kqak0"},
+		{"to": "iaa1x98k5n7xj0h3udnf5dcdzw85tsfa75qm0kqak0"}}}, 1, 10, true)
 
 	if err != nil {
 		t.Error(err)

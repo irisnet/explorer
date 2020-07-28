@@ -7,7 +7,6 @@ import (
 	"strings"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
-	"fmt"
 )
 
 func RegisterCaculate(r *mux.Router) error {
@@ -46,7 +45,7 @@ func registerCaculateMonthData(r *mux.Router) error {
 		if total == "true" {
 			istotal = true
 		}
-		fmt.Println(page, size)
+		//fmt.Println(page, size)
 
 		caculateTime := QueryParam(request, "caculateTime")
 		//beginTime := QueryParam(request, "beginTime")

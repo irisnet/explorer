@@ -71,7 +71,8 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 
 	currentBlock := lcd.Block(height)
 	if currentBlock.Block.Header.Height == 0 {
-		panic(types.CodeNotFound)
+		logger.Warn("query block is failed", logger.Int64("height", height))
+		return result
 	}
 
 	proposerHexAddr := currentBlock.BlockMeta.Header.ProposerAddress
@@ -85,11 +86,9 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 		result.PropoperAddr = validatorDoc.OperatorAddress
 		result.PropopserMoniker = validatorDoc.Description.Moniker
 	}
-
 	result.LatestHeight = fmt.Sprint(lcd.BlockLatest().BlockMeta.Header.Height)
-	currentBlockRes := lcd.BlockResult(height)
+	currentBlockRes, numTx := lcd.BlockResult(height)
 	lcdValidators := lcd.ValidatorSet(height)
-
 	result.TotalValidatorNum = len(lcdValidators.Validators)
 	nextBlock := lcd.Block(height + 1)
 	var totalVotingPower, precommitVotingPower, precommitValidatorNum int
@@ -118,16 +117,23 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 	}
 	result.TotalValidatorNum = len(lcdValidators.Validators)
 
-	for _, v := range currentBlockRes.Results.BeginBlock.Tags {
-		if v.Key == "mint-coin" {
-			result.MintCoin = utils.ParseCoin(v.Value)
+	for _, v := range currentBlockRes.Results.BeginBlock {
+		if v.Type == "mint" {
+			if value, ok := v.Attributes["mint_coin"]; ok {
+				amount, _ := utils.ParseStringToFloat(value)
+				result.MintCoin = utils.Coin{
+					Amount: amount,
+					Denom:  types.StakeUint,
+				}
+			}
 		}
+
 	}
 
 	result.BlockHash = currentBlock.BlockMeta.BlockID.Hash
 	result.BlockHeight = fmt.Sprint(currentBlock.Block.Header.Height)
 	result.Timestamp = currentBlock.BlockMeta.Header.Time.UTC()
-	result.Transactions = currentBlock.BlockMeta.Header.NumTxs
+	result.Transactions = fmt.Sprint(numTx)
 
 	return result
 }

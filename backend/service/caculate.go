@@ -61,7 +61,7 @@ func LoadFromDelModel(model document.ExStaticDelegatorMonth) vo.ExStaticDelegato
 }
 
 func coverAmount(coin document.Coin) float64 {
-	if coin.Denom == types.IRISAttoUint {
+	if coin.Denom == types.StakeUint {
 		coin.Amount = coin.Amount / math.Pow10(18)
 	}
 	return coin.Amount

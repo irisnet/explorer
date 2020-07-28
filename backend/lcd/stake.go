@@ -1,7 +1,6 @@
 package lcd
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -98,16 +97,16 @@ func BondStatusToInt(b string) int {
 	}
 }
 
-func QueryWithdrawAddr(address string) (result string) {
-	url := fmt.Sprintf(UrlWithdrawAddress, conf.Get().Hub.LcdUrl, address)
-	resBytes, err := utils.Get(url)
-	if err != nil {
-		return result
-	}
-
-	result = strings.Trim(string(resBytes), "\"")
-	return
-}
+//func QueryWithdrawAddr(address string) (result string) {
+//	url := fmt.Sprintf(UrlWithdrawAddress, conf.Get().Hub.LcdUrl, address)
+//	resBytes, err := utils.Get(url)
+//	if err != nil {
+//		return result
+//	}
+//
+//	result = strings.Trim(string(resBytes), "\"")
+//	return
+//}
 
 func GetDelegationsByDelAddr(delAddr string) (result []DelegationVo) {
 	if !strings.HasPrefix(delAddr, conf.Get().Hub.Prefix.AccAddr) {
@@ -129,32 +128,12 @@ func GetDelegationsByDelAddr(delAddr string) (result []DelegationVo) {
 	return
 }
 
-//func GetDelegationsFromValAddrByDelAddr(delAddr, valAddr string) (delegation DelegationFromVal) {
-//	url := fmt.Sprintf(UrlDelegationsFromValidatorByDelegator, conf.Get().Hub.LcdUrl, delAddr, valAddr)
-//	resAsBytes, err := utils.Get(url)
-//	if err != nil {
-//		logger.Error("get delegations from validator by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
-//		return
-//	}
-//
-//	if err := json.Unmarshal(resAsBytes, &delegation); err != nil {
-//		logger.Error("Unmarshal DelegationsByDelAddr error", logger.String("err", err.Error()), logger.String("URL", url))
-//	}
-//	return
-//}
+func GetWithdrawAddressByAddress(validatorAcc string) (string, error) {
 
-func GetWithdrawAddressByValidatorAcc(validatorAcc string) (string, error) {
-
-	url := fmt.Sprintf(UrlDistributionWithdrawAddressByValidatorAcc, conf.Get().Hub.LcdUrl, validatorAcc)
-	resAsBytes, err := utils.Get(url)
+	withdrawAddr, err := client.Distr().QueryWithdrawAddr(validatorAcc)
 	if err != nil {
-		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()))
 		return "", err
-	}
-
-	var withdrawAddr string
-	if err := json.Unmarshal(resAsBytes, &withdrawAddr); err != nil {
-		logger.Error("Unmarshal WithdrawAddress error", logger.String("err", err.Error()), logger.String("URL", url))
 	}
 
 	return withdrawAddr, nil
@@ -162,24 +141,39 @@ func GetWithdrawAddressByValidatorAcc(validatorAcc string) (string, error) {
 
 func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr, []RewardsFromDelegations, utils.CoinsAsStr, error) {
 
-	if !strings.HasPrefix(validatorAcc, conf.Get().Hub.Prefix.AccAddr) {
-		return nil, nil, nil, fmt.Errorf("address prefix is should %v", conf.Get().Hub.Prefix.AccAddr)
+	rewards, err := client.Distr().QueryRewards(validatorAcc)
+	if err != nil {
+		logger.Error("get delegations by delegator adr from rpc error", logger.String("err", err.Error()))
+		return nil, nil, nil, err
 	}
-	//url := fmt.Sprintf(UrlDistributionRewardsByValidatorAcc, conf.Get().Hub.LcdUrl, validatorAcc)
-	//resAsBytes, err := utils.Get(url)
-	//if err != nil {
-	//	logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
-	//	return nil, nil, nil, err
-	//}
 
-	var rewards DistributionRewards
-	//
-	//err = json.Unmarshal(resAsBytes, &rewards)
-	//if err != nil {
-	//	return nil, nil, nil, err
-	//}
+	var (
+		total       utils.CoinsAsStr
+		delegations []RewardsFromDelegations
+		commission  utils.CoinsAsStr
+	)
 
-	return rewards.Commission, rewards.Delegations, rewards.Total, nil
+	for _, val := range rewards.Total {
+		total = append(total, utils.CoinAsStr{Denom: val.Denom, Amount: val.Amount.String()})
+	}
+	for _, val := range rewards.Rewards {
+		item := RewardsFromDelegations{Validator: val.Validator}
+		for _, one := range val.Reward {
+			item.Reward = append(item.Reward, utils.CoinAsStr{Denom: one.Denom, Amount: one.Amount.String()})
+		}
+		delegations = append(delegations, item)
+	}
+
+	commissionData, err := client.Distr().QueryCommission(validatorAcc)
+	if err != nil {
+		logger.Error("get delegations by delegator adr from rpc error", logger.String("err", err.Error()))
+		return nil, nil, nil, err
+	}
+	for _, val := range commissionData.Commission {
+		commission = append(commission, utils.CoinAsStr{Denom: val.Denom, Amount: val.Amount.String()})
+	}
+
+	return commission, delegations, total, nil
 }
 
 func GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(publicKey string) (string, string, int64, error) {

@@ -1,10 +1,5 @@
 package lcd
 
-import (
-	"fmt"
-	"encoding/json"
-)
-
 type LcdHtlc struct {
 	Type  string   `json:"type"`
 	Value HtlcData `json:"value"`
@@ -22,11 +17,14 @@ type HtlcData struct {
 }
 
 func HtlcInfo(hashlock string) (result LcdHtlc, err error) {
-	htlcinfo, err := client.Htlc().QueryHTLC(hashlock)
-	if err != nil {
-		return result, err
-	}
-	data, _ := json.Marshal(htlcinfo)
-	fmt.Println(data)
+	//htlcinfo, err := client.Htlc().QueryHTLC(hashlock)
+	//if err != nil {
+	//	return result, err
+	//}
+	//data, _ := json.Marshal(htlcinfo)
+	//fmt.Println(data)
+	//result = LcdHtlc{
+	//	Type:htlcinfo,
+	//}
 	return result, nil
 }

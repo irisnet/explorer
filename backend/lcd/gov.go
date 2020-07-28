@@ -126,10 +126,10 @@ func GetAssetKeyWithRangeMap() map[string]RangeDescription {
 	return result
 }
 
-//func GetGovModuleParam(module string) ([]byte, error) {
-//	url := fmt.Sprintf(UrlGovParam, conf.Get().Hub.LcdUrl, module)
-//	return utils.Get(url)
-//}
+func GetGovModuleParam(module string) ([]byte, error) {
+	url := fmt.Sprintf(UrlGovParam, conf.Get().Hub.LcdUrl, module)
+	return utils.Get(url)
+}
 
 func GetGovModuleParamMap(module string) (map[string]interface{}, error) {
 	appstate, err := GetGenesisAppState()

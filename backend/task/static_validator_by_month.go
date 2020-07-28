@@ -256,9 +256,9 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(starttime time.Time, 
 
 	pcommission, ok := task.AddressPeriodCommission[address]
 	if ok {
-		if pcommission.Denom == types.IRISAttoUint {
+		if pcommission.Denom == types.StakeUint {
 			item.PeriodCommission = document.Coin{
-				Denom:  types.IRISUint,
+				Denom:  types.StakeUint,
 				Amount: pcommission.Amount / math.Pow10(18),
 			}
 		} else {
@@ -266,16 +266,16 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(starttime time.Time, 
 		}
 	} else {
 		pcommission = document.Coin{
-			Denom: types.IRISAttoUint,
+			Denom: types.StakeUint,
 		}
-		item.PeriodCommission.Denom = types.IRISUint
+		item.PeriodCommission.Denom = types.StakeUint
 	}
 
 	tcommission, ok := task.AddressTerminalCommission[address]
 	if ok {
-		if tcommission.Denom == types.IRISAttoUint {
+		if tcommission.Denom == types.StakeUint {
 			item.TerminalCommission = document.Coin{
-				Denom:  types.IRISUint,
+				Denom:  types.StakeUint,
 				Amount: tcommission.Amount / math.Pow10(18),
 			}
 		} else {
@@ -283,14 +283,14 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(starttime time.Time, 
 		}
 	} else {
 		tcommission = document.Coin{
-			Denom: types.IRISAttoUint,
+			Denom: types.StakeUint,
 		}
-		item.TerminalCommission.Denom = types.IRISUint
+		item.TerminalCommission.Denom = types.StakeUint
 	}
 	bcommission, ok := task.AddressBeginCommission[address]
 	if !ok {
 		bcommission = document.Coin{
-			Denom: types.IRISAttoUint,
+			Denom: types.StakeUint,
 		}
 	}
 
@@ -299,9 +299,9 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(starttime time.Time, 
 	if desp, ok := service.ValidatorsDescriptionMap[terminalval.OperatorAddress]; ok {
 		item.Moniker = desp.Moniker
 	}
-	if item.IncrementCommission.Denom == types.IRISAttoUint {
+	if item.IncrementCommission.Denom == types.StakeUint {
 		item.IncrementCommission = document.Coin{
-			Denom:  types.IRISUint,
+			Denom:  types.StakeUint,
 			Amount: item.IncrementCommission.Amount / math.Pow10(18),
 		}
 	}

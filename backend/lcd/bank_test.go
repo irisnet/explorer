@@ -2,18 +2,17 @@ package lcd
 
 import (
 	"testing"
-	"encoding/json"
 	"github.com/irisnet/explorer/backend/utils"
 )
 
 func  TestGetBankTokenStats(t *testing.T) {
-	res,err := GetBankTokenStats()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	bytesData,_ := json.Marshal(res)
-	t.Log(string(bytesData))
+	//res,err := GetBankTokenStats()
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
+	//
+	//bytesData,_ := json.Marshal(res)
+	//t.Log(string(bytesData))
 }
 
 func TestGetTokenStatsCirculation(t *testing.T) {

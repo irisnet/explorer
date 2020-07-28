@@ -124,45 +124,7 @@ func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string
 	}
 }
 
-func init() {
 
-	govParamMap, err := GetGovModuleParamMap(GovModule)
-	if err != nil {
-		logger.Error(err.Error())
-		return
-	}
-
-	if v, ok := govParamMap["tally_params"]; ok {
-		if data, ok := v.(map[string]interface{}); ok {
-			if threshold, ok := data[NormalThresholdKey].(string); ok {
-				NormalThreshold = threshold
-			}
-			if veto, ok := data[NormalVetoKey].(string); ok {
-				NormalVeto = veto
-			}
-			if quorum, ok := data[NormalQuorumKey].(string); ok {
-				NormalParticipation = quorum
-			}
-
-		}
-	}
-
-	if v, ok := govParamMap["deposit_params"]; ok {
-		if data, ok := v.(map[string]interface{}); ok {
-			depositparams, ok := data[NormalMinDepositKey].([]interface{})
-			if ok {
-
-				if len(depositparams) > 0 {
-					first := depositparams[0].(map[string]interface{})
-					coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
-					NormalMinDeposit.Amount = coinAsUtils.Amount
-					NormalMinDeposit.Denom = coinAsUtils.Denom
-				}
-			}
-		}
-	}
-
-}
 
 func NodeInfo() (result NodeInfoVo, err error) {
 
@@ -280,10 +242,10 @@ func Block(height int64) (result BlockVo) {
 				Hash: block.Header.LastBlockID.Hash.String(),
 			},
 			Header: BlockHeader{
-				Height:          block.Header.Height,
+				Height:          block.Height,
 				ProposerAddress: block.Header.ProposerAddress.String(),
 				Time:            block.Header.Time,
-				NumTxs:          fmt.Sprint(len(block.Data.Txs)),
+				NumTxs:          fmt.Sprint(len(block.Txs)),
 			},
 		},
 		Block: BlockI{
@@ -365,36 +327,63 @@ func ValidatorSet(height int64) (result ValidatorSetVo) {
 }
 
 func LatestValidatorSet() (result ValidatorSetVo) {
-	url := fmt.Sprintf(UrlValidatorSetLatest, conf.Get().Hub.LcdUrl)
-	resBytes, err := utils.Get(url)
+
+	validator, err := client.Tendermint().QueryValidatorsLatest()
 	if err != nil {
 		return result
 	}
+	result = ValidatorSetVo{
+		BlockHeight:fmt.Sprint(validator.BlockHeight),
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
+	}
+	for _, val := range validator.Validators {
+		var pubKey crypto.PubKey
+		if bz, err := client.Cdc.MarshalJSON(val.PubKey); err == nil {
+			_ = client.Cdc.UnmarshalJSON(bz, &pubKey)
+		}
+		bech32Addr, _ := types.ConsAddressFromHex(val.Address)
+		bech32PubKey, _ := types.Bech32ifyConsPub(pubKey)
+		result.Validators = append(result.Validators, StakeValidatorVo{
+			Address:          bech32Addr.String(),
+			PubKey:           bech32PubKey,
+			ProposerPriority: val.ProposerPriority,
+			VotingPower:      val.VotingPower,
+		})
 	}
 	return result
 }
 
-func BlockResult(height int64) (result BlockResultVo) {
+func BlockResult(height int64) (result BlockResultVo, txsnum int) {
 
 	blockresult, err := client.Tendermint().QueryBlockResult(height)
 	if err != nil {
-		return result
+		logger.Error("Query Block Result error",
+			logger.String("err", err.Error()))
+		return
 	}
-	data, _ := json.Marshal(blockresult)
-	fmt.Println(string(data))
 
-	//result = BlockResultVo{
-	//	Results:Results{
-	//		BeginBlock:BeginBlock{
-	//
-	//		},
-	//	},
-	//}
+	var events BeginBlockEvents
+	for _, val := range blockresult.BeginBlockEvents {
+		event := BlockEvent{
+			Type: val.Type,
+		}
+		event.Attributes = make(map[string]string, len(val.Attributes))
 
-	return result
+		for _, one := range val.Attributes {
+			event.Attributes[one.Key] = one.Value
+		}
+
+		events = append(events, event)
+	}
+
+	result = BlockResultVo{
+		Results: Results{
+			BeginBlock: events,
+		},
+	}
+	txsnum = len(blockresult.TxsResults)
+
+	return
 
 }
 

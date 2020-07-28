@@ -372,9 +372,9 @@ func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, s
 
 func (service *ValidatorService) GetWithdrawAddrByValidatorAddr(valAddr string) vo.WithdrawAddr {
 
-	withdrawAddr, err := lcd.GetWithdrawAddressByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
+	withdrawAddr, err := lcd.GetWithdrawAddressByAddress(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
 	if err != nil {
-		logger.Error("GetWithdrawAddressByValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
+		logger.Error("GetWithdrawAddress By ValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
 	}
 
 	return vo.WithdrawAddr{
@@ -950,7 +950,7 @@ func (service *ValidatorService) HandleValidators() {
 		}
 	}
 	//clear no exist validator
-	if len(vMap) > 0 {
+	if len(vMap) > 0 && len(res) > 0 {
 		var txs []txn.Op
 		for addr := range vMap {
 			v := vMap[addr]
