@@ -48,15 +48,7 @@ const (
 	KeyCronTimeProposalVoters      = "CronTimeProposalVoters"
 	KeyCronTimeValidatorStaticInfo = "CronTimeValidatorStaticInfo"
 
-	KeyCronTimeFormatStaticDay   = "CronTimeFormatStaticDay"
-	KeyCronTimeFormatStaticMonth = "CronTimeFormatStaticMonth"
-	KeyCronTimeStaticDataDay     = "CronTimeStaticDataDay"
-	KeyCronTimeStaticDataMonth   = "CronTimeStaticDataMonth"
-	KeyNetreqLimitMax            = "NetreqLimitMax"
-	KeyCaculateDebug             = "CaculateDebug"
-	KeyCaculateStartDate         = "CaculateStartDate" //yyyy-mm-ddThh:mm:ss
-	KeyCaculateEndDate           = "CaculateEndDate"   //yyyy-mm-ddThh:mm:ss
-	KeyCaculateDate              = "CaculateDate"      //yyyy-mm-dd
+
 	KeyFoundationDelegatorAddr   = "FoundationDelegatorAddr"
 
 	EnvironmentDevelop = "dev"
@@ -109,23 +101,10 @@ func init() {
 		CronTimeValidatorIcons:      getEnvInt(KeyCronTimeValidatorIcons, DefaultEnvironment),
 		CronTimeProposalVoters:      getEnvInt(KeyCronTimeProposalVoters, DefaultEnvironment),
 		CronTimeValidatorStaticInfo: getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
-		CronTimeFormatStaticDay:     getEnv(KeyCronTimeFormatStaticDay, DefaultEnvironment),
-		CronTimeFormatStaticMonth:    getEnv(KeyCronTimeFormatStaticMonth, DefaultEnvironment),
-		CronTimeStaticDelegator:      getEnvInt(KeyCronTimeStaticDataDay, DefaultEnvironment),
-		CronTimeStaticValidator:      getEnvInt(KeyCronTimeStaticDataDay, DefaultEnvironment),
-		CronTimeStaticDelegatorMonth: getEnvInt(KeyCronTimeStaticDataMonth, DefaultEnvironment),
-		CronTimeStaticValidatorMonth: getEnvInt(KeyCronTimeStaticDataMonth, DefaultEnvironment),
 		FoundationDelegatorAddr:      getEnv(KeyFoundationDelegatorAddr, DefaultEnvironment),
-		CaculateStartDate:            getEnv(KeyCaculateStartDate, DefaultEnvironment),
-		CaculateEndDate:              getEnv(KeyCaculateEndDate, DefaultEnvironment),
-		CaculateDate:                 getEnv(KeyCaculateDate, DefaultEnvironment),
-		NetreqLimitMax:               getEnvInt(KeyNetreqLimitMax, DefaultEnvironment),
+
 	}
-	if "true" == strings.ToLower(getEnv(KeyCaculateDebug, DefaultEnvironment)) {
-		server.CaculateDebug = true
-	} else {
-		server.CaculateDebug = false
-	}
+
 	logger.Info(fmt.Sprintf("serverInstanceNo: %s", server.InstanceNo))
 	config.Server = server
 
@@ -182,16 +161,6 @@ func loadDefault() {
 		KeyCronTimeProposalVoters:      "60",
 		KeyCronTimeValidatorIcons:      "43200",
 		KeyCronTimeValidatorStaticInfo: "300",
-		KeyCronTimeStaticDataDay:       "86400",   //24*3600
-		KeyCronTimeStaticDataMonth:     "2419200", //28*24*3600
-
-		KeyCronTimeFormatStaticDay:   "59 23 * * *", //m,h,d,m,w
-		KeyCronTimeFormatStaticMonth: "0 0 01 * *",
-		KeyCaculateDebug:             "false",
-		KeyCaculateStartDate:         "",
-		KeyCaculateEndDate:           "",
-		KeyCaculateDate:              "2020-06-01",
-		KeyNetreqLimitMax:            "20",
 		KeyFoundationDelegatorAddr:   "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts",
 	}
 }
@@ -233,17 +202,6 @@ type serverConf struct {
 	CronTimeValidatorStaticInfo  int
 	CronTimeValidatorIcons       int
 	CronTimeProposalVoters       int
-	CronTimeStaticValidator      int
-	CronTimeStaticDelegator      int
-	CronTimeStaticValidatorMonth int
-	CronTimeStaticDelegatorMonth int
-	CronTimeFormatStaticDay      string
-	CronTimeFormatStaticMonth    string
-	CaculateDebug                bool
-	CaculateStartDate            string
-	CaculateEndDate              string
-	CaculateDate                 string
-	NetreqLimitMax               int
 	FoundationDelegatorAddr      string
 }
 
@@ -272,9 +230,6 @@ func getEnv(key string, environment string) string {
 			logger.Panic("config is not able to use default config", logger.String("Environment", DefaultEnvironment))
 		}
 		value = defaultConfig[environment][key]
-	}
-	if value == "" && (key != KeyCaculateStartDate && key != KeyCaculateEndDate) {
-		logger.Panic("config must be not empty", logger.String("key", key))
 	}
 	if key == KeyDbUser || key == KeyDbPwd {
 		logger.Info("config", logger.Bool(key+" is empty", value == ""))
