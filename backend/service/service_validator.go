@@ -384,7 +384,7 @@ func (service *ValidatorService) GetWithdrawAddrByValidatorAddr(valAddr string) 
 
 func (service *ValidatorService) GetDistributionCommissionRewardsByAddr(valAddr string) utils.CoinsAsStr {
 
-	rewardsCoins, err := lcd.GetDistributionCommissionRewardsByAddress(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
+	rewardsCoins, err := lcd.GetDistributionCommissionRewardsByAddress(valAddr)
 	if err != nil {
 		logger.Error("GetDistribution Commission RewardsByValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
 	}

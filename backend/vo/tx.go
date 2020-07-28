@@ -188,6 +188,25 @@ type CoinswapTx struct {
 	Monikers map[string]string `json:"monikers"`
 }
 
+type OrcaleTx struct {
+	BaseTx
+	Events   []Event           `json:"events"`
+	Msgs     []MsgItem         `json:"msgs"`
+	Monikers map[string]string `json:"monikers"`
+}
+type ServiceTx struct {
+	BaseTx
+	Events   []Event           `json:"events"`
+	Msgs     []MsgItem         `json:"msgs"`
+	Monikers map[string]string `json:"monikers"`
+}
+type NftTx struct {
+	BaseTx
+	Events   []Event           `json:"events"`
+	Msgs     []MsgItem         `json:"msgs"`
+	Monikers map[string]string `json:"monikers"`
+}
+
 func (tx RecentTx) String() string {
 	return fmt.Sprintf(`
 		Fee    :%v

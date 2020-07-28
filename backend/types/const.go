@@ -356,6 +356,42 @@ func IsGuardianType(typ string) bool {
 	return false
 }
 
+func IsNftType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range NftList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
+
+func IsServiceType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range ServiceList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
+
+func IsOrcaleType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range OrcaleList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
+
 type TxType int
 
 const (
@@ -369,6 +405,9 @@ const (
 	Guardian
 	Htlc
 	Coinswap
+	Nft
+	Service
+	Orcale
 )
 
 func Convert(typ string) TxType {
@@ -390,6 +429,12 @@ func Convert(typ string) TxType {
 		return Htlc
 	} else if IsGuardianType(typ) {
 		return Guardian
+	} else if IsNftType(typ) {
+		return Nft
+	} else if IsOrcaleType(typ) {
+		return Orcale
+	} else if IsServiceType(typ) {
+		return Service
 	}
 	logger.Error("Convert UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)
@@ -403,6 +448,12 @@ func TxTypeFromString(typ string) TxType {
 		return Declaration
 	} else if typ == "gov" {
 		return Gov
+	} else if typ == "nft" {
+		return Nft
+	} else if typ == "service" {
+		return Service
+	} else if typ == "orale" {
+		return Orcale
 	}
 	logger.Error("TxTypeFromString UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)

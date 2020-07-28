@@ -117,3 +117,8 @@ func TestValidatorService_GetCommisstionInfoByValidatorAddr(t *testing.T) {
 	res := validatorService.GetCommisstionInfo()
 	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
 }
+
+func TestValidatorService_GetCommisstionRewards(t *testing.T) {
+	res := validatorService.GetDistributionCommissionRewardsByAddr("iva1x98k5n7xj0h3udnf5dcdzw85tsfa75qm682jtg")
+	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
+}

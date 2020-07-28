@@ -540,7 +540,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeMsgWithdrawValidatorCommission:
 				msgVO := msgvo.TxTypeMsgWithdrawValidatorCommission{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("Build  ByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxTypeMsgWithdrawValidatorCommission  ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -548,7 +548,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeMsgFundCommunityPool:
 				msgVO := msgvo.TxTypeMsgFundCommunityPool{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("Build  ByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxTypeMsgFundCommunityPool ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -833,6 +833,24 @@ func (service *TxService) buildTx(tx vo.CommonTx, blackListP *map[string]documen
 		}
 	case types.Guardian:
 		return vo.GuardianTx{
+			BaseTx:   buildBaseTx(tx),
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
+		}
+	case types.Orcale:
+		return vo.OrcaleTx{
+			BaseTx:   buildBaseTx(tx),
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
+		}
+	case types.Service:
+		return vo.ServiceTx{
+			BaseTx:   buildBaseTx(tx),
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
+		}
+	case types.Nft:
+		return vo.NftTx{
 			BaseTx:   buildBaseTx(tx),
 			Msgs:     tx.Msgs,
 			Monikers: monikersMap,
