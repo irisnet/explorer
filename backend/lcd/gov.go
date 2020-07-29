@@ -1,7 +1,6 @@
 package lcd
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/irisnet/explorer/backend/conf"
@@ -69,7 +68,7 @@ type RangeDescription struct {
 
 type Voterinfo struct {
 	Voter      string `json:"voter"`
-	ProposalId string `json:"proposal_id"`
+	ProposalId uint64 `json:"proposal_id"`
 	Option     string `json:"option"`
 }
 
@@ -168,57 +167,6 @@ func GetGovAssetParam() (map[string]interface{}, error) {
 	return GetGovModuleParamMap(GovModuleAsset)
 }
 
-//func GetAllGovModuleParam() (map[string]interface{}, error) {
-//
-//	result := map[string]interface{}{}
-//
-//	authMap, err := GetGovAuthParam()
-//	if err != nil {
-//		return nil, err
-//	}
-//	stakeMap, err := GetGovStakeParam()
-//	if err != nil {
-//		return nil, err
-//	}
-//	mintMap, err := GetGovMintParam()
-//	if err != nil {
-//		return nil, err
-//	}
-//	distrMap, err := GetGovDistrParam()
-//	if err != nil {
-//		return nil, err
-//	}
-//	slashingMap, err := GetGovSlashingParam()
-//	if err != nil {
-//		return nil, err
-//	}
-//	assetMap, err := GetGovAssetParam()
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	for k, v := range authMap {
-//		result[k] = v
-//	}
-//
-//	for k, v := range stakeMap {
-//		result[k] = v
-//	}
-//	for k, v := range mintMap {
-//		result[k] = v
-//	}
-//	for k, v := range distrMap {
-//		result[k] = v
-//	}
-//	for k, v := range slashingMap {
-//		result[k] = v
-//	}
-//	for k, v := range assetMap {
-//		result[k] = v
-//	}
-//	return result, nil
-//}
-
 func GetAllGovModuleParam() map[string]interface{} {
 	result := map[string]interface{}{}
 	for _, module := range GovModuleList {
@@ -238,14 +186,13 @@ func GetAllGovModuleParam() map[string]interface{} {
 }
 
 func GetProposalVoters(proposalid uint64) (result []Voterinfo, err error) {
-	url := fmt.Sprintf(UrlProposalVoters, conf.Get().Hub.LcdUrl, proposalid)
-	resBytes, err := utils.Get(url)
+	votes, err := client.Gov().QueryVotes(proposalid)
 	if err != nil {
 		return result, err
 	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result, err
+	for _, val := range votes {
+		result = append(result, Voterinfo{Voter: val.Voter, Option: val.Option, ProposalId: val.ProposalID})
 	}
 	return result, nil
 }

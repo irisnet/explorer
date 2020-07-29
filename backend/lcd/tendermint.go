@@ -5,10 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/utils"
 	"github.com/weichang-bianjie/irishub-sdk-go/types"
 	"strings"
 	"github.com/tendermint/tendermint/crypto"
@@ -387,15 +385,4 @@ func BlockResult(height int64) (result BlockResultVo, txsnum int) {
 
 }
 
-func BlockCoinFlow(txhash string) (result BlockCoinFlowVo) {
-	url := fmt.Sprintf(UrlTxsTxHash, conf.Get().Hub.LcdUrl, txhash)
-	resBytes, err := utils.Get(url)
-	if err != nil {
-		return result
-	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
-	}
-	return result
-}

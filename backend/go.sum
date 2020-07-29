@@ -422,8 +422,8 @@ github.com/ugorji/go/codec v0.0.0-20181022190402-e5e69e061d4f/go.mod h1:VFNgLljT
 github.com/ugorji/go/codec v1.1.5-pre/go.mod h1:tULtS6Gy1AE1yCENaw4Vb//HLH5njI2tfCQDUqRd8fI=
 github.com/urfave/cli v1.20.0/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
 github.com/urfave/cli v1.22.1/go.mod h1:Gos4lmkARVdJ6EkW0WaNv/tZAAMe9V7XWyB60NtXRu0=
-github.com/weichang-bianjie/irishub-sdk-go v0.0.0-20200728041941-0fba2fd17d7a h1:Mfvr4U1H7savtlSy/9uU8EGyIALO7O7Ubw4S9QKWILI=
-github.com/weichang-bianjie/irishub-sdk-go v0.0.0-20200728041941-0fba2fd17d7a/go.mod h1:+L7H/L5rXko/Jko5FbupOvMMXDYt5FMmXdWT2o5KtVk=
+github.com/weichang-bianjie/irishub-sdk-go v0.0.0-20200729033100-209902c392b1 h1:XbujsYV5dkqVES8y3QK7UOqRxzHGKeyadFbQyodap2s=
+github.com/weichang-bianjie/irishub-sdk-go v0.0.0-20200729033100-209902c392b1/go.mod h1:+L7H/L5rXko/Jko5FbupOvMMXDYt5FMmXdWT2o5KtVk=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 github.com/zenazn/goji v0.9.0/go.mod h1:7S9M489iMyHBNxwZnk9/EHS098H4/F6TATF2mIxtB1Q=
