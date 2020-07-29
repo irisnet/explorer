@@ -105,8 +105,13 @@ type CommonTx struct {
 }
 
 type Event struct {
-	Type       string            `bson:"type" json:"type"`
-	Attributes map[string]string `bson:"attributes" json:"attributes"`
+	Type       string    `bson:"type" json:"type"`
+	Attributes []Attribute `bson:"attributes" json:"attributes"`
+}
+
+type Attribute struct {
+	Key   string `bson:"key" json:"key"`
+	Value string `bson:"value" json:"value"`
 }
 
 func (tx CommonTx) String() string {

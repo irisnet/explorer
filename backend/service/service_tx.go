@@ -1,7 +1,6 @@
 package service
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -859,18 +858,23 @@ func (service *TxService) buildTx(tx vo.CommonTx, blackListP *map[string]documen
 	return nil
 }
 
-func checkTags(tags map[string]string, param msgvo.Params) map[string]string {
-	if _, ok := tags["param"]; !ok {
-		bytesData, _ := json.Marshal(param)
-		tags["param"] = string(bytesData)
-	}
-	return tags
-}
+//func checkTags(tags map[string]string, param msgvo.Params) map[string]string {
+//	if _, ok := tags["param"]; !ok {
+//		bytesData, _ := json.Marshal(param)
+//		tags["param"] = string(bytesData)
+//	}
+//	return tags
+//}
 
 func loadEvents(events []document.Event) (ret []vo.Event) {
 
 	for _, val := range events {
-		ret = append(ret, vo.Event{Type: val.Type, Attributes: val.Attributes})
+		event := vo.Event{Type: val.Type}
+		event.Attributes = make(map[string]string, len(val.Attributes))
+		for _, one := range val.Attributes {
+			event.Attributes[one.Key] = one.Value
+		}
+		ret = append(ret, event)
 	}
 	return
 }

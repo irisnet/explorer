@@ -33,7 +33,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 			panic(types.CodeNotFound)
 		}
 
-		//var totalVotingPower = getTotalVotingPower()
+		var totalVotingPower = getTotalVotingPower(validatorList)
 		for i, v := range validatorList {
 			if desc, ok := blackList[v.OperatorAddress]; ok {
 				validatorList[i].Description.Moniker = desc.Moniker
@@ -46,7 +46,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 			if err := utils.Copy(validatorList[i], &validator); err != nil {
 				logger.Error("utils.Copy have error", logger.String("error", err.Error()))
 			}
-			//validator.VotingRate = float32(v.VotingPower) / float32(totalVotingPower)
+			validator.VotingRate = float32(v.VotingPower) / float32(totalVotingPower)
 			selfbond := ComputeSelfBonded(v.Tokens, v.DelegatorShares, v.SelfBond)
 			validator.SelfBond = selfbond
 			result = append(result, validator)
@@ -1079,10 +1079,13 @@ func isEqual(srcValidator, dstValidator document.Validator) bool {
 //	return power.QuoInt(tokenPrecision).RoundInt64()
 //}
 
-func getTotalVotingPower() int64 {
+func getTotalVotingPower(validators []document.Validator) int64 {
 	var total = int64(0)
-	var set = lcd.LatestValidatorSet()
-	for _, v := range set.Validators {
+	//var set = lcd.LatestValidatorSet()
+	//for _, v := range set.Validators {
+	//	total += v.VotingPower
+	//}
+	for _, v := range validators {
 		total += v.VotingPower
 	}
 	return total
