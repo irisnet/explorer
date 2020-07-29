@@ -1,13 +1,5 @@
 package lcd
 
-import (
-	"fmt"
-	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/explorer/backend/logger"
-	"encoding/json"
-)
-
 type LcdHtlc struct {
 	Type  string   `json:"type"`
 	Value HtlcData `json:"value"`
@@ -25,15 +17,14 @@ type HtlcData struct {
 }
 
 func HtlcInfo(hashlock string) (result LcdHtlc, err error) {
-	url := fmt.Sprintf(UrlHtlcInfo, conf.Get().Hub.LcdUrl, hashlock)
-	resBytes, err := utils.Get(url)
-	if err != nil {
-		return result, err
-	}
-
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("get account error", logger.String("err", err.Error()))
-		return result, err
-	}
+	//htlcinfo, err := client.Htlc().QueryHTLC(hashlock)
+	//if err != nil {
+	//	return result, err
+	//}
+	//data, _ := json.Marshal(htlcinfo)
+	//fmt.Println(data)
+	//result = LcdHtlc{
+	//	Type:htlcinfo,
+	//}
 	return result, nil
 }

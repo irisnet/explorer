@@ -6,9 +6,20 @@ import (
 )
 
 func TestAccount(t *testing.T) {
-	address := "faa1dmnnl50sagq2f6x88mz62rcn2mv5pfe53madlz"
+	address := "iaa18e2e9fxxrr88k78gg7fhuuqgccfv8self9ye65"
 
 	if res, err := Account(address); err != nil {
+		t.Fatal(err)
+	} else {
+		resBytes, _ := json.MarshalIndent(res, "", "\t")
+		t.Log(string(resBytes))
+	}
+}
+
+func TestAccountInfo(t *testing.T) {
+	address := "iaa18e2e9fxxrr88k78gg7fhuuqgccfv8self9ye65"
+
+	if res, err := AccountInfo(address); err != nil {
 		t.Fatal(err)
 	} else {
 		resBytes, _ := json.MarshalIndent(res, "", "\t")

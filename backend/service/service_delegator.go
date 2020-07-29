@@ -14,10 +14,6 @@ type DelegatorService struct {
 	BaseService
 }
 
-func (service *DelegatorService) GetModule() Module {
-	return Delegator
-}
-
 func (service *DelegatorService) QueryDelegation(valAddr string) (utils.Coin, utils.Coin) {
 	validator, err := lcd.Validator(valAddr)
 	if err != nil {
@@ -69,10 +65,10 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (utils.Coin, ut
 	}
 
 	return utils.Coin{
-			Denom:  utils.CoinTypeAtto,
+		Denom:      utils.CoinTypeStake,
 			Amount: selfBondAsFloat64,
 		}, utils.Coin{
-			Denom:  utils.CoinTypeAtto,
+		Denom:      utils.CoinTypeStake,
 			Amount: BondStakeAsFloat64,
 		}
 }
@@ -120,7 +116,7 @@ func (service *DelegatorService) GetDeposits(addressAsAccount string) utils.Coin
 	}
 
 	return utils.Coin{
-		Denom:  utils.CoinTypeAtto,
+		Denom:  utils.CoinTypeStake,
 		Amount: totalAmtAsFloat64,
 	}
 }

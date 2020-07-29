@@ -12,7 +12,7 @@ import (
 
 func TestGetConfig(t *testing.T) {
 
-	configList := CommonService{}.GetConfig()
+	configList := commonService.GetConfig()
 
 	for k, config := range configList {
 		t.Logf("idx: %v  config: %v \n", k, config)

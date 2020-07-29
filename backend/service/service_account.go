@@ -12,16 +12,12 @@ import (
 	"math/big"
 	"strings"
 	"sort"
-	"math"
 	"sync"
+	"math"
 )
 
 type AccountService struct {
 	BaseService
-}
-
-func (service *AccountService) GetModule() Module {
-	return Account
 }
 
 func (service *AccountService) Query(address string) (result vo.AccountVo) {
@@ -38,7 +34,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 			defer group.Done()
 			res, err := lcd.Account(address)
 			if err == nil {
-				decimalMap := make(map[string]int, len(res.Coins))
+				//decimalMap := make(map[string]int, len(res.Coins))
 				var unit []string
 				var amount utils.Coins
 				for _, coinStr := range res.Coins {
@@ -46,14 +42,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 					unit = append(unit, strings.Split(coin.Denom, types.AssetMinDenom)[0])
 					amount = append(amount, coin)
 				}
-
-				assetkokens, err := document.AssetToken{}.GetAssetTokenDetailByTokenids(unit)
-				if err == nil {
-					for _, val := range assetkokens {
-						decimalMap[val.TokenId] = val.Decimal
-					}
-				}
-
+				decimalMap := getDecimalMapData(unit)
 				for i, val := range amount {
 					denom := strings.Split(val.Denom, types.AssetMinDenom)[0]
 					if dem, ok := decimalMap[denom]; ok && dem > 0 {
@@ -79,15 +68,25 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 
 	go func() {
 		defer group.Done()
-		result.WithdrawAddress = lcd.QueryWithdrawAddr(address)
+		result.WithdrawAddress, _ = lcd.GetWithdrawAddressByAddress(address)
 	}()
 
 	group.Wait()
 
-
 	result.IsProfiler = isProfiler(address)
 	result.Address = address
 	return result
+}
+
+func getDecimalMapData(unit []string) map[string]int {
+	decimalMap := make(map[string]int, len(unit))
+	assetkokens, err := document.AssetToken{}.GetAssetTokenDetailBySymbols(unit)
+	if err == nil {
+		for _, val := range assetkokens {
+			decimalMap[val.Symbol] = val.Scale
+		}
+	}
+	return decimalMap
 }
 
 func getValidatorStatus(validator document.Validator) string {
@@ -118,7 +117,7 @@ func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 		//AccountAmtMap[acc.Address] = acc.Total.Amount
 		//_,_,rewards,err := lcd.GetDistributionRewardsByValidatorAcc(acc.Address)
 		//if err == nil && len(rewards) > 0 {
-		//	if rewards[0].Denom == types.IRISAttoUint {
+		//	if rewards[0].Denom == types.StakeUint {
 		//		rewardsAmt,_ := strconv.ParseFloat(rewards[0].Amount,64)
 		//		AccountAmtMap[acc.Address] += rewardsAmt
 		//		totalAmt += rewardsAmt
@@ -129,7 +128,10 @@ func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 	}
 
 	for index, acc := range result {
-		rate, _ := utils.NewRatFromFloat64(acc.Total.Amount / totalAmt).Float64()
+		rate := float64(1)
+		if totalAmt > 0 {
+			rate, _ = utils.NewRatFromFloat64(acc.Total.Amount / totalAmt).Float64()
+		}
 		accList = append(accList, vo.AccountInfo{
 			Rank:    index + 1,
 			Address: acc.Address,
@@ -200,7 +202,7 @@ func getValidators(valaddrlist []string) (validatorMap map[string]document.Valid
 func computeVotingPower(validator document.Validator, shares string) utils.Coin {
 	rate, err := utils.QuoByStr(validator.Tokens, validator.DelegatorShares)
 	if err != nil {
-		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
+		logger.Warn("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
 		rate, _ = new(big.Rat).SetString("1")
 	}
 	sharesAsRat, ok := new(big.Rat).SetString(shares)
@@ -215,7 +217,7 @@ func computeVotingPower(validator document.Validator, shares string) utils.Coin 
 
 	return utils.Coin{
 		Amount: amount,
-		Denom:  types.IRISUint,
+		Denom:  types.StakeUint,
 	}
 }
 
@@ -250,10 +252,14 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 
 func (service *AccountService) QueryRewards(address string) (result vo.AccountRewardsVo) {
 
-	commissionrewards, delegationrewards, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(address)
+	delegationrewards, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(address)
 	if err != nil {
-		logger.Error("GetDistributionRewardsByValidatorAcc have error", logger.String("err", err.Error()))
-		return
+		logger.Error("GetDistribution RewardsByValidatorAcc have error", logger.String("err", err.Error()))
+	}
+
+	commissionrewards, err := lcd.GetDistributionCommissionRewardsByAddress(address)
+	if err != nil {
+		logger.Error("GetDistribution CommissionRewardsByValidatorAcc have error", logger.String("err", err.Error()))
 	}
 
 	result.CommissionRewards = commissionrewards

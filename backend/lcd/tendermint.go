@@ -5,54 +5,54 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/utils"
+	"github.com/weichang-bianjie/irishub-sdk-go/types"
 	"strings"
+	"github.com/tendermint/tendermint/crypto"
 )
 
 var (
-	CriticalThreshold     string
-	CriticalMinDeposit    document.Coin
-	CriticalParticipation string
-	CriticalVeto          string
-	CriticalPenalty       string
-
-	ImportantThreshold     string
-	ImportantMinDeposit    document.Coin
-	ImportantParticipation string
-	ImportantVeto          string
-	ImportantPenalty       string
+	//CriticalThreshold     string
+	//CriticalMinDeposit    document.Coin
+	//CriticalParticipation string
+	//CriticalVeto          string
+	//CriticalPenalty       string
+	//
+	//ImportantThreshold     string
+	//ImportantMinDeposit    document.Coin
+	//ImportantParticipation string
+	//ImportantVeto          string
+	//ImportantPenalty       string
 
 	NormalThreshold     string
 	NormalMinDeposit    document.Coin
 	NormalParticipation string
 	NormalVeto          string
-	NormalPenalty       string
+	//NormalPenalty       string
 )
 
 const (
 	//GovModule (iris app module)
 	GovModule = "gov"
 	//gov module params key
-	CriticalThresholdKey     = "critical_threshold"
-	CriticalMinDepositKey    = "critical_min_deposit"
-	CriticalParticipationKey = "critical_participation"
-	CriticalVetoKey          = "critical_veto"
-	CriticalPenaltyKey       = "critical_penalty"
+	//CriticalThresholdKey     = "critical_threshold"
+	//CriticalMinDepositKey    = "critical_min_deposit"
+	//CriticalParticipationKey = "critical_participation"
+	//CriticalVetoKey          = "critical_veto"
+	//CriticalPenaltyKey       = "critical_penalty"
+	//
+	//ImportantThresholdKey     = "important_threshold"
+	//ImportantParticipationKey = "important_participation"
+	//ImportantMinDepositKey    = "important_min_deposit"
+	//ImportantVetoKey          = "important_veto"
+	//ImportantPenaltyKey       = "important_penalty"
 
-	ImportantThresholdKey     = "important_threshold"
-	ImportantParticipationKey = "important_participation"
-	ImportantMinDepositKey    = "important_min_deposit"
-	ImportantVetoKey          = "important_veto"
-	ImportantPenaltyKey       = "important_penalty"
-
-	NormalMinDepositKey    = "normal_min_deposit"
-	NormalThresholdKey     = "normal_threshold"
-	NormalParticipationKey = "normal_participation"
-	NormalVetoKey          = "normal_veto"
-	NormalPenaltyKey       = "normal_penalty"
+	NormalMinDepositKey = "min_deposit"
+	NormalThresholdKey  = "threshold"
+	NormalQuorumKey     = "quorum"
+	NormalVetoKey       = "veto"
+	//NormalPenaltyKey       = "normal_penalty"
 
 	Critical  = "Critical"
 	Important = "Important"
@@ -60,26 +60,26 @@ const (
 	// Critical：SoftwareUpgrade, SystemHalt
 	// Important：ParameterChange
 	// Normal：TxTaxUsage
-	ProposalTypeSoftwareUpgrade   = "SoftwareUpgrade"
-	ProposalTypeSystemHalt        = "SystemHalt"
-	ProposalTypeParameter         = "Parameter"
-	ProposalTypeTokenAddition     = "TokenAddition"
-	ProposalTypeTxTaxUsage        = "TxTaxUsage"
-	ProposalTypeCommunityTaxUsage = "CommunityTaxUsage"
-	ProposalTypePlainText         = "PlainText"
+	ProposalTypeSoftwareUpgrade = "SoftwareUpgrade"
+	//ProposalTypeSystemHalt        = "SystemHalt"
+	//ProposalTypeParameter         = "Parameter"
+	//ProposalTypeTokenAddition     = "TokenAddition"
+	//ProposalTypeTxTaxUsage        = "TxTaxUsage"
+	ProposalTypeCommunityPoolSpend = "CommunityPoolSpend"
+	ProposalTypePlainText          = "Text"
 )
 
 func GetProposalLevelByType(proposalType string) (string, error) {
 	switch proposalType {
-	case ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt:
+	case ProposalTypeSoftwareUpgrade:
 		return Critical, nil
-	case ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeCommunityTaxUsage:
+	case ProposalTypeCommunityPoolSpend:
 		return Important, nil
-	case ProposalTypeTxTaxUsage, ProposalTypePlainText:
+	case ProposalTypePlainText:
 		return Normal, nil
 	default:
-		return "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v %v %v %v ,but actual: %v",
-			ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt, ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText, proposalType))
+		return "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v  ,but actual: %v",
+			ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText, proposalType))
 	}
 }
 
@@ -100,192 +100,70 @@ func GetProposalBurnPercentByResult(result string, isRejectVote bool) (float32, 
 
 func GetMinDepositByProposalType(proposalType string) (document.Coin, error) {
 	switch proposalType {
-	case ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt:
-		return CriticalMinDeposit, nil
-	case ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeCommunityTaxUsage:
-		return ImportantMinDeposit, nil
-	case ProposalTypeTxTaxUsage, ProposalTypePlainText:
+	case ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText:
 		return NormalMinDeposit, nil
 
 	default:
-		return document.Coin{}, errors.New(fmt.Sprintf("expect proposal type:  %v %v %v %v %v %v %v ,but actual: %v",
-			ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt, ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText, proposalType))
+		return document.Coin{}, errors.New(fmt.Sprintf("expect proposal type:  %v %v %v ,but actual: %v",
+			ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText, proposalType))
 	}
 
 }
 
-func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string, string, string, string, error) {
+func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string, string, string, error) {
 
 	switch proposalType {
-	case ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt:
-		return CriticalThreshold, CriticalVeto, CriticalParticipation, CriticalPenalty, nil
-
-	case ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeCommunityTaxUsage:
-		return ImportantThreshold, ImportantVeto, ImportantParticipation, ImportantPenalty, nil
-	case ProposalTypeTxTaxUsage, ProposalTypePlainText:
-		return NormalThreshold, NormalVeto, NormalParticipation, NormalPenalty, nil
+	case ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText:
+		return NormalThreshold, NormalVeto, NormalParticipation, nil
 
 	default:
-		return "", "", "", "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v %v %v %v ,but actual: %v",
-			ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt, ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText, proposalType))
+		return "", "", "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v ,but actual: %v",
+			ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText, proposalType))
 	}
 }
 
-func init() {
 
-	govParamMap, err := GetGovModuleParamMap(GovModule)
-	if err != nil {
-		logger.Error(err.Error())
-		return
-	}
 
-	if v, ok := govParamMap[CriticalVetoKey].(string); ok {
-		CriticalVeto = v
-	}
+func NodeInfo() (result NodeInfoVo, err error) {
 
-	if v, ok := govParamMap[ImportantVetoKey].(string); ok {
-		ImportantVeto = v
-	}
-
-	if v, ok := govParamMap[NormalVetoKey].(string); ok {
-		NormalVeto = v
-	}
-
-	if v, ok := govParamMap[CriticalThresholdKey].(string); ok {
-		CriticalThreshold = v
-	}
-
-	if v, ok := govParamMap[CriticalMinDepositKey].([]interface{}); ok {
-		if len(v) > 0 {
-			first := v[0].(map[string]interface{})
-
-			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
-			CriticalMinDeposit.Amount = coinAsUtils.Amount
-			CriticalMinDeposit.Denom = coinAsUtils.Denom
-		}
-	}
-	if v, ok := govParamMap[CriticalParticipationKey].(string); ok {
-		CriticalParticipation = v
-	}
-
-	if v, ok := govParamMap[ImportantThresholdKey].(string); ok {
-		ImportantThreshold = v
-	}
-
-	if v, ok := govParamMap[ImportantMinDepositKey].([]interface{}); ok {
-		if len(v) > 0 {
-			first := v[0].(map[string]interface{})
-			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
-			ImportantMinDeposit.Amount = coinAsUtils.Amount
-			ImportantMinDeposit.Denom = coinAsUtils.Denom
-		}
-	}
-
-	if v, ok := govParamMap[ImportantParticipationKey].(string); ok {
-		ImportantParticipation = v
-	}
-
-	if v, ok := govParamMap[NormalThresholdKey].(string); ok {
-		NormalThreshold = v
-	}
-
-	if v, ok := govParamMap[NormalMinDepositKey].([]interface{}); ok {
-		if len(v) > 0 {
-			first := v[0].(map[string]interface{})
-			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
-			NormalMinDeposit.Amount = coinAsUtils.Amount
-			NormalMinDeposit.Denom = coinAsUtils.Denom
-		}
-	}
-
-	if v, ok := govParamMap[NormalParticipationKey].(string); ok {
-		NormalParticipation = v
-	}
-
-	if v, ok := govParamMap[CriticalPenaltyKey].(string); ok {
-		CriticalPenalty = v
-	}
-
-	if v, ok := govParamMap[ImportantPenaltyKey].(string); ok {
-		ImportantPenalty = v
-	}
-
-	if v, ok := govParamMap[NormalPenaltyKey].(string); ok {
-		NormalPenalty = v
-	}
-
-}
-
-func NodeInfo(lcdurl string) (result NodeInfoVo, err error) {
-	//url := fmt.Sprintf(UrlNodeInfo, conf.Get().Hub.LcdUrl)
-	if lcdurl == "" {
-		err = errors.New("lcd url is empty")
-		logger.Error(err.Error())
-		return
-	}
-	url := fmt.Sprintf(UrlNodeInfo, lcdurl)
-	resBytes, err := utils.Get(url)
+	nodeinfo, err := client.Tendermint().QueryNodeInfo()
 	if err != nil {
 		return result, err
 	}
-
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("get account error", logger.String("err", err.Error()))
-		return result, err
+	result = NodeInfoVo{
+		Version: nodeinfo.NodeInfo.Version,
+		Network: nodeinfo.NodeInfo.Network,
+		Moniker: nodeinfo.NodeInfo.Moniker,
 	}
 	return result, nil
 }
 
-func NodeVersion(lcdurl string) (result string, err error) {
-	//url := fmt.Sprintf(UrlNodeVersion, conf.Get().Hub.LcdUrl)
-	if lcdurl == "" {
-		err = errors.New("lcd url is empty")
-		logger.Error(err.Error())
-		return
-	}
-	url := fmt.Sprintf(UrlNodeVersion, lcdurl)
-	resBytes, err := utils.Get(url)
+func NodeVersion() (result string, err error) {
+
+	nodeversion, err := client.Tendermint().QueryNodeVersion()
 	if err != nil {
 		return result, err
 	}
 
-	result = strings.Split(string(resBytes), "-")[0]
+	result = strings.Split(nodeversion, "-")[0]
 	return result, nil
 }
-
-//func Genesis() (result GenesisVo, err error) {
-//	url := fmt.Sprintf(UrlGenesis, conf.Get().Hub.NodeUrl)
-//	resBytes, err := utils.Get(url)
-//	if err != nil {
-//		return result, err
-//	}
-//
-//	if err := json.Unmarshal(resBytes, &result); err != nil {
-//		logger.Error("get account error", logger.String("err", err.Error()))
-//		return result, err
-//	}
-//	return result, nil
-//}
 
 func GetGenesisAppState() (map[string]interface{}, error) {
 
-	url := fmt.Sprintf(UrlGenesis, conf.Get().Hub.NodeUrl)
-	resBytes, err := utils.Get(url)
-
+	genesisdoc, err := client.Tendermint().QueryGenesis()
 	if err != nil {
 		return nil, err
 	}
+
 	var m map[string]interface{}
-	err = json.Unmarshal([]byte(resBytes), &m)
-	if err != nil {
+	if err := json.Unmarshal([]byte(genesisdoc.AppState), &m); err != nil {
 		return nil, err
 	}
 
-	resultMap := m["result"].(map[string]interface{})
-	genesisMap := resultMap["genesis"].(map[string]interface{})
-	appStateMap := genesisMap["app_state"].(map[string]interface{})
+	//appStateMap := m["app_state"].(map[string]interface{})
 
-	return appStateMap, nil
+	return m, nil
 }
 
 func GetGenesisAppStateGovParam() (map[string]interface{}, error) {
@@ -310,7 +188,7 @@ func GetGenesisGovModuleParamMap() (map[string]interface{}, error) {
 	authMap := appStateMap[GovModuleAuth].(map[string]interface{})
 	authParamMap := authMap["params"].(map[string]interface{})
 
-	stakeMap := appStateMap[GovModuleStake].(map[string]interface{})
+	stakeMap := appStateMap[GovModuleStaking].(map[string]interface{})
 	stakeParamMap := stakeMap["params"].(map[string]interface{})
 
 	mintMap := appStateMap[GovModuleMint].(map[string]interface{})
@@ -341,81 +219,170 @@ func GetGenesisGovModuleParamMap() (map[string]interface{}, error) {
 }
 
 func Block(height int64) (result BlockVo) {
-	url := fmt.Sprintf(UrlBlock, conf.Get().Hub.LcdUrl, height)
-	resBytes, err := utils.Get(url)
+
+	block, err := client.Tendermint().QueryBlock(height)
 	if err != nil {
 		return result
 	}
+	var precommits []Precommit
+	for idx := range block.LastCommit.Signatures {
+		vote := block.LastCommit.GetVote(idx)
+		precommits = append(precommits, Precommit{
+			Height:           fmt.Sprint(vote.Height),
+			ValidatorAddress: vote.ValidatorAddress.String(),
+			ValidatorIndex:   fmt.Sprint(vote.ValidatorIndex),
+		})
+	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
+	result = BlockVo{
+		BlockMeta: BlockMeta{
+			BlockID: BlockID{
+				Hash: block.Header.LastBlockID.Hash.String(),
+			},
+			Header: BlockHeader{
+				Height:          block.Height,
+				ProposerAddress: block.Header.ProposerAddress.String(),
+				Time:            block.Header.Time,
+				NumTxs:          fmt.Sprint(len(block.Txs)),
+			},
+		},
+		Block: BlockI{
+			Header: Header{
+				Height: block.Height,
+			},
+			LastCommit: LastCommit{
+				Precommits: precommits,
+			},
+		},
 	}
 	return result
 }
 
 func BlockLatest() (result BlockVo) {
-	url := fmt.Sprintf(UrlBlockLatest, conf.Get().Hub.LcdUrl)
-	resBytes, err := utils.Get(url)
+
+	block, err := client.Tendermint().QueryBlockLatest()
 	if err != nil {
 		return result
 	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
+	var precommits []Precommit
+	for idx := range block.LastCommit.Signatures {
+		vote := block.LastCommit.GetVote(idx)
+		precommits = append(precommits, Precommit{
+			Height:           fmt.Sprint(vote.Height),
+			ValidatorAddress: vote.ValidatorAddress.String(),
+			ValidatorIndex:   fmt.Sprint(vote.ValidatorIndex),
+		})
+	}
+
+	result = BlockVo{
+		BlockMeta: BlockMeta{
+			BlockID: BlockID{
+				Hash: block.Header.LastBlockID.Hash.String(),
+			},
+			Header: BlockHeader{
+				Height:          block.Header.Height,
+				ProposerAddress: block.Header.ProposerAddress.String(),
+				Time:            block.Header.Time,
+				NumTxs:          fmt.Sprint(len(block.Data.Txs)),
+			},
+		},
+		Block: BlockI{
+			Header: Header{
+				Height: block.Height,
+			},
+			LastCommit: LastCommit{
+				Precommits: precommits,
+			},
+		},
 	}
 	return result
 }
 
 func ValidatorSet(height int64) (result ValidatorSetVo) {
-	url := fmt.Sprintf(UrlValidatorSet, conf.Get().Hub.LcdUrl, height)
-	resBytes, err := utils.Get(url)
+	validatorset, err := client.Tendermint().QueryValidators(height)
 	if err != nil {
 		return result
 	}
-
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
+	result = ValidatorSetVo{
+		BlockHeight: fmt.Sprint(validatorset.BlockHeight),
+	}
+	for _, val := range validatorset.Validators {
+		var pubKey crypto.PubKey
+		if bz, err := client.Cdc.MarshalJSON(val.PubKey); err == nil {
+			_ = client.Cdc.UnmarshalJSON(bz, &pubKey)
+		}
+		bech32Addr, _ := types.ConsAddressFromHex(val.Address)
+		bech32PubKey, _ := types.Bech32ifyConsPub(pubKey)
+		result.Validators = append(result.Validators, StakeValidatorVo{
+			Address:          bech32Addr.String(),
+			PubKey:           bech32PubKey,
+			ProposerPriority: val.ProposerPriority,
+			VotingPower:      val.VotingPower,
+		})
 	}
 	return result
 }
 
 func LatestValidatorSet() (result ValidatorSetVo) {
-	url := fmt.Sprintf(UrlValidatorSetLatest, conf.Get().Hub.LcdUrl)
-	resBytes, err := utils.Get(url)
+
+	validator, err := client.Tendermint().QueryValidatorsLatest()
 	if err != nil {
 		return result
 	}
+	result = ValidatorSetVo{
+		BlockHeight:fmt.Sprint(validator.BlockHeight),
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
+	}
+	for _, val := range validator.Validators {
+		var pubKey crypto.PubKey
+		if bz, err := client.Cdc.MarshalJSON(val.PubKey); err == nil {
+			_ = client.Cdc.UnmarshalJSON(bz, &pubKey)
+		}
+		bech32Addr, _ := types.ConsAddressFromHex(val.Address)
+		bech32PubKey, _ := types.Bech32ifyConsPub(pubKey)
+		result.Validators = append(result.Validators, StakeValidatorVo{
+			Address:          bech32Addr.String(),
+			PubKey:           bech32PubKey,
+			ProposerPriority: val.ProposerPriority,
+			VotingPower:      val.VotingPower,
+		})
 	}
 	return result
 }
 
-func BlockResult(height int64) (result BlockResultVo) {
+func BlockResult(height int64) (result BlockResultVo, txsnum int) {
 
-	url := fmt.Sprintf(UrlBlocksResult, conf.Get().Hub.LcdUrl, height)
-	resBytes, err := utils.Get(url)
+	blockresult, err := client.Tendermint().QueryBlockResult(height)
 	if err != nil {
-		return result
+		logger.Error("Query Block Result error",
+			logger.String("err", err.Error()))
+		return
 	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
+	var events BeginBlockEvents
+	for _, val := range blockresult.BeginBlockEvents {
+		event := BlockEvent{
+			Type: val.Type,
+		}
+		event.Attributes = make(map[string]string, len(val.Attributes))
+
+		for _, one := range val.Attributes {
+			event.Attributes[one.Key] = one.Value
+		}
+
+		events = append(events, event)
 	}
-	return result
+
+	result = BlockResultVo{
+		Results: Results{
+			BeginBlock: events,
+		},
+	}
+	txsnum = len(blockresult.TxsResults)
+
+	return
 
 }
 
-func BlockCoinFlow(txhash string) (result BlockCoinFlowVo) {
-	url := fmt.Sprintf(UrlTxsTxHash, conf.Get().Hub.LcdUrl, txhash)
-	resBytes, err := utils.Get(url)
-	if err != nil {
-		return result
-	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
-	}
-	return result
-}

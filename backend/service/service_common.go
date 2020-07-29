@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
@@ -11,11 +10,6 @@ import (
 
 type CommonService struct {
 	BaseService
-	genesis lcd.GenesisVo
-}
-
-func (service *CommonService) GetModule() Module {
-	return Common
 }
 
 func (service CommonService) QueryText(text string) vo.ResultVo {

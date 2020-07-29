@@ -10,14 +10,11 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2"
+	"fmt"
 )
 
 type BlockService struct {
 	BaseService
-}
-
-func (service *BlockService) GetModule() Module {
-	return Block
 }
 
 func (service *BlockService) GetValidatorSet(height int64, page, size int) vo.ValidatorSet {
@@ -27,7 +24,7 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) vo.Va
 	}
 
 	b := lcd.Block(height)
-	if b.Block.Header.Height == "" {
+	if b.Block.Header.Height == 0 {
 		panic(types.CodeNotFound)
 	}
 
@@ -50,8 +47,8 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) vo.Va
 		if k >= page*size && k < (page+1)*size {
 			var tmp vo.BlockValidator
 			tmp.Consensus = v.Address
-			tmp.VotingPower = v.VotingPower
-			tmp.ProposerPriority = v.ProposerPriority
+			tmp.VotingPower = fmt.Sprint(v.VotingPower)
+			tmp.ProposerPriority = fmt.Sprint(v.ProposerPriority)
 			for _, validator := range validatorArr {
 				if validator.ConsensusPubkey == v.PubKey {
 					tmp.OperatorAddress = validator.OperatorAddress
@@ -73,8 +70,9 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 	var result vo.BlockInfo
 
 	currentBlock := lcd.Block(height)
-	if currentBlock.Block.Header.Height == "" {
-		panic(types.CodeNotFound)
+	if currentBlock.Block.Header.Height == 0 {
+		logger.Warn("query block is failed", logger.Int64("height", height))
+		return result
 	}
 
 	proposerHexAddr := currentBlock.BlockMeta.Header.ProposerAddress
@@ -88,22 +86,18 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 		result.PropoperAddr = validatorDoc.OperatorAddress
 		result.PropopserMoniker = validatorDoc.Description.Moniker
 	}
-
-	result.LatestHeight = lcd.BlockLatest().BlockMeta.Header.Height
-	currentBlockRes := lcd.BlockResult(height)
+	result.LatestHeight = fmt.Sprint(lcd.BlockLatest().BlockMeta.Header.Height)
+	currentBlockRes, numTx := lcd.BlockResult(height)
 	lcdValidators := lcd.ValidatorSet(height)
-
 	result.TotalValidatorNum = len(lcdValidators.Validators)
 	nextBlock := lcd.Block(height + 1)
 	var totalVotingPower, precommitVotingPower, precommitValidatorNum int
 	for k, v := range lcdValidators.Validators {
-		powerAsInt, err := strconv.Atoi(v.VotingPower)
-		if err != nil {
-			logger.Error("strconv VotingPower err", logger.String("error", err.Error()), service.GetTraceLog())
-		}
+		powerAsInt := int(v.VotingPower)
+
 		totalVotingPower += powerAsInt
 
-		if nextBlock.Block.Header.Height != "" {
+		if nextBlock.Block.Header.Height != 0 {
 			for _, precommitValidator := range nextBlock.Block.LastCommit.Precommits {
 				if strconv.Itoa(k) == precommitValidator.ValidatorIndex {
 					precommitVotingPower += powerAsInt
@@ -123,16 +117,23 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 	}
 	result.TotalValidatorNum = len(lcdValidators.Validators)
 
-	for _, v := range currentBlockRes.Results.BeginBlock.Tags {
-		if v.Key == "mint-coin" {
-			result.MintCoin = utils.ParseCoin(v.Value)
+	for _, v := range currentBlockRes.Results.BeginBlock {
+		if v.Type == "mint" {
+			if value, ok := v.Attributes["mint_coin"]; ok {
+				amount, _ := utils.ParseStringToFloat(value)
+				result.MintCoin = utils.Coin{
+					Amount: amount,
+					Denom:  types.StakeUint,
+				}
+			}
 		}
+
 	}
 
 	result.BlockHash = currentBlock.BlockMeta.BlockID.Hash
-	result.BlockHeight = currentBlock.Block.Header.Height
+	result.BlockHeight = fmt.Sprint(currentBlock.Block.Header.Height)
 	result.Timestamp = currentBlock.BlockMeta.Header.Time.UTC()
-	result.Transactions = currentBlock.BlockMeta.Header.NumTxs
+	result.Transactions = fmt.Sprint(numTx)
 
 	return result
 }
@@ -267,36 +268,9 @@ func (service *BlockService) QueryRecent() vo.BlockInfoVoRespond {
 	return result
 }
 
-func buildBlock(block document.Block) (result vo.BlockInfoVo) {
-	result.Height = block.Height
-	result.Hash = block.Hash
-	result.Time = block.Time.UTC()
-	result.NumTxs = block.NumTxs
-	var validators []vo.ValInfo
-	for _, v := range block.Validators {
-		validators = append(validators, vo.ValInfo{
-			Address:     v.Address,
-			VotingPower: v.VotingPower,
-		})
-	}
-	result.Validators = validators
-
-	var lastCommit []string
-	for _, v := range block.Block.LastCommit.Precommits {
-		lastCommit = append(lastCommit, v.ValidatorAddress)
-	}
-	result.LastCommit = lastCommit
-	result.TotalTxs = block.Meta.Header.TotalTxs
-	result.LastBlockHash = block.Block.LastCommit.BlockID.Hash
-	return result
-}
-
 func (service *BlockService) QueryLatestHeight() (result vo.LatestHeightRespond) {
 	var block = lcd.BlockLatest()
-	var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
-	if !ok {
-		panic(types.CodeNotFound)
-	}
+	var height = block.BlockMeta.Header.Height
 
 	blockdb, err := document.Block{}.QueryLatestBlockFromDB()
 	if err != nil {

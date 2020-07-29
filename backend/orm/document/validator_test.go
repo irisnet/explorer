@@ -70,3 +70,12 @@ func TestValidator_QueryValidatorDescription(t *testing.T) {
 	datamsg, _ := json.Marshal(data)
 	t.Log(string(datamsg))
 }
+
+func TestValidator_GetBondedValidatorsSharesTokens(t *testing.T) {
+	validators, err := Validator{}.GetBondedValidatorsSharesTokens()
+	if err != nil {
+		t.Fatal(err)
+	}
+	datamsg, _ := json.Marshal(validators)
+	t.Log(string(datamsg))
+}

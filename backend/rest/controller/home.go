@@ -9,8 +9,8 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
+	"math/big"
 )
 
 func RegisterHome(r *mux.Router) error {
@@ -36,16 +36,13 @@ func RegisterHome(r *mux.Router) error {
 func registerNavigationBar(r *mux.Router) error {
 	doApi(r, types.UrlRegisterNavigationBar, "GET", func(request vo.IrisReq) interface{} {
 		var block = lcd.BlockLatest()
-		if block.BlockMeta.Header.Height == "" {
+		if block.BlockMeta.Header.Height == 0 {
 			return nil
 		}
-		var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
-		if !ok {
-			panic(types.CodeNotFound)
-		}
+		height := block.BlockMeta.Header.Height
 		var result = NavigationData{
 			BlockHeight: height,
-			TotalTxs:    utils.ParseIntWithDefault(block.BlockMeta.Header.TotalTxs, 0),
+			TotalTxs:    int64(tx.TxCount()),
 			BlockTime:   block.BlockMeta.Header.Time,
 		}
 		var proposer = block.BlockMeta.Header.ProposerAddress
@@ -64,14 +61,16 @@ func registerNavigationBar(r *mux.Router) error {
 			var voteVp = int64(0)
 			var voteValNum = 0
 			for i, commit := range block.Block.LastCommit.Precommits {
-				var vp = utils.ParseIntWithDefault(validatorSet.Validators[i].VotingPower, 0)
+				var vp = validatorSet.Validators[i].VotingPower
 				if len(commit.Height) > 0 {
 					voteVp += vp
 					voteValNum++
 				}
 				totalVp += vp
 			}
-			result.VotingRatio = float32(voteVp) / float32(totalVp)
+			if totalVp > 0 {
+				result.VotingRatio = float32(voteVp) / float32(totalVp)
+			}
 			result.VotingTokens = strconv.FormatInt(voteVp, 10)
 			result.VoteValNum = voteValNum
 			result.ActiveValNum = len(validatorSet.Validators)
@@ -96,50 +95,19 @@ func registerNavigationBar(r *mux.Router) error {
 				}
 			}()
 			var poolStake = lcd.StakePool()
+			loose, _ := new(big.Rat).SetString(poolStake.LooseTokens)
+			bonded, _ := new(big.Rat).SetString(poolStake.BondedTokens)
+			total := new(big.Rat).Add(loose, bonded)
+			if total.Cmp(new(big.Rat).SetInt64(0)) == 1 && total.Cmp(bonded) >= 0 {
+				ratio := new(big.Rat).Quo(bonded, total)
+				result.BondedRatio = ratio.FloatString(2)
+			}
+
 			result.BondedTokens = poolStake.BondedTokens
-			result.BondedRatio = poolStake.BondedRatio
-			result.TotalSupply = poolStake.TotalSupply
+			result.TotalSupply = total.FloatString(18)
 		}
 		funGroup = append(funGroup, queryBondedInfo)
 		group.Add(1)
-
-		//var getTokenStatCirculation = func() {
-		//	defer func() {
-		//		group.Done()
-		//		if r := recover(); r != nil {
-		//			logger.Error("getTokenStatCirculation error", logger.Any("err", r))
-		//		}
-		//	}()
-		//	if v, err := lcd.GetTokenStatsCirculation(); err != nil {
-		//		logger.Error("GetTokenStatsCirculation fail", logger.String("err", err.Error()))
-		//		result.Circulation = "0"
-		//	} else {
-		//		result.Circulation = v.Amount
-		//	}
-		//}
-		//funGroup = append(funGroup, getTokenStatCirculation)
-		//group.Add(1)
-
-		//var getTokenStatFoundationBonded = func() {
-		//defer func() {
-		//	group.Done()
-		//	if r := recover(); r != nil {
-		//		logger.Error("getTokenStatFoundationBonded error", logger.Any("err", r))
-		//	}
-		//}()
-
-		//accService := service.AccountService{}
-		//if conf.Get().Hub.Prefix.AccAddr == types.MainnetAccPrefix {
-		//res := accService.QueryDelegations(types.FoundationDelegatorAddr)
-		//foundationBondAmt := float64(0)
-		//for _, v := range res {
-		//	foundationBondAmt += v.Amount.Amount
-		//}
-		//result.FoundationBonded = utils.ParseStringFromFloat64(foundationBondAmt)
-		//}
-		//}
-		//funGroup = append(funGroup, getTokenStatFoundationBonded)
-		//group.Add(1)
 
 		var calculateAvgBlockTime = func() {
 			defer func() {
@@ -186,7 +154,7 @@ type NavigationData struct {
 	BondedTokens     string    `json:"bonded_tokens"`
 	TotalSupply      string    `json:"total_supply"`
 	Circulation      string    `json:"circulation"`
-	FoundationBonded string    `json:"foundation_bonded"`
+	//FoundationBonded string    `json:"foundation_bonded"`
 	Moniker          string    `json:"moniker"`
 	OperatorAddr     string    `json:"operator_addr"`
 	ValidatorIcon    string    `json:"validator_icon"`

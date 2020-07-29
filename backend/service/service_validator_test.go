@@ -10,12 +10,11 @@ import (
 	"encoding/json"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/explorer/backend/orm/document"
 )
 
 func TestGetDelegationsFromLcd(t *testing.T) {
 
-	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5, false, true)
+	delegationPage := new(ValidatorService).GetDelegationsFromLcd("iva18e2e9fxxrr88k78gg7fhuuqgccfv8selu5wk8n", 1, 5, false, true)
 	t.Logf(" %v \n", delegationPage)
 }
 
@@ -71,7 +70,7 @@ func TestConvertConsensusPublicKey(t *testing.T) {
 
 func TestGetValidators(t *testing.T) {
 
-	validatorList := new(ValidatorService).GetValidators("jailed", "browser", 0, 100, true)
+	validatorList := new(ValidatorService).GetValidators("", "browser", 0, 100, true)
 
 	//res := validatorList.([]lcd.ValidatorVo)
 	resBytes, _ := json.Marshal(validatorList)
@@ -94,18 +93,18 @@ func TestValidatorService_UpdateValidatorStaticData(t *testing.T) {
 }
 func TestValidatorService_UpdateValidators(t *testing.T) {
 
-	validators, _ := document.Validator{}.GetAllValidator()
-	//fmt.Println(validators)
-	if err := validatorService.UpdateValidators(validators); err != nil {
-		t.Fatal(err)
-	} else {
-		t.Log("success")
-	}
+	//validators, _ := document.Validator{}.GetAllValidator()
+	////fmt.Println(validators)
+	//if err := validatorService.UpdateValidators(validators); err != nil {
+	//	t.Fatal(err)
+	//} else {
+	//	t.Log("success")
+	//}
 }
 
 func TestBuildValidators(t *testing.T) {
-	res := buildValidators()
-	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
+	validatorService.HandleValidators()
+	//t.Log(string(utils.MarshalJsonIgnoreErr(res)))
 }
 
 
@@ -117,4 +116,10 @@ func TestValidatorService_GetValidatorDetail(t *testing.T) {
 func TestValidatorService_GetCommisstionInfoByValidatorAddr(t *testing.T) {
 	res := validatorService.GetCommisstionInfo()
 	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
+}
+
+func TestValidatorService_GetCommisstionRewards(t *testing.T) {
+	res := validatorService.GetDistributionCommissionRewardsByAddr("iva1x98k5n7xj0h3udnf5dcdzw85tsfa75qm682jtg")
+	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
+	t.Log(getTotalVotingPower(nil))
 }

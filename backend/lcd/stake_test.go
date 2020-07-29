@@ -3,6 +3,8 @@ package lcd
 import (
 	"encoding/json"
 	"testing"
+	"strconv"
+	"fmt"
 )
 
 func TestGetRedelegationsByValidatorAddr(t *testing.T) {
@@ -17,7 +19,7 @@ func TestGetRedelegationsByValidatorAddr(t *testing.T) {
 
 func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
 
-	rewards, _, _, err := GetDistributionRewardsByValidatorAcc("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
+	rewards,err := GetDistributionCommissionRewardsByAddress("iva1x98k5n7xj0h3udnf5dcdzw85tsfa75qm682jtg")
 	if err != nil {
 		t.Error(err)
 	}
@@ -28,8 +30,7 @@ func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
 }
 
 func TestGetJailedUntilAndMissedBlocksCountByConsensusPublicKey(t *testing.T) {
-
-	jailedUntil, missedBlockCount, _, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("fcp1zcjduepqcjgmderfahnlyrse563r2hcc3d4vjpafw03axzn3e87kfuqznjcsur8xrq")
+	jailedUntil, missedBlockCount, _, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("")
 
 	if err != nil {
 		t.Error(err)
@@ -39,7 +40,7 @@ func TestGetJailedUntilAndMissedBlocksCountByConsensusPublicKey(t *testing.T) {
 }
 
 func TestValidator(t *testing.T) {
-	address := "fva1k98nqnytl9u5ralns7ca7n8tpmacl8k25ymgyr"
+	address := "iva1x98k5n7xj0h3udnf5dcdzw85tsfa75qm682jtg"
 
 	if res, err := Validator(address); err != nil {
 		t.Fatal(err)
@@ -55,14 +56,10 @@ func TestValidators(t *testing.T) {
 	t.Log(string(resBytes))
 }
 
-func TestQueryWithdrawAddr(t *testing.T) {
-	address := "faa1k98nqnytl9u5ralns7ca7n8tpmacl8k2p438ey"
-	res := QueryWithdrawAddr(address)
-	t.Log(res)
-}
+
 
 func TestGetDelegationsByDelAddr(t *testing.T) {
-	address := "faa192vef4442d07lqde59mx35dvmfv9v72wrsu84a"
+	address := "iaa18e2e9fxxrr88k78gg7fhuuqgccfv8self9ye65"
 	res := GetDelegationsByDelAddr(address)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
@@ -70,32 +67,28 @@ func TestGetDelegationsByDelAddr(t *testing.T) {
 
 func TestDelegationByValidator(t *testing.T) {
 	address := "fva1k98nqnytl9u5ralns7ca7n8tpmacl8k25ymgyr"
-	res := DelegationByValidator(address)
+	res := GetDelegationByValidator(address)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
 }
 
 func TestStakePool(t *testing.T) {
 	res := StakePool()
+	a, _ := strconv.ParseFloat(res.BondedTokens, 64)
+	b, _ := strconv.ParseFloat(res.LooseTokens, 64)
+	fmt.Println(a + b)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
 }
 
 func TestSignInfo(t *testing.T) {
-	pubKey := "fcp1zcjduepqy5ygunecsppr7ye9fnjm3tsd82k7t3pmaqcpk3z9tegwz2kaxctsc3d4cj"
+	pubKey := "icp1zcjduepq6tfg639yglaxnxxst8mk058g86zuqlvnr0ql7d6setzj0x0flrysr6de8x"
 	res := SignInfo(pubKey)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
 }
 
-func TestGetDelegationsByValidatorAddr(t *testing.T) {
 
-	delegations := GetDelegationsByValidatorAddr("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
-
-	for k, v := range delegations {
-		t.Logf("k: %v  v: %v \n", k, v)
-	}
-}
 
 func TestGetUnbondingDelegationsByValidatorAddr(t *testing.T) {
 

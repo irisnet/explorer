@@ -1,39 +1,67 @@
 package lcd
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/utils"
+	"fmt"
 )
 
-func GetAssetTokens() (result []AssetTokens) {
-	url := fmt.Sprintf(UrlAssetTokens, conf.Get().Hub.LcdUrl)
-	resBytes, err := utils.Get(url)
+func GetAssetTokens(address string) (result []AssetToken) {
+
+	tokens, err := client.Asset().QueryTokens(address)
 	if err != nil {
-		logger.Error("get AssetTokens error", logger.String("err", err.Error()))
-		return result
+		logger.Error("Query Asset Token error", logger.String("err", err.Error()))
+		return
+	}
+	for _, val := range tokens {
+		result = append(result, AssetToken{
+			BaseToken: BaseToken{
+				Name:          val.Value.Name,
+				Scale:         int(val.Value.Scale),
+				Symbol:        val.Value.Symbol,
+				Mintable:      val.Value.Mintable,
+				MaxSupply:     fmt.Sprint(val.Value.MaxSupply),
+				Owner:         val.Value.Owner,
+				InitialSupply: fmt.Sprint(val.Value.InitialSupply),
+				MinUnitAlias:  val.Value.MinUnit,
+			},
+		})
 	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("Unmarshal AssetTokens error", logger.String("err", err.Error()))
-		return result
-	}
-	return result
+	return
 }
 
-func GetAssetGateways() (result []AssetGateways) {
-	url := fmt.Sprintf(UrlAssetGateways, conf.Get().Hub.LcdUrl)
-	resBytes, err := utils.Get(url)
-	if err != nil {
-		logger.Error("get GetAssetGateways error", logger.String("err", err.Error()))
-		return result
-	}
+//func GetAssetByAddr(address string) (result []AssetToken) {
+//	tokens, err := client.Asset().QueryTokens(address)
+//	if err != nil {
+//		logger.Error("Query Asset Token by address error", logger.String("err", err.Error()))
+//		return
+//	}
+//	for _, val := range tokens {
+//		result = append(result, AssetToken{BaseToken: BaseToken{
+//			Symbol:        val.Symbol,
+//			Scale:         int(val.Scale),
+//			MinUnitAlias:  val.MinUnit,
+//			InitialSupply: fmt.Sprint(val.InitialSupply),
+//			MaxSupply:     fmt.Sprint(val.MaxSupply),
+//			Mintable:      val.Mintable,
+//			Owner:         val.Owner,
+//		},
+//		})
+//	}
+//	return
+//}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("Unmarshal GetAssetGateways error", logger.String("err", err.Error()))
-		return result
-	}
-	return result
-}
+//func GetAssetGateways() (result []AssetGateways) {
+//	url := fmt.Sprintf(UrlAssetGateways, conf.Get().Hub.LcdUrl)
+//	resBytes, err := utils.Get(url)
+//	if err != nil {
+//		logger.Error("get GetAssetGateways error", logger.String("err", err.Error()))
+//		return result
+//	}
+//
+//	if err := json.Unmarshal(resBytes, &result); err != nil {
+//		logger.Error("Unmarshal GetAssetGateways error", logger.String("err", err.Error()))
+//		return result
+//	}
+//	return result
+//}
