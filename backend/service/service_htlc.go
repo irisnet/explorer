@@ -15,7 +15,6 @@ type HtlcService struct {
 	BaseService
 }
 
-
 func (service *HtlcService) QueryHtlcByHashLock(hashlock string) vo.HtlcInfo {
 
 	var resp vo.HtlcInfo
@@ -24,14 +23,12 @@ func (service *HtlcService) QueryHtlcByHashLock(hashlock string) vo.HtlcInfo {
 		logger.Error("HtlcInfo from lcd have error", logger.String("err", err.Error()))
 		return resp
 	}
-	resp.From = htlcinfo.Value.Sender
+	resp.From = htlcinfo.Sender
 	resp.HashLock = hashlock
-	resp.To = htlcinfo.Value.To
-	resp.ExpireHeight = htlcinfo.Value.ExpireHeight
-	resp.Timestamp = htlcinfo.Value.Timestamp
-	resp.CrossChainReceiver = htlcinfo.Value.ReceiverOnOtherChain
-	resp.State = htlcinfo.Value.State
-	for _, val := range htlcinfo.Value.Amount {
+	resp.To = htlcinfo.To
+	resp.ExpireHeight = int64(htlcinfo.ExpireHeight)
+	resp.State = htlcinfo.State
+	for _, val := range htlcinfo.Amount {
 		resp.Amount = append(resp.Amount, LoadCoinVoFromLcdCoin(val))
 	}
 	query := bson.M{
@@ -39,7 +36,6 @@ func (service *HtlcService) QueryHtlcByHashLock(hashlock string) vo.HtlcInfo {
 		document.Tx_Field_Msgs_Hashcode: hashlock,
 		document.Tx_Field_Status:        "success",
 	}
-
 
 	txAsDoc, err := document.CommonTx{}.QueryHtlcTx(query)
 	if err != nil {

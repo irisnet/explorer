@@ -72,18 +72,18 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 	burnedtokens := lcd.GetTokens(banktokenstats.BurnedTokens)
 	bondedtokens := lcd.GetTokens(banktokenstats.BondedTokens)
 
-	tokenStatsVO.TotalsupplyTokens = LoadCoinVoFromLcdCoin(&supply)
-	tokenStatsVO.CirculationTokens = LoadCoinVoFromLcdCoin(&circulation)
+	tokenStatsVO.TotalsupplyTokens = LoadCoinVoFromLcdCoin(supply)
+	tokenStatsVO.CirculationTokens = LoadCoinVoFromLcdCoin(circulation)
 	//tokenStatsVO.InitsupplyTokens = LoadCoinVoFromLcdCoin(&initsupply)
-	tokenStatsVO.DelegatedTokens = LoadCoinVoFromLcdCoin(&bondedtokens)
-	tokenStatsVO.BurnedTokens = LoadCoinVoFromLcdCoin(&burnedtokens)
+	tokenStatsVO.DelegatedTokens = LoadCoinVoFromLcdCoin(bondedtokens)
+	tokenStatsVO.BurnedTokens = LoadCoinVoFromLcdCoin(burnedtokens)
 	if conf.Get().Hub.Prefix.AccAddr == types.MainnetAccPrefix {
 		if balance, err := lcd.GetCommunityTax(); err == nil {
-			tokenStatsVO.CommunityTax = LoadCoinVoFromLcdCoin(&balance)
+			tokenStatsVO.CommunityTax = LoadCoinVoFromLcdCoin(balance)
 		}
 	}
 
-	tokenStatsVO.FoundationBonded = LoadCoinVoFromLcdCoin(&lcd.Coin{
+	tokenStatsVO.FoundationBonded = LoadCoinVoFromLcdCoin(lcd.Coin{
 		Denom:  types.StakeUint,
 		Amount: foundationBonded,
 	})
@@ -91,7 +91,7 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 	return tokenStatsVO, nil
 }
 
-func LoadCoinVoFromLcdCoin(coin *lcd.Coin) *vo.CoinVo {
+func LoadCoinVoFromLcdCoin(coin lcd.Coin) *vo.CoinVo {
 	return &vo.CoinVo{
 		Denom:  coin.Denom,
 		Amount: coin.Amount,
