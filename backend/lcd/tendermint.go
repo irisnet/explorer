@@ -7,7 +7,7 @@ import (
 
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/weichang-bianjie/irishub-sdk-go/types"
+	"github.com/irisnet/irishub-sdk-go/types"
 	"strings"
 	"github.com/tendermint/tendermint/crypto"
 )

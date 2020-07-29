@@ -2,8 +2,8 @@ package lcd
 
 import (
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/weichang-bianjie/irishub-sdk-go"
-	"github.com/weichang-bianjie/irishub-sdk-go/types"
+	"github.com/irisnet/irishub-sdk-go"
+	"github.com/irisnet/irishub-sdk-go/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/logger"
 	"time"
@@ -24,7 +24,7 @@ func init() {
 		Mode:    types.Commit,
 		Timeout: time.Duration(10 * time.Second),
 		Fee: []types.DecCoin{
-			{Denom: "stake", Amount: types.NewDecimal(1)},
+			{Denom: "stake", Amount: types.NewDec(1)},
 		},
 		Gas:       2000000,
 		KeyDAO:    types.NewMemoryDB(), //default keybase

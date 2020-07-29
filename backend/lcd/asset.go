@@ -5,9 +5,9 @@ import (
 	"fmt"
 )
 
-func GetAssetTokens(address string) (result []AssetToken) {
+func GetAssetTokens() (result []AssetToken) {
 
-	tokens, err := client.Asset().QueryTokens(address)
+	tokens, err := client.Asset().QueryTokens()
 	if err != nil {
 		logger.Error("Query Asset Token error", logger.String("err", err.Error()))
 		return

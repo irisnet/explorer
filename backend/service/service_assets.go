@@ -147,14 +147,9 @@ func convertModelActualFee(actfee document.ActualFee) vo.ActualFee {
 	}
 }
 
-func (service *AssetsService) UpdateAssetTokens(accs []document.Account) {
 
-	for _, val := range accs {
-		handleAssetTokens(val.Address)
-	}
-}
 
-func handleAssetTokens(address string) {
+func (service *AssetsService) UpdateAssetTokens() {
 
 	var vMap map[string]bson.ObjectId
 	validators, err := document.AssetToken{}.GetAllAssets()
@@ -166,7 +161,7 @@ func handleAssetTokens(address string) {
 	}
 
 	var assetModel document.AssetToken
-	res := lcd.GetAssetTokens(address)
+	res := lcd.GetAssetTokens()
 	for _, v := range res {
 		item := document.AssetToken{
 			Symbol:        v.BaseToken.Symbol,

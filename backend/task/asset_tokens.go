@@ -3,7 +3,6 @@ package task
 import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/utils"
 )
@@ -28,13 +27,9 @@ func (task UpdateAssetTokens) Start() {
 func (task UpdateAssetTokens) DoTask(fn func(string) chan bool) error {
 	stop := fn(task.Name())
 	defer HeartQuit(stop)
-	accs, err := document.Account{}.GetAllAccount()
-	if err != nil {
-		return err
-	}
 
 	var assetService service.AssetsService
-	assetService.UpdateAssetTokens(accs)
+	assetService.UpdateAssetTokens()
 
 	return nil
 }
