@@ -11,13 +11,14 @@ import (
 )
 
 const (
-	CoinTypeIris  = "iris"
-	CoinTypeAtto  = "iris-atto"
-	CoinTypeFemto = "iris-femto"
-	CoinTypePico  = "iris-pico"
-	CoinTypeNano  = "iris-nano"
-	CoinTypeMicro = "iris-micro"
-	CoinTypeMilli = "iris-milli"
+	CoinTypeStake = "stake"
+	//	CoinTypeIris  = "iris"
+	//	CoinTypeAtto  = "iris-atto"
+	//	CoinTypeFemto = "iris-femto"
+	//	CoinTypePico  = "iris-pico"
+	//	CoinTypeNano  = "iris-nano"
+	//	CoinTypeMicro = "iris-micro"
+	//	CoinTypeMilli = "iris-milli"
 )
 
 var (
@@ -29,15 +30,15 @@ var (
 	reCoin = regexp.MustCompile(fmt.Sprintf(`^(%s)%s(%s)$`, reAmt, reSpc, reDnm))
 )
 
-func init() {
-	coinsMap[CoinTypeIris] = float64(1)
-	coinsMap[CoinTypeMilli] = float64(1000)
-	coinsMap[CoinTypeMicro] = float64(1000000)
-	coinsMap[CoinTypeNano] = float64(1000000000)
-	coinsMap[CoinTypePico] = float64(1000000000000)
-	coinsMap[CoinTypeFemto] = float64(1000000000000000)
-	coinsMap[CoinTypeAtto] = float64(1000000000000000000)
-}
+//func init() {
+//	coinsMap[CoinTypeIris] = float64(1)
+//	coinsMap[CoinTypeMilli] = float64(1000)
+//	coinsMap[CoinTypeMicro] = float64(1000000)
+//	coinsMap[CoinTypeNano] = float64(1000000000)
+//	coinsMap[CoinTypePico] = float64(1000000000000)
+//	coinsMap[CoinTypeFemto] = float64(1000000000000000)
+//	coinsMap[CoinTypeAtto] = float64(1000000000000000000)
+//}
 
 func ParseCoin(coinStr string) (coin Coin) {
 	coinStr = strings.TrimSpace(coinStr)

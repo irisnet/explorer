@@ -18,7 +18,6 @@ const (
 	StatusFailed = "failed"
 	StatusFail   = "fail"
 )
-
 func RemoveDuplicationStrArr(list []string) []string {
 	unique_set := make(map[string]bool, len(list))
 	for _, x := range list {
@@ -183,7 +182,7 @@ func CovertShareTokens(tokens, shares, selfBond string) string {
 	rate, err := QuoByStr(tokens, shares)
 	if err != nil {
 		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
-		return ""
+		rate, _ = new(big.Rat).SetString("1")
 	}
 
 	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)

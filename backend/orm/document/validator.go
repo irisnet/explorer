@@ -538,6 +538,17 @@ func (_ Validator) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }
 
+func (_ Validator) Save(validator Validator) error {
+	q := orm.NewQuery()
+	defer q.Release()
+
+	c := q.GetDb().C(CollectionNmValidator)
+	if err := c.Insert(validator); err != nil {
+		return err
+	}
+	return nil
+}
+
 func getValUpTime(query *orm.Query) map[string]int {
 	var result []Block
 	var upTimeMap = make(map[string]int)

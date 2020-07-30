@@ -15,9 +15,6 @@ type HtlcService struct {
 	BaseService
 }
 
-func (service *HtlcService) GetModule() Module {
-	return Htlc
-}
 
 func (service *HtlcService) QueryHtlcByHashLock(hashlock string) vo.HtlcInfo {
 

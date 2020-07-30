@@ -9,7 +9,6 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"strconv"
-	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"time"
 	"encoding/json"
 )
@@ -25,10 +24,6 @@ type AddrAsMultiType struct {
 
 type ProposalService struct {
 	BaseService
-}
-
-func (service *ProposalService) GetModule() Module {
-	return Proposal
 }
 
 func (service *ProposalService) QueryProposalsByHeight(height int64) []vo.ProposalInfoVo {
@@ -228,7 +223,7 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 		logger.Error("get proposal level by type", logger.String("err", err.Error()), logger.String("param", data.Type))
 	}
 	l.Name = name
-	passThreshold, vetoThreshold, participation, _, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
+	passThreshold, vetoThreshold, participation, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
 	if err != nil {
 		logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", data.Type))
 	}
@@ -268,11 +263,6 @@ func formatProposalStatusVotingData(proposalStatusVotingData []document.Proposal
 			if address, ok := voterValAddrArr[valdator.OperatorAddress]; ok && address != "" {
 				addrVoterMonikerMap[address] = valdator.Description.Moniker
 			}
-
-			//addrAsMultiTypeMap, err = service.GetValidatorPublicKeyMonikerFromProposalVoter(voterAddrArr)
-			//if err != nil {
-			//	logger.Error("query GetValidatorPublicKeyMonikerFromProposalVoter", logger.String("err", err.Error()), logger.Any("voterAddrArr", voterAddrArr))
-			//}
 		}
 	}
 
@@ -340,7 +330,7 @@ func formatProposalStatusVotingData(proposalStatusVotingData []document.Proposal
 		}
 		l.Name = name
 
-		passThreshold, vetoThreshold, participation, _, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(propo.Type)
+		passThreshold, vetoThreshold, participation, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(propo.Type)
 
 		if err != nil {
 			logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", propo.Type))
@@ -605,7 +595,7 @@ func (service *ProposalService) UpdateProposalVoters(vs []document.Proposal) {
 
 	for _, v := range vs {
 		voters := buildVoters(v.ProposalId)
-		if v1, ok := vMap[v.ProposalId]; ok {
+		if v1, ok := vMap[v.ProposalId]; ok && len(voters) > 0 {
 			if isDiffVoter(voters, v1.Votes) {
 				v.Votes = voters
 				if err := proposalModel.UpdateByPk(v); err != nil {
@@ -674,7 +664,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		coinsAsUtils = append(coinsAsUtils, tmp)
 	}
 
-	passThreshold, vetoThreshold, participation, penalty, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
+	passThreshold, vetoThreshold, participation, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
 	if err != nil {
 		logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", data.Type))
 	}
@@ -698,8 +688,8 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		YesThreshold:    passThreshold,
 		VetoThreshold:   vetoThreshold,
 		Participation:   participation,
-		Penalty:         penalty,
-		Level:           level,
+		//Penalty:         penalty,
+		Level: level,
 	}
 
 	if data.Status == document.ProposalStatusPassed || data.Status == document.ProposalStatusRejected {
@@ -739,6 +729,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 
 		isRejectVote := false
 		if votedNum > 0 {
+			isRejectVote = bool(bool((noWithVeto / votedNum) > vetoThresholdFloat))
 			isRejectVote = bool(isParticipation && bool((noWithVeto / votedNum) > vetoThresholdFloat))
 		}
 		burnPercent, err := lcd.GetProposalBurnPercentByResult(data.Status, isRejectVote)
@@ -757,90 +748,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	proposal.Proposer = from
 	proposal.TxHash = txHash
 	switch proposal.Type {
-	case lcd.ProposalTypeParameter, lcd.ProposalTypeSoftwareUpgrade:
-		tx, err := document.CommonTx{}.QueryTxByHash(proposal.TxHash)
-		if err != nil {
-			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
-		} else {
-			if len(tx.Msgs) > 0 {
-				if lcd.ProposalTypeParameter == proposal.Type {
-					msg := msgvo.TxMsgSubmitProposal{}
-					if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
-						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
-					} else {
-						var params []vo.Param
-						for _, p := range msg.Params {
-							params = append(params, vo.Param{
-								Subspace: p.Subspace,
-								Key:      p.Key,
-								Value:    p.Value,
-							})
-						}
-						proposal.Parameters = params
-					}
-				} else {
-					msg := msgvo.TxMsgSubmitSoftwareUpgradeProposal{}
-					if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
-						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
-					} else {
-						var params []vo.Param
-						for _, p := range msg.DocTxMsgSubmitProposal.Params {
-							params = append(params, vo.Param{
-								Subspace: p.Subspace,
-								Key:      p.Key,
-								Value:    p.Value,
-							})
-						}
-						proposal.Parameters = params
-						proposal.Version = uint64(msg.Version)
-						proposal.Software = msg.Software
-						proposal.SwitchHeight = uint64(msg.SwitchHeight)
-						proposal.Threshold = msg.Threshold
-					}
-				}
-			}
-		}
-		resp.Proposal = proposal
-		return
-	case lcd.ProposalTypeCommunityTaxUsage:
-		tx, err := document.CommonTx{}.QueryTxByHash(proposal.TxHash)
-		if err != nil {
-			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
-		} else {
-			if len(tx.Msgs) > 0 {
-				msg := msgvo.TxMsgSubmitCommunityTaxUsageProposal{}
-				if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
-				} else {
-					proposal.Usage = msg.Usage
-					proposal.DestAddress = msg.DestAddress
-					proposal.Percent = msg.Percent
-				}
-			}
-		}
-		resp.Proposal = proposal
-		return
-	case lcd.ProposalTypeTokenAddition:
-		tx, err := document.CommonTx{}.QueryTxByHash(proposal.TxHash)
-		if err != nil {
-			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
-		} else {
-			if len(tx.Msgs) > 0 {
-				msg := msgvo.TxMsgSubmitTokenAdditionProposal{}
-				if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
-				} else {
-					proposal.Symbol = msg.Symbol
-					proposal.CanonicalSymbol = msg.CanonicalSymbol
-					proposal.Name = msg.Name
-					proposal.Decimal = msg.Decimal
-					proposal.MinUnitAlias = msg.MinUnitAlias
-					proposal.InitialSupply = msg.InitialSupply
-				}
-			}
-		}
-		resp.Proposal = proposal
-		return
 
 	}
 
@@ -848,49 +755,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	return
 }
 
-//func (_ ProposalService) GetValidatorPublicKeyMonikerFromProposalVoter(addrArrAsAa []string) (map[string]AddrAsMultiType, error) {
-//
-//	if len(addrArrAsAa) == 0 {
-//		return nil, nil
-//	}
-//	AddrAsMultiTypeMap := map[string]AddrAsMultiType{}
-//
-//	addrArrAsVa := make([]string, 0, len(addrArrAsAa))
-//
-//	for _, v := range addrArrAsAa {
-//		va := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v)
-//		addrArrAsVa = append(addrArrAsVa, va)
-//		AddrAsMultiTypeMap[v] = AddrAsMultiType{
-//			Va: va,
-//		}
-//	}
-//
-//	validatorsDoc, err := document.Validator{}.QueryValidatorMonikerOpAddrConsensusPubkey(addrArrAsVa)
-//
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	for _, validator := range validatorsDoc {
-//		for k, v := range AddrAsMultiTypeMap {
-//			if v.Va == validator.OperatorAddress {
-//				v.ConsensusPubKey = validator.ConsensusPubkey
-//				_, bytes, err := utils.DecodeAndConvert(validator.ConsensusPubkey)
-//				if err != nil {
-//					logger.Error("DecodeAndConvert", logger.String("err", err.Error()), logger.String("param", validator.ConsensusPubkey))
-//					continue
-//				}
-//				v.ConsensusHex = strings.ToUpper(hex.EncodeToString(bytes))
-//				v.Moniker = validator.Description.Moniker
-//				v.Status = validator.Status
-//				v.VotingPower = validator.VotingPower
-//				AddrAsMultiTypeMap[k] = v
-//			}
-//		}
-//	}
-//
-//	return AddrAsMultiTypeMap, nil
-//}
 
 func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint64]vo.Coin, error) {
 

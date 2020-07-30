@@ -34,19 +34,19 @@ const (
 	Tx_Field_Tags       = "tags"
 	Tx_Field_Msgs       = "msgs"
 
-	Tx_Field_Msgs_UdInfo         = "msgs.msg.ud_info.source"
-	Tx_Field_Msgs_Moniker        = "msgs.msg.moniker"
-	Tx_Field_Msgs_UdInfo_Symbol  = "msgs.msg.ud_info.symbol"
-	Tx_Field_Msgs_UdInfo_Gateway = "msgs.msg.ud_info.gateway"
-	Tx_Field_Msgs_Hashcode       = "msgs.msg.hash_lock"
-	Tx_AssetType_Native          = "native"
-	Tx_AssetType_Gateway         = "gateway"
+	//Tx_Field_Msgs_UdInfo         = "msgs.msg.ud_info.source"
+	Tx_Field_Msgs_Moniker = "msgs.msg.moniker"
+	//Tx_Field_Msgs_UdInfo_Symbol  = "msgs.msg.ud_info.symbol"
+	//Tx_Field_Msgs_UdInfo_Gateway = "msgs.msg.ud_info.gateway"
+	Tx_Field_Msgs_Hashcode = "msgs.msg.hash_lock"
+	Tx_AssetType_Native    = "native"
+	//Tx_AssetType_Gateway         = "gateway"
 
-	Tx_Asset_TxType_Issue                = "IssueToken"
-	Tx_Asset_TxType_Edit                 = "EditToken"
-	Tx_Asset_TxType_Mint                 = "MintToken"
-	Tx_Asset_TxType_TransferOwner        = "TransferTokenOwner"
-	Tx_Asset_TxType_TransferGatewayOwner = "TransferGatewayOwner"
+	Tx_Asset_TxType_Issue         = "IssueToken"
+	Tx_Asset_TxType_Edit          = "EditToken"
+	Tx_Asset_TxType_Mint          = "MintToken"
+	Tx_Asset_TxType_TransferOwner = "TransferTokenOwner"
+	//Tx_Asset_TxType_TransferGatewayOwner = "TransferGatewayOwner"
 )
 
 type Signer struct {
@@ -82,26 +82,36 @@ type ActualFee struct {
 }
 
 type CommonTx struct {
-	Time       time.Time         `bson:"time"`
-	Height     int64             `bson:"height"`
-	TxHash     string            `bson:"tx_hash"`
-	From       string            `bson:"from"`
-	To         string            `bson:"to"`
-	Amount     Coins             `bson:"amount"`
-	Type       string            `bson:"type"`
-	Fee        Fee               `bson:"fee"`
-	Memo       string            `bson:"memo"`
-	Status     string            `bson:"status"`
-	Code       uint32            `bson:"code"`
-	Log        string            `bson:"log"`
-	GasUsed    int64             `bson:"gas_used"`
-	GasWanted  int64             `bson:"gas_wanted"`
-	GasPrice   float64           `bson:"gas_price"`
-	ActualFee  ActualFee         `bson:"actual_fee"`
-	ProposalId uint64            `bson:"proposal_id"`
-	Tags       map[string]string `bson:"tags"`
-	Msgs       []MsgItem         `bson:"msgs"`
-	Signers    []Signer          `bson:"signers"`
+	Time       time.Time `bson:"time"`
+	Height     int64     `bson:"height"`
+	TxHash     string    `bson:"tx_hash"`
+	From       string    `bson:"from"`
+	To         string    `bson:"to"`
+	Amount     Coins     `bson:"amount"`
+	Type       string    `bson:"type"`
+	Fee        Fee       `bson:"fee"`
+	Memo       string    `bson:"memo"`
+	Status     string    `bson:"status"`
+	Code       uint32    `bson:"code"`
+	Log        string    `bson:"log"`
+	GasUsed    int64     `bson:"gas_used"`
+	GasWanted  int64     `bson:"gas_wanted"`
+	GasPrice   float64   `bson:"gas_price"`
+	ActualFee  ActualFee `bson:"actual_fee"`
+	ProposalId uint64    `bson:"proposal_id"`
+	Events     []Event   `bson:"events"`
+	Msgs       []MsgItem `bson:"msgs"`
+	Signers    []Signer  `bson:"signers"`
+}
+
+type Event struct {
+	Type       string    `bson:"type" json:"type"`
+	Attributes []Attribute `bson:"attributes" json:"attributes"`
+}
+
+type Attribute struct {
+	Key   string `bson:"key" json:"key"`
+	Value string `bson:"value" json:"value"`
 }
 
 func (tx CommonTx) String() string {
@@ -296,6 +306,18 @@ func (_ CommonTx) GetTxCountByDuration(startTime, endTime time.Time) (int, error
 	return txStore.Find(query).Count()
 }
 
+func (_ CommonTx) GetTxCount() (int, error) {
+	db := orm.GetDatabase()
+	defer db.Session.Close()
+
+	txStore := db.C(CollectionNmCommonTx)
+
+	query := bson.M{}
+	query = FilterUnknownTxs(query)
+
+	return txStore.Find(query).Count()
+}
+
 func (_ CommonTx) GetTxsByDurationAddress(startTime, endTime time.Time, address string) ([]CommonTx, error) {
 
 	db := orm.GetDatabase()
@@ -452,12 +474,11 @@ func (_ CommonTx) QueryTxAsset(assetType, tokenType, symbol, gateway string, pag
 		Tx_Field_Type:      1,
 		Tx_Field_Status:    1,
 		Tx_Field_ActualFee: 1,
-		Tx_Field_Tags:      1,
 		Tx_Field_Msgs:      1,
 		Tx_Field_Time:      1,
 	}
 	condition := bson.M{
-		Tx_Field_Msgs_UdInfo: assetType,
+		//Tx_Field_Msgs_UdInfo: assetType,
 	}
 	condition = FilterUnknownTxs(condition)
 	if tokenType != "" {
@@ -467,18 +488,18 @@ func (_ CommonTx) QueryTxAsset(assetType, tokenType, symbol, gateway string, pag
 			"$in": []string{types.TxTypeIssueToken, types.TxTypeEditToken, types.TxTypeMintToken, types.TxTypeTransferTokenOwner},
 		}
 	}
-	if symbol != "" {
-		condition[Tx_Field_Msgs_UdInfo_Symbol] = bson.M{
-			"$regex":   symbol,
-			"$options": "$i",
-		}
-	}
-	if gateway != "" {
-		condition[Tx_Field_Msgs_UdInfo_Gateway] = bson.M{
-			"$regex":   gateway,
-			"$options": "$i",
-		}
-	}
+	//if symbol != "" {
+	//	condition[Tx_Field_Msgs_UdInfo_Symbol] = bson.M{
+	//		"$regex":   symbol,
+	//		"$options": "$i",
+	//	}
+	//}
+	//if gateway != "" {
+	//	condition[Tx_Field_Msgs_UdInfo_Gateway] = bson.M{
+	//		"$regex":   gateway,
+	//		"$options": "$i",
+	//	}
+	//}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 	return num, txs, err
@@ -501,7 +522,7 @@ func (_ CommonTx) QueryTxTransferGatewayOwner(moniker string, page, size int, to
 	}
 
 	condition := bson.M{
-		Tx_Field_Type: Tx_Asset_TxType_TransferGatewayOwner,
+		//Tx_Field_Type: Tx_Asset_TxType_TransferGatewayOwner,
 	}
 	condition = FilterUnknownTxs(condition)
 	if moniker != "" {

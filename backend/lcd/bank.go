@@ -1,10 +1,8 @@
 package lcd
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/types"
 )
 
 type TokenStats struct {
@@ -14,25 +12,22 @@ type TokenStats struct {
 	TotalSupply  []*Coin `json:"total_supply"`
 }
 
-func GetBankTokenStats() (TokenStats, error) {
-
-	var result TokenStats
-	url := fmt.Sprintf(UrlBankTokenStats, conf.Get().Hub.LcdUrl)
-	resBytes, err := utils.Get(url)
-	if err != nil {
-		return result, err
-	}
-
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result, err
-	}
-	return result, nil
-}
+//func GetBankTokenStats() (TokenStats, error) {
+//
+//	var result TokenStats
+//	tokens, err := client.Bank().QueryTokenStats("")
+//	if err != nil {
+//		return result, err
+//	}
+//	data, _ := json.Marshal(tokens)
+//	fmt.Println(data)
+//	return result, nil
+//}
 
 func GetTokens(data []*Coin) Coin {
 
 	for _, val := range data {
-		if val.Denom == utils.CoinTypeAtto {
+		if val.Denom == utils.CoinTypeStake {
 			return Coin{Denom: val.Denom, Amount: val.Amount}
 		}
 	}
@@ -46,7 +41,7 @@ func GetTokenStatsCirculation() (Coin, error) {
 	}
 	return Coin{
 		Amount: string(resBytes),
-		Denom:  utils.CoinTypeIris,
+		Denom:  utils.CoinTypeStake,
 	}, nil
 }
 
@@ -57,21 +52,27 @@ func GetTokenStatsSupply() (Coin, error) {
 	}
 	return Coin{
 		Amount: string(resBytes),
-		Denom:  utils.CoinTypeIris,
+		Denom:  utils.CoinTypeStake,
 	}, nil
 }
 func GetCommunityTax() (Coin, error) {
-	url := fmt.Sprintf(UrlAccount, conf.Get().Hub.LcdUrl, CommunityTaxAddr)
-	resBytes, err := utils.Get(url)
+	balances, err := client.Bank().QueryBalances(CommunityTaxAddr, "")
 	if err != nil {
 		return Coin{}, err
 	}
-	acc := Account01411{}
-	if err := json.Unmarshal(resBytes, &acc); err != nil {
-		return Coin{}, err
+
+	var res Coin
+	for _, val := range balances {
+		if val.Denom != types.StakeUint {
+			continue
+		}
+		res = Coin{
+			Denom:  val.Denom,
+			Amount: val.Amount,
+		}
 	}
 
-	return GetTokens(acc.Value.Coins), nil
+	return res, nil
 }
 
 //func GetTokenInitSupply() Coin {

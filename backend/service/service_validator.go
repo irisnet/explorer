@@ -13,14 +13,11 @@ import (
 	"math/big"
 	"strconv"
 	"sort"
+	"gopkg.in/mgo.v2"
 )
 
 type ValidatorService struct {
 	BaseService
-}
-
-func (service *ValidatorService) GetModule() Module {
-	return Validator
 }
 
 func (service *ValidatorService) GetValidators(typ, origin string, page, size int, istotal bool) interface{} {
@@ -36,7 +33,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 			panic(types.CodeNotFound)
 		}
 
-		var totalVotingPower = getTotalVotingPower()
+		var totalVotingPower = getTotalVotingPower(validatorList)
 		for i, v := range validatorList {
 			if desc, ok := blackList[v.OperatorAddress]; ok {
 				validatorList[i].Description.Moniker = desc.Moniker
@@ -230,7 +227,7 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, size int, needpage bool, istotal bool) vo.DelegationsPage {
 
 	var lcdDelegations lcd.ValidatorDelegations
-	lcdDelegations = lcd.GetDelegationsByValidatorAddr(valAddr)
+	lcdDelegations = lcd.GetDelegationByValidator(valAddr)
 	var valaddrlist []string
 	totalShareAsRat := new(big.Rat)
 	for _, v := range lcdDelegations {
@@ -267,46 +264,6 @@ func (service *ValidatorService) GetDalegation(lcdDelegations []lcd.DelegationVo
 	items := make([]vo.Delegation, 0, len(lcdDelegations))
 	for _, v := range lcdDelegations {
 
-		////amountAsFloat64 := float64(0)
-		//var amountAsFloat64 string
-		//if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
-		//	if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
-		//		amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
-		//		amountAsFloat64 = amountAsRat.FloatString(18)
-		//		//exact := false
-		//		//amountAsFloat64, exact = amountAsRat.Float64()
-		//		//if !exact {
-		//		//	logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
-		//		//		logger.Any("exact", exact),
-		//		//		logger.Any("amountAsRat", amountAsRat))
-		//		//}
-		//	} else {
-		//		logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
-		//	}
-		//} else {
-		//	logger.Error("can not fond the validator addr from the validator collection in db", logger.String("validator addr", v.ValidatorAddr))
-		//}
-		//
-		//totalShareAsFloat64, exact := totalShareAsRat.Float64()
-		//
-		//if !exact {
-		//	logger.Info("convert totalShareAsFloat64  (big.Rat to float64) ",
-		//		logger.Any("exact", exact),
-		//		logger.Any("totalShareAsFloat64", totalShareAsFloat64))
-		//}
-		//
-		//tmp := vo.Delegation{
-		//	Address:     v.DelegatorAddr,
-		//	Block:       v.Height,
-		//	SelfShares:  v.Shares,
-		//	TotalShares: totalShareAsFloat64,
-		//	Amount:      amountAsFloat64,
-		//}
-		//if validatorMap != nil {
-		//	if valdator, ok := validatorMap[v.ValidatorAddr]; ok {
-		//		tmp.Moniker = valdator.Description.Moniker
-		//	}
-		//}
 		tmp := service.getVoDelegation(v, totalShareAsRat, tokenShareRatio)
 		items = append(items, tmp)
 
@@ -371,46 +328,6 @@ func (service *ValidatorService) GetDalegationbyPageSize(lcdDelegations []lcd.De
 	for k, v := range lcdDelegations {
 		if k >= page*size && k < (page+1)*size {
 
-			////amountAsFloat64 := float64(0)
-			//var amountAsFloat64 string
-			//if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
-			//	if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
-			//		amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
-			//		amountAsFloat64 = amountAsRat.FloatString(18)
-			//		//exact := false
-			//		//amountAsFloat64, exact = amountAsRat.Float64()
-			//		//if !exact {
-			//		//	logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
-			//		//		logger.Any("exact", exact),
-			//		//		logger.Any("amountAsRat", amountAsRat))
-			//		//}
-			//	} else {
-			//		logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
-			//	}
-			//} else {
-			//	logger.Error("can not fond the validator addr from the validator collection in db", logger.String("validator addr", v.ValidatorAddr))
-			//}
-			//
-			//totalShareAsFloat64, exact := totalShareAsRat.Float64()
-			//
-			//if !exact {
-			//	logger.Info("convert totalShareAsFloat64  (big.Rat to float64) ",
-			//		logger.Any("exact", exact),
-			//		logger.Any("totalShareAsFloat64", totalShareAsFloat64))
-			//}
-			//
-			//tmp := vo.Delegation{
-			//	Address:     v.DelegatorAddr,
-			//	Block:       v.Height,
-			//	SelfShares:  v.Shares,
-			//	TotalShares: totalShareAsFloat64,
-			//	Amount:      amountAsFloat64,
-			//}
-			//if validatorMap != nil {
-			//	if valdator, ok := validatorMap[v.ValidatorAddr]; ok {
-			//		tmp.Moniker = valdator.Description.Moniker
-			//	}
-			//}
 			tmp := service.getVoDelegation(v, totalShareAsRat, tokenShareRatio)
 			items = append(items, tmp)
 		}
@@ -455,9 +372,9 @@ func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, s
 
 func (service *ValidatorService) GetWithdrawAddrByValidatorAddr(valAddr string) vo.WithdrawAddr {
 
-	withdrawAddr, err := lcd.GetWithdrawAddressByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
+	withdrawAddr, err := lcd.GetWithdrawAddressByAddress(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
 	if err != nil {
-		logger.Error("GetWithdrawAddressByValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
+		logger.Error("GetWithdrawAddress By ValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
 	}
 
 	return vo.WithdrawAddr{
@@ -465,11 +382,11 @@ func (service *ValidatorService) GetWithdrawAddrByValidatorAddr(valAddr string) 
 	}
 }
 
-func (service *ValidatorService) GetDistributionRewardsByValidatorAddr(valAddr string) utils.CoinsAsStr {
+func (service *ValidatorService) GetDistributionCommissionRewardsByAddr(valAddr string) utils.CoinsAsStr {
 
-	rewardsCoins, _, _, err := lcd.GetDistributionRewardsByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
+	rewardsCoins, err := lcd.GetDistributionCommissionRewardsByAddress(valAddr)
 	if err != nil {
-		logger.Error("GetDistributionRewardsByValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
+		logger.Error("GetDistribution Commission RewardsByValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
 	}
 
 	return rewardsCoins
@@ -574,28 +491,21 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) vo.Val
 	if err != nil {
 		logger.Error("GetJailedUntilAndMissedBlocksCountByConsensusPublicKey", logger.String("consensus", validatorAsDoc.ConsensusPubkey), logger.String("err", err.Error()))
 	} else {
-		var startHeight, ok = utils.ParseInt(startHeight)
-		if !ok {
-			logger.Error("Format StartHeight", logger.String("err", err.Error()))
+
+		var lastBlock = lcd.BlockLatest()
+		var currentHeight = lastBlock.BlockMeta.Header.Height
+
+		signedBlocksWindow, err := document.GovParams{}.QueryOne("signed_blocks_window")
+		if err != nil {
+			logger.Error("Query signed_blocks_window", logger.String("err", err.Error()))
 		} else {
-			var lastBlock = lcd.BlockLatest()
-			var currentHeight, ok = utils.ParseInt(lastBlock.BlockMeta.Header.Height)
-			if !ok {
-				logger.Error("Query CurrentHeight At LastBlock", logger.String("err", err.Error()))
-			} else {
-				signedBlocksWindow, err := document.GovParams{}.QueryOne("signed_blocks_window")
-				if err != nil {
-					logger.Error("Query signed_blocks_window", logger.String("err", err.Error()))
+			signedBlocksWindowCurrentValue, ok := utils.ParseInt(signedBlocksWindow.CurrentValue.(string))
+			if ok {
+				height := currentHeight - startHeight
+				if height < signedBlocksWindowCurrentValue {
+					statsBlocksWindow = strconv.FormatInt(height, 10)
 				} else {
-					signedBlocksWindowCurrentValue, ok := utils.ParseInt(signedBlocksWindow.CurrentValue.(string))
-					if ok {
-						height := currentHeight - startHeight
-						if height < signedBlocksWindowCurrentValue {
-							statsBlocksWindow = strconv.FormatInt(height, 10)
-						} else {
-							statsBlocksWindow = strconv.FormatInt(signedBlocksWindowCurrentValue, 10)
-						}
-					}
+					statsBlocksWindow = strconv.FormatInt(signedBlocksWindowCurrentValue, 10)
 				}
 			}
 		}
@@ -804,19 +714,19 @@ func (service *ValidatorService) convert(validator document.Validator) vo.Valida
 		details = desc.Details
 	}
 
-	bondHeightAsInt64, err := strconv.ParseInt(validator.BondHeight, 10, 64)
-
-	if err != nil {
-		logger.Error("convert string to int64", logger.String("err", err.Error()))
-	}
+	//bondHeightAsInt64, err := strconv.ParseInt(validator.BondHeight, 10, 64)
+	//
+	//if err != nil {
+	//	logger.Error("convert string to int64", logger.String("err", err.Error()))
+	//}
 
 	return vo.Validator{
-		Address:     validator.OperatorAddress,
-		PubKey:      utils.Convert(conf.Get().Hub.Prefix.ConsPub, validator.ConsensusPubkey),
-		Owner:       utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
-		Jailed:      validator.Jailed,
-		Status:      strconv.Itoa(validator.Status),
-		BondHeight:  bondHeightAsInt64,
+		Address: validator.OperatorAddress,
+		PubKey:  utils.Convert(conf.Get().Hub.Prefix.ConsPub, validator.ConsensusPubkey),
+		Owner:   utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
+		Jailed:  validator.Jailed,
+		Status:  strconv.Itoa(validator.Status),
+		//BondHeight:  bondHeightAsInt64,
 		VotingPower: validator.VotingPower,
 		Description: vo.Description{
 			Moniker:  moniker,
@@ -881,54 +791,49 @@ func (service *ValidatorService) UpdateDescription(vs []document.Validator) {
 //	}
 //}
 
-func (service *ValidatorService) UpdateValidators(vs []document.Validator) error {
-	var vMap = make(map[string]document.Validator)
-	for _, v := range vs {
-		vMap[v.OperatorAddress] = v
-	}
+//func (service *ValidatorService) UpdateValidators() {
 
-	var txs []txn.Op
-	dstValidators := buildValidators()
-	service.UpdateDescription(dstValidators)
-	for _, v := range dstValidators {
-		if v1, ok := vMap[v.OperatorAddress]; ok {
-			v.ID = v1.ID
-			v.Icons = v1.Icons
-			if isDiffValidator(v1, v) {
-				// set staticInfo, see detail: buildValidatorStaticInfo
-				v.Uptime = v1.Uptime
-				v.SelfBond = v1.SelfBond
-				v.DelegatorNum = v1.DelegatorNum
-				txs = append(txs, txn.Op{
-					C:  document.CollectionNmValidator,
-					Id: v.ID,
-					Update: bson.M{
-						"$set": v,
-					},
-				})
-			}
-			delete(vMap, v.OperatorAddress)
-		} else {
-			v.ID = bson.NewObjectId()
-			txs = append(txs, txn.Op{
-				C:      document.CollectionNmValidator,
-				Id:     bson.NewObjectId(),
-				Insert: v,
-			})
-		}
-	}
-	if len(vMap) > 0 {
-		for addr := range vMap {
-			v := vMap[addr]
-			txs = append(txs, txn.Op{
-				C:      document.CollectionNmValidator,
-				Id:     v.ID,
-				Remove: true,
-			})
-		}
-	}
-	return document.Validator{}.Batch(txs)
-}
+//var txs []txn.Op
+//service.HandleValidators()
+//for _, v := range dstValidators {
+//	if v1, ok := vMap[v.OperatorAddress]; ok {
+//		v.ID = v1.ID
+//		v.Icons = v1.Icons
+//		if isDiffValidator(v1, v) {
+//			// set staticInfo, see detail: buildValidatorStaticInfo
+//			v.Uptime = v1.Uptime
+//			v.SelfBond = v1.SelfBond
+//			v.DelegatorNum = v1.DelegatorNum
+//			txs = append(txs, txn.Op{
+//				C:  document.CollectionNmValidator,
+//				Id: v.ID,
+//				Update: bson.M{
+//					"$set": v,
+//				},
+//			})
+//		}
+//		delete(vMap, v.OperatorAddress)
+//	} else {
+//		v.ID = bson.NewObjectId()
+//		txs = append(txs, txn.Op{
+//			C:      document.CollectionNmValidator,
+//			Id:     bson.NewObjectId(),
+//			Insert: v,
+//		})
+//	}
+//}
+//if len(vMap) > 0 {
+//	for addr := range vMap {
+//		v := vMap[addr]
+//		txs = append(txs, txn.Op{
+//			C:      document.CollectionNmValidator,
+//			Id:     v.ID,
+//			Remove: true,
+//		})
+//	}
+//}
+//return document.Validator{}.Batch(txs)
+//}
 
 func (service *ValidatorService) UpdateValidatorStaticInfo() error {
 	var validatorModel document.Validator
@@ -941,7 +846,7 @@ func (service *ValidatorService) UpdateValidatorStaticInfo() error {
 		validatorMap[v.OperatorAddress] = v
 	}
 
-	height := utils.ParseIntWithDefault(lcd.BlockLatest().BlockMeta.Header.Height, 0)
+	height := lcd.BlockLatest().BlockMeta.Header.Height
 	updatedValidators := buildValidatorStaticInfo(validators, height)
 
 	for _, v := range updatedValidators {
@@ -972,14 +877,21 @@ func (service *ValidatorService) QueryValidatorByConAddr(address string) documen
 	return validator
 }
 
-func buildValidators() []document.Validator {
+func (service *ValidatorService) HandleValidators() {
+	var vMap map[string]bson.ObjectId
+	validators, err := document.Validator{}.GetAllValidator()
+	if err == nil {
+		vMap = make(map[string]bson.ObjectId, len(validators))
+		for _, val := range validators {
+			vMap[val.OperatorAddress] = val.ID
+		}
+	}
 
 	res := lcd.Validators(1, 100)
 	if res2 := lcd.Validators(2, 100); len(res2) > 0 {
 		res = append(res, res2...)
 	}
 
-	var result []document.Validator
 	var buildValidator = func(v lcd.ValidatorVo) (document.Validator, error) {
 		var validator document.Validator
 		if err := utils.Copy(v, &validator); err != nil {
@@ -995,14 +907,67 @@ func buildValidators() []document.Validator {
 		return validator, nil
 	}
 
+	var checkDiffer = func(des0, des1 document.Description) bool {
+		return des0.Moniker != des1.Moniker || des0.Website == des1.Website ||
+			des0.Identity != des1.Identity || des0.Details != des1.Details
+	}
 	for _, v := range res {
 		if validator, err := buildValidator(v); err == nil {
-			result = append(result, validator)
+			one, err := document.GetValidatorByAddr(v.OperatorAddress)
+			if err != nil && err == mgo.ErrNotFound {
+				validator.ID = bson.NewObjectId()
+				if err := validatorModel.Save(validator); err != nil {
+					logger.Error("save validator failed",
+						logger.String("operator_address", validator.OperatorAddress),
+						logger.String("err", err.Error()))
+				}
+			} else {
+				if err == nil && isDiffValidator(one, validator) {
+					validator.ID = one.ID
+					validator.Icons = one.Icons
+					// set staticInfo, see detail: buildValidatorStaticInfo
+					validator.Uptime = one.Uptime
+					validator.SelfBond = one.SelfBond
+					validator.DelegatorNum = one.DelegatorNum
+					if err := validatorModel.UpdateByPk(validator); err != nil {
+						logger.Error("update validator failed",
+							logger.String("operator_address", validator.OperatorAddress),
+							logger.String("err", err.Error()))
+					}
+
+				}
+				delete(vMap, v.OperatorAddress)
+			}
+			if val, ok := ValidatorsDescriptionMap[v.OperatorAddress]; ok {
+				if checkDiffer(val, one.Description) {
+					ValidatorsDescriptionMap[v.OperatorAddress] = one.Description
+				}
+			} else {
+				ValidatorsDescriptionMap[v.OperatorAddress] = one.Description
+			}
 		} else {
 			logger.Error("build validator fail", logger.String("err", err.Error()))
 		}
 	}
-	return result
+	//clear no exist validator
+	if len(vMap) > 0 && len(res) > 0 {
+		var txs []txn.Op
+		for addr := range vMap {
+			v := vMap[addr]
+			txs = append(txs, txn.Op{
+				C:      document.CollectionNmValidator,
+				Id:     v,
+				Remove: true,
+			})
+		}
+		if len(txs) > 0 {
+			err := document.Validator{}.Batch(txs)
+			if err != nil {
+				logger.Error("clean no exist validator is failed", logger.String("err", err.Error()))
+			}
+		}
+	}
+
 }
 
 // update validator static info
@@ -1027,7 +992,7 @@ func computeUptime(valPub string, height int64) float32 {
 	if err != nil {
 		logger.Error("GetGovSlashingParam have failed", logger.String("err", err.Error()))
 	}
-	startHeight := utils.ParseIntWithDefault(result.StartHeight, 0)
+	startHeight := result.StartHeight
 
 	var stats_blocks_window int64
 	if _, ok := govSlashingParamMap["signed_blocks_window"]; ok {
@@ -1041,7 +1006,7 @@ func computeUptime(valPub string, height int64) float32 {
 		stats_blocks_window = height - startHeight + 1
 	}
 
-	missedBlocksCounter := utils.ParseIntWithDefault(result.MissedBlocksCounter, 0)
+	missedBlocksCounter := result.MissedBlocksCounter
 
 	tmp := float32(missedBlocksCounter) / float32(stats_blocks_window)
 	return 1 - tmp
@@ -1055,7 +1020,7 @@ func Min(a, b int64) int64 {
 }
 
 func queryDelegationInfo(operatorAddress string) (string, int) {
-	delegations := lcd.DelegationByValidator(operatorAddress)
+	delegations := lcd.GetDelegationByValidator(operatorAddress)
 	var selfBond string
 	for _, d := range delegations {
 		addr := utils.Convert(conf.Get().Hub.Prefix.AccAddr, operatorAddress)
@@ -1114,12 +1079,14 @@ func isEqual(srcValidator, dstValidator document.Validator) bool {
 //	return power.QuoInt(tokenPrecision).RoundInt64()
 //}
 
-func getTotalVotingPower() int64 {
+func getTotalVotingPower(validators []document.Validator) int64 {
 	var total = int64(0)
-	var set = lcd.LatestValidatorSet()
-	for _, v := range set.Validators {
-		votingPower := utils.ParseIntWithDefault(v.VotingPower, 0)
-		total += votingPower
+	//var set = lcd.LatestValidatorSet()
+	//for _, v := range set.Validators {
+	//	total += v.VotingPower
+	//}
+	for _, v := range validators {
+		total += v.VotingPower
 	}
 	return total
 }

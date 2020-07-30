@@ -6,16 +6,12 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
-	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type GovParamsService struct {
 	BaseService
-}
-
-func (service *GovParamsService) GetModule() Module {
-	return GovParams
 }
 
 func (service *GovParamsService) QueryAll() document.GovParamsList {
@@ -77,7 +73,7 @@ func (_ GovParamsService) GetGovStakeParamList(genesisMap, currentMap map[string
 		}
 
 		tmp := document.GovParams{
-			Module:       lcd.GovModuleStake,
+			Module:       lcd.GovModuleStaking,
 			Key:          k,
 			Range:        v.Range,
 			Description:  v.Description,
@@ -259,7 +255,7 @@ func init() {
 			panic(fmt.Sprintf("get module genesis param err: %v \n", err.Error()))
 		}
 
-		currentParamMap, _ := lcd.GetAllGovModuleParam()
+		currentParamMap := lcd.GetAllGovModuleParam()
 		govParamList, _ := GovParamsService{}.GetDbInitGovModuleParamList(genGovModuleMap, currentParamMap)
 
 		for _, v := range govParamList {

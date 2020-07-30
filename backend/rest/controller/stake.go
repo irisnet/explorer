@@ -74,7 +74,7 @@ func registerQueryRewardsByValidatorAddr(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCommissionRewardsByValidatorAddr, "GET", func(request vo.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
 		validatorAddr := Var(request, "validatorAddr")
-		return stake.GetDistributionRewardsByValidatorAddr(validatorAddr)
+		return stake.GetDistributionCommissionRewardsByAddr(validatorAddr)
 	})
 	return nil
 

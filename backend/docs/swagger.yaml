@@ -324,34 +324,10 @@ definitions:
       denom:
         type: string
     type: object
-  vo.AssetGateways:
-    properties:
-      details:
-        type: string
-      icons:
-        type: string
-      identity:
-        type: string
-      moniker:
-        type: string
-      owner:
-        type: string
-      website:
-        type: string
-    type: object
   vo.AssetTokens:
     properties:
-      asset_gateway:
-        $ref: '#/definitions/vo.AssetGateways'
-        type: object
-      canonical_symbol:
-        type: string
       decimal:
         type: integer
-      family:
-        type: string
-      gateway:
-        type: string
       initial_supply:
         type: string
       max_supply:
@@ -364,11 +340,7 @@ definitions:
         type: string
       owner:
         type: string
-      source:
-        type: string
       symbol:
-        type: string
-      token_id:
         type: string
       total_supply:
         type: string
@@ -376,17 +348,8 @@ definitions:
   vo.AssetTokensRespond:
     items:
       properties:
-        asset_gateway:
-          $ref: '#/definitions/vo.AssetGateways'
-          type: object
-        canonical_symbol:
-          type: string
         decimal:
           type: integer
-        family:
-          type: string
-        gateway:
-          type: string
         initial_supply:
           type: string
         max_supply:
@@ -399,11 +362,7 @@ definitions:
           type: string
         owner:
           type: string
-        source:
-          type: string
         symbol:
-          type: string
-        token_id:
           type: string
         total_supply:
           type: string
@@ -424,13 +383,7 @@ definitions:
     properties:
       amount:
         type: integer
-      canonical_symbol:
-        type: string
-      decimal:
-        type: integer
       dst_owner:
-        type: string
-      gateway:
         type: string
       height:
         type: integer
@@ -446,6 +399,8 @@ definitions:
         type: string
       owner:
         type: string
+      scale:
+        type: integer
       src_owner:
         type: string
       symbol:
@@ -453,8 +408,6 @@ definitions:
       symbol_min:
         type: string
       timestamp:
-        type: string
-      token_id:
         type: string
       tx_fee:
         $ref: '#/definitions/vo.ActualFee'
@@ -764,6 +717,13 @@ definitions:
           $ref: '#/definitions/vo.ConfigVo'
         type: array
       cur_env:
+        type: string
+    type: object
+  vo.Event:
+    properties:
+      attributes:
+        type: object
+      type:
         type: string
     type: object
   vo.ExStaticMonthDataRespond:
@@ -1127,6 +1087,10 @@ definitions:
         type: object
       block_height:
         type: integer
+      events:
+        items:
+          $ref: '#/definitions/vo.Event'
+        type: array
       fee:
         $ref: '#/definitions/utils.ActualFee'
         type: object
@@ -1154,8 +1118,6 @@ definitions:
         type: string
       status:
         type: string
-      tags:
-        type: object
       timestamp:
         type: string
       type:
@@ -1600,27 +1562,6 @@ paths:
       summary: list
       tags:
       - account
-  /api/asset/gateways/{moniker}:
-    get:
-      consumes:
-      - application/json
-      description: get gateway assets token detail
-      parameters:
-      - description: moniker
-        in: path
-        name: moniker
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            $ref: '#/definitions/vo.AssetGateways'
-            type: object
-      summary: detail
-      tags:
-      - assets
   /api/asset/tokens:
     get:
       consumes:
@@ -1642,15 +1583,15 @@ paths:
       summary: list
       tags:
       - assets
-  /api/asset/tokens/{token_id}:
+  /api/asset/tokens/{symbol}:
     get:
       consumes:
       - application/json
       description: get assets token detail
       parameters:
-      - description: token_id
+      - description: symbol
         in: path
-        name: token_id
+        name: symbol
         type: string
       produces:
       - application/json
@@ -1661,56 +1602,6 @@ paths:
             $ref: '#/definitions/vo.AssetTokens'
             type: object
       summary: detail
-      tags:
-      - assets
-  /api/assets/gateway/txs:
-    get:
-      consumes:
-      - application/json
-      description: get assets txs
-      parameters:
-      - description: page num
-        in: query
-        name: page
-        required: true
-        type: integer
-      - description: page size
-        in: query
-        name: size
-        required: true
-        type: integer
-      - description: txs type
-        in: query
-        name: tx_type
-        type: string
-      - description: asset symbol
-        in: query
-        name: symbol
-        type: string
-      - description: gateway
-        in: query
-        name: gateway
-        type: string
-      - description: moniker
-        in: query
-        name: moniker
-        type: string
-      - description: if used count
-        enum:
-        - "true"
-        - "false"
-        in: query
-        name: total
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            $ref: '#/definitions/vo.AssetsRespond'
-            type: object
-      summary: gateway
       tags:
       - assets
   /api/assets/native/txs:
@@ -2765,22 +2656,6 @@ paths:
       summary: sysdate
       tags:
       - common
-  /api/task/asset_gateways:
-    put:
-      consumes:
-      - application/json
-      description: update asset gateways
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            $ref: '#/definitions/types.BizCode'
-            type: object
-      summary: update asset_gateways
-      tags:
-      - task
   /api/task/asset_tokens:
     put:
       consumes:
