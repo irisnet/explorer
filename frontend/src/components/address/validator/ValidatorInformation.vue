@@ -141,14 +141,6 @@
 						flAddressLink:false,
 					},
 					{
-						label:'Bond Height:',
-						dataName:'bond_height',
-						value:'',
-						isToolTip:false,
-						isCopyIcon:false,
-						flAddressLink:false,
-					},
-					{
 						label:'Unbonding Height:',
 						dataName:'unbond_height',
 						value:'',

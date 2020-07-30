@@ -115,10 +115,12 @@
 		watch:{
 			data(){
 				this.assetInformation = this.data;
+                console.error('---------',this.assetInformation)
 				this.formatAssetInformation(this.assetInformation)
 			}
 		},
 		mounted () {
+
 			this.assetInformation = this.data;
 		},
 		methods:{
@@ -131,6 +133,7 @@
 			formatAssetInformation(assetInformation){
 				assetInformation.forEach( item => {
 					if(item && item.token === 'IRIS'){
+
 						this.totalAmount = item.totalAmount;
 						this.assetConstitute.forEach( res => {
 							 if(res.label === "UnBonding"){

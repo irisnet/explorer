@@ -42,7 +42,6 @@
 								return {
 									Symbol: item.symbol,
 									Owner: item.owner,
-									TotalSupply: this.formatNumber(item.total_supply),
 									InitialSupply: this.formatNumber(item.initial_supply),
 									MaxSupply: this.formatNumber(item.max_supply),
 									Mintable: Tools.firstWordUpperCase(item.mintable),

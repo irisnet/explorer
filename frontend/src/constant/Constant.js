@@ -41,6 +41,26 @@ TxType.WITHDRAWADDRESS = 'WithdrawAddress';
 TxType.STAKES = 'Stakes';
 TxType.GOVERNANCE = 'Governance';
 TxType.DECLARATIONS = 'Declarations';
+TxType.FundCommunityPool = 'FundCommunityPool';
+TxType.WithdrawValidatorCommission = 'WithdrawValidatorCommission';
+
+//service type txs
+TxType.DEFINE_SERVICE = 'DefineService';
+TxType.BIND_SERVICE = 'BindService';
+TxType.UPDATE_SERVICE_BINDING = 'UpdateServiceBinding';
+TxType.SET_WITHDRAW_FEES_ADDRESS = 'SetWithdrawFeesAddress';
+TxType.DISABLE_SERVICE_BINDING = 'DisableServiceBinding';
+TxType.ENABLE_SERVICE_BINDING = 'EnableServiceBinding';
+TxType.REFUND_SERVICE_DEPOSIT = 'RefundServiceDeposit';
+TxType.CALL_SERVICE = 'CallService';
+TxType.RESPOND_SERVICE = 'RespondService';
+TxType.PAUSE_REQUEST_CONTEXT = 'PauseRequestContext';
+TxType.START_REQUEST_CONTEXT = 'StartRequestContext';
+TxType.KILL_REQUEST_CONTEXT = 'KillRequestContext';
+TxType.UPDATE_REQUEST_CONTEXT = 'UpdateRequestContext';
+TxType.WITHDRAW_EARNED_FEES = 'WithdrawEarnedFees';
+
+
 
 
 
