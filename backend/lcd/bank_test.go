@@ -2,7 +2,6 @@ package lcd
 
 import (
 	"testing"
-	"github.com/irisnet/explorer/backend/utils"
 )
 
 func  TestGetBankTokenStats(t *testing.T) {
@@ -15,26 +14,26 @@ func  TestGetBankTokenStats(t *testing.T) {
 	//t.Log(string(bytesData))
 }
 
-func TestGetTokenStatsCirculation(t *testing.T) {
-	res,err := GetTokenStatsCirculation()
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(res)
-}
-
-func TestGetTokenStatsSupply(t *testing.T) {
-	res,err := GetTokenStatsSupply()
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(res)
-}
+//func TestGetTokenStatsCirculation(t *testing.T) {
+//	res,err := GetTokenStatsCirculation()
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	t.Log(res)
+//}
+//
+//func TestGetTokenStatsSupply(t *testing.T) {
+//	res,err := GetTokenStatsSupply()
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	t.Log(res)
+//}
 
 func TestGetTokens(t *testing.T) {
-	res := []*Coin{{Denom: utils.CoinTypeStake, Amount: "925050600000000000000000"}, {Denom: "kai-min", Amount: "800"}}
-	coin := GetTokens(res)
-	t.Log(coin)
+	//res := []*Coin{{Denom: utils.CoinTypeStake, Amount: "925050600000000000000000"}, {Denom: "kai-min", Amount: "800"}}
+	//coin := GetTokens(res)
+	//t.Log(coin)
 }
 
 func TestGetCommunityTax(t *testing.T) {
@@ -44,4 +43,12 @@ func TestGetCommunityTax(t *testing.T) {
 	}
 	t.Log(res)
 
+}
+
+func TestGetTotalSupply(t *testing.T) {
+	res, err := GetTotalSupply()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(res)
 }

@@ -89,6 +89,7 @@ const (
 	UrlRegisterQueryTxType       = "/tx_types/{type}"
 	//tokenstats
 	UrlRegisterQueryTokenStats    = "/tokenstats"
+	UrlRegisterQueryBaseDenom     = "/basedenom"
 	UrlRegisterTokensAccountTotal = "/tokenstats/account_total"
 	//bondedtokens
 	UrlRegisterBondedTokensValidators = "/bondedtokens/validators"

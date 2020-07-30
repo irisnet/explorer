@@ -54,6 +54,13 @@ func TestGetGovParam(t *testing.T) {
 	//printMap(stakeMap, t)
 }
 
+func TestGetGovGuardianParam(t *testing.T) {
+	data,err := lcd.GetGovGuardianParam()
+	if err != nil {
+		t.Errorf("GetGovGuardianParam error:%v",err)
+	}
+	t.Log(data)
+}
 func TestGetGovAuthParam(t *testing.T) {
 
 	t.Logf("GetGovAuthParam-------------")

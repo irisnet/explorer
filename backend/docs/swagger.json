@@ -282,6 +282,30 @@
                 }
             }
         },
+        "/api/basedenom": {
+            "get": {
+                "description": "get base denom",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tokenstats"
+                ],
+                "summary": "basedenom",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/vo.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/block/blockinfo/{height}": {
             "get": {
                 "description": "get block info",

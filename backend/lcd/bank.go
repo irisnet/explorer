@@ -1,7 +1,6 @@
 package lcd
 
 import (
-	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/types"
 )
 
@@ -24,37 +23,37 @@ type TokenStats struct {
 //	return result, nil
 //}
 
-func GetTokens(data []*Coin) Coin {
+//func GetTokens(data []*Coin) Coin {
+//
+//	for _, val := range data {
+//		if val.Denom == utils.CoinTypeStake {
+//			return Coin{Denom: val.Denom, Amount: val.Amount}
+//		}
+//	}
+//	return Coin{}
+//}
 
-	for _, val := range data {
-		if val.Denom == utils.CoinTypeStake {
-			return Coin{Denom: val.Denom, Amount: val.Amount}
-		}
-	}
-	return Coin{}
-}
-
-func GetTokenStatsCirculation() (Coin, error) {
-	resBytes, err := utils.Get(UrlTokenStatsCirculation)
-	if err != nil {
-		return Coin{}, err
-	}
-	return Coin{
-		Amount: string(resBytes),
-		Denom:  utils.CoinTypeStake,
-	}, nil
-}
-
-func GetTokenStatsSupply() (Coin, error) {
-	resBytes, err := utils.Get(UrlTokenStatsSupply)
-	if err != nil {
-		return Coin{}, err
-	}
-	return Coin{
-		Amount: string(resBytes),
-		Denom:  utils.CoinTypeStake,
-	}, nil
-}
+//func GetTokenStatsCirculation() (Coin, error) {
+//	resBytes, err := utils.Get(UrlTokenStatsCirculation)
+//	if err != nil {
+//		return Coin{}, err
+//	}
+//	return Coin{
+//		Amount: string(resBytes),
+//		Denom:  utils.CoinTypeStake,
+//	}, nil
+//}
+//
+//func GetTokenStatsSupply() (Coin, error) {
+//	resBytes, err := utils.Get(UrlTokenStatsSupply)
+//	if err != nil {
+//		return Coin{}, err
+//	}
+//	return Coin{
+//		Amount: string(resBytes),
+//		Denom:  utils.CoinTypeStake,
+//	}, nil
+//}
 func GetCommunityTax() (Coin, error) {
 	balances, err := client.Bank().QueryBalances(CommunityTaxAddr, "")
 	if err != nil {
@@ -72,6 +71,24 @@ func GetCommunityTax() (Coin, error) {
 		}
 	}
 
+	return res, nil
+}
+
+func GetTotalSupply() (Coin, error) {
+	coins, err := client.Bank().QueryTotalSupply()
+	if err != nil {
+		return Coin{}, err
+	}
+	var res Coin
+	for _, val := range coins {
+		if val.Denom != types.StakeUint {
+			continue
+		}
+		res = Coin{
+			Denom:  val.Denom,
+			Amount: val.Amount.String(),
+		}
+	}
 	return res, nil
 }
 

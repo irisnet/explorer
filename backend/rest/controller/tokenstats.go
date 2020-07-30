@@ -10,6 +10,7 @@ func RegisterTokenStats(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryTokenStats,
 		registerQueryTokensAccountTotal,
+		registerQueryBaseDenom,
 	}
 
 	for _, fn := range funs {
@@ -51,6 +52,26 @@ func registerQueryTokensAccountTotal(r *mux.Router) error {
 	doApi(r, types.UrlRegisterTokensAccountTotal, "GET", func(request vo.IrisReq) interface{} {
 		tokenstats.SetTid(request.TraceId)
 		result, err := tokenstats.QueryTokensAccountTotal()
+		if err != nil {
+			return vo.NewResponse("-1", err.Error(), nil)
+		}
+		return vo.NewResponse(types.CodeSuccess.Code, types.CodeSuccess.Msg, result)
+	})
+
+	return nil
+}
+
+// @Summary basedenom
+// @Description get base denom
+// @Tags tokenstats
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} vo.Response  "success"
+// @Router /api/basedenom [get]
+func registerQueryBaseDenom(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryBaseDenom, "GET", func(request vo.IrisReq) interface{} {
+		tokenstats.SetTid(request.TraceId)
+		result, err := tokenstats.QueryBaseDenom()
 		if err != nil {
 			return vo.NewResponse("-1", err.Error(), nil)
 		}

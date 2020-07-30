@@ -25,6 +25,7 @@ const (
 	GovModuleGov      = "gov"
 	GovModuleNft      = "nft"
 	GovModuleCrisis   = "crisis"
+	GovModuleGuardian = "guardian"
 	//auth key
 	GovModuleAuthGasPriceThreshold = "gas_price_threshold"
 	GovModuleAuthTxSize            = "tx_size"
@@ -165,6 +166,10 @@ func GetGovSlashingParam() (map[string]interface{}, error) {
 
 func GetGovAssetParam() (map[string]interface{}, error) {
 	return GetGovModuleParamMap(GovModuleAsset)
+}
+
+func GetGovGuardianParam() (map[string]interface{}, error) {
+	return GetGovModuleParamMap(GovModuleGuardian)
 }
 
 func GetAllGovModuleParam() map[string]interface{} {

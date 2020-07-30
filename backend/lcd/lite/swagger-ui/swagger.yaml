@@ -1724,6 +1724,22 @@ paths:
       summary: native
       tags:
       - assets
+  /api/basedenom:
+    get:
+      consumes:
+      - application/json
+      description: get base denom
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.Response'
+            type: object
+      summary: basedenom
+      tags:
+      - tokenstats
   /api/block/blockinfo/{height}:
     get:
       consumes:

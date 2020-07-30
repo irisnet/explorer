@@ -73,17 +73,6 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 
 	group.Wait()
 
-	if stakeMap, err := lcd.GetGovAssetParam(); err == nil {
-		if data, ok := stakeMap["params"]; ok {
-			params := data.(map[string]interface{})
-			if basefee, ok := params["issue_token_base_fee"]; ok {
-				obj := basefee.(map[string]interface{})
-				if basedenom, ok := obj["denom"]; ok {
-					result.BaseDenom = basedenom.(string)
-				}
-			}
-		}
-	}
 
 	result.IsProfiler = isProfiler(address)
 	result.Address = address
@@ -158,12 +147,6 @@ func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 }
 
 func isProfiler(address string) bool {
-	//genesis := commonService.GetGenesis()
-	//for _, profiler := range genesis.Result.Genesis.AppState.Guardian.Profilers {
-	//	if profiler.Address == address {
-	//		return true
-	//	}
-	//}
 	if _, ok := types.ProfilerAddrList[address]; ok {
 		return true
 	}

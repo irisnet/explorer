@@ -15,7 +15,6 @@ type AccountVo struct {
 	Moniker         string      `json:"moniker"`
 	Status          string      `json:"status"`
 	OperatorAddress string      `json:"operator_address"`
-	BaseDenom       string      `json:"base_denom"`
 }
 
 func (a AccountVo) String() string {
