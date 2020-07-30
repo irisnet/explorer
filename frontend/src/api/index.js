@@ -113,7 +113,8 @@ const urlApi = {
   getTxListByAddress:'/api/txs?page={pageNumber}&size={pageSize}&total=true&txType={txType}&status={status}&beginTime={beginTime}&endTime={endTime}&address={address}',
   //htlc information
   htlcs: 'api/htlcs/{hashLock}',
-  htlcTxList:'/api/htlcs/{hashLock}/txs?page={pageNumber}&size={pageSize}&total=true'
+  htlcTxList:'/api/htlcs/{hashLock}/txs?page={pageNumber}&size={pageSize}&total=true',
+  config:'',
 };
 
 export default urlApi
