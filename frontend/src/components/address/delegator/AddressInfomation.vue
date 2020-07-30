@@ -353,11 +353,13 @@
                         	let arrayIndexOneData;
                         	if(res.amount){
                                 res.amount.forEach( item => {
-                                    if(item.denom === 'iris-atto'){
+                                    if(item && item.denom === 'iris-atto'){
                                         arrayIndexOneData = item
                                     }
                                 });
-                                res.amount.unshift(arrayIndexOneData);
+                                if(arrayIndexOneData){
+                                    res.amount.unshift(arrayIndexOneData);
+                                }
                                 res.amount = Array.from(new Set(res.amount));
                                 this.assetList = res.amount;
                             }
@@ -375,7 +377,8 @@
             },
             getAssetList(){
                 this.assetsItems = this.assetList.map( item => {
-	            	if(item.denom === 'iris-atto'){
+                    console.log('----',item)
+	            	if(item && item.denom === 'iris-atto'){
 			            return {
 				            token: Tools.formatDenom(item.denom),
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,
@@ -487,7 +490,7 @@
 		            try {
 		            	if(res && res.delagations_rewards && res.delagations_rewards.length > 0) {
                             res.delagations_rewards.map( item => {
-				            	if(item.amount.length === 0){
+				            	if(item.amount && item.amount.length === 0){
 						            item.amount.push({
 							            amount:0,
                                         denom:'iris-atto'
@@ -512,7 +515,7 @@
                                     }
                                 })
                                 this.totalDelegatorReward = res.delagations_rewards.reduce( (total,item) => {
-                                    return Number(item.amount[0].amount) + Number(total)
+                                    return (item.amount ? Number(item.amount[0].amount) : 0) + Number(total)
                                 },0);
                             }
                             this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(res.total_rewards[0].amount,-18),this.fixedNumber) : 0;
@@ -705,7 +708,6 @@
 					        address: item.address,
 					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
 					        shares: new BigNumber((Number(item.shares)).toFixed(2)).toFormat(),
-					        block: item.height,
 					        moniker: item.moniker
 				        }
 			        });
@@ -715,7 +717,6 @@
 					        address: item.address,
 					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
 					        shares: new BigNumber((Number(item.shares)).toFixed(2)).toFormat(),
-					        block: item.height,
 					        moniker: item.moniker
 				        }
 			        });

@@ -183,12 +183,7 @@
 					{
 						title: "Shares",
 						key:'shares'
-					},
-					{
-						title: "Block",
-						slot:'block'
-					},
-
+					}
 				],
 				unBondingDelegations: [
 					{

@@ -464,7 +464,6 @@
 							this.editTokenTotalPageNum = editTxs.data.total;
 							this.editTokenList = editTxs.data.txs.map( item => {
 								return {
-									Token: item.token_id,
 									Owner: item.owner,
 									Block: item.height,
 									TxHash: item.tx_hash,
@@ -488,7 +487,6 @@
 							this.mintTokenTotalPageNum = mintTxs.data.total;
 							this.mintTokenList = mintTxs.data.txs.map( item => {
 								return {
-									Token: item.token_id,
 									Owner: item.owner,
 									MintTo: item.mint_to,
 									Amount: Tools.formatStringToFixedNumber(new bigNumber(this.formatNumber(item.amount)).toFormat(),2),
@@ -514,7 +512,6 @@
 						    this.transferTokenTotalPageNum = transferTxs.data.total;
 						    this.transferTokenList = transferTxs.data.txs.map( item => {
 							    return {
-								    Token: item.token_id,
 								    SrcOwner: item.src_owner,
 								    DstOwner: item.dst_owner,
 								    Block: item.height,
