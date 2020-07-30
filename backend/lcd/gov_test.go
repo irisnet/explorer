@@ -42,6 +42,18 @@ func printMap(m map[string]interface{}, t *testing.T) {
 	}
 }
 
+func TestGetGovParam(t *testing.T) {
+
+	stakeMap, err := lcd.GetGovAssetParam()
+	if err != nil {
+		t.Errorf("GetGovAuthParam err: %v\n", err)
+	}
+	//t.Log(lcd.GovModuleStaking)
+	data := stakeMap["params"].(map[string]interface{})["issue_token_base_fee"]
+	t.Log(data.(map[string]interface{})["denom"])
+	//printMap(stakeMap, t)
+}
+
 func TestGetGovAuthParam(t *testing.T) {
 
 	t.Logf("GetGovAuthParam-------------")
