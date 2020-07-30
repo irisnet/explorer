@@ -95,6 +95,10 @@
                                     <router-link v-if="key === 'Provider :' && value !== '-'"
                                                  :to="addressRoute(value)">{{value}}
                                     </router-link>
+                                    <router-link v-if="key === 'Consumer :' && value !== '-'"
+                                                 :to="addressRoute(value)">{{value}}
+                                    </router-link>
+
                                     <router-link v-if="key === 'Withdraw Address :' && value !== '-'"
                                                  :to="addressRoute(value)">{{value}}
                                     </router-link>
@@ -286,6 +290,7 @@
                 return (key !== 'From :'
                     && key !== 'To :'
                     && key !== 'Provider :'
+                    && key !== 'Consumer :'
                     && key !== 'Withdraw Address :'
                     && key !== 'Author :'
                     && key !== 'Owner :'
@@ -317,6 +322,7 @@
                 return (key === 'From :'
                     || key === 'To :'
                     || key === 'Author :'
+                    || key === 'Consumer :'
                     || key === 'Withdraw Address :'
                     || key === 'Provider :'
                     || key === 'Owner :'
@@ -357,10 +363,12 @@
                 }
             },
             getTxDetailInformation(){
+                console.error('======',this.$route.query.txHash)
                 Server.commonInterface({txDetail : {txHash : this.$route.query.txHash}}, (res) =>{
+                    console.error('------', res)
                     try {
                         if(res){
-                            console.error('------', res)
+
                             let fromInformation, toInformation;
                             fromInformation = Tools.formatListAmount(res).fromAddressAndMoniker;
                             toInformation = Tools.formatListAmount(res).toAddressAndMoniker;

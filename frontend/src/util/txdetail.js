@@ -128,6 +128,17 @@ export default class formatMsgsAndTags {
             case Constant.TxType.CALL_SERVICE :
                 return formatMsgsAndTags.txTypeCallService(dataTx);
 
+            case Constant.TxType.RESPOND_SERVICE :
+                return formatMsgsAndTags.txTypeRespondService(dataTx);
+
+            case Constant.TxType.PAUSE_REQUEST_CONTEXT :
+                return formatMsgsAndTags.txTypePauseRequestContext(dataTx);
+            case Constant.TxType.START_REQUEST_CONTEXT :
+                return formatMsgsAndTags.txTypeStartRequestContext(dataTx);
+            case Constant.TxType.KILL_REQUEST_CONTEXT :
+                return formatMsgsAndTags.txTypeKillRequestContext(dataTx);
+
+
 
 
 
@@ -318,6 +329,88 @@ export default class formatMsgsAndTags {
         }
         return msg;
     }
+
+    static txTypeRespondService(tx){
+        const msg = {
+            'Request ID :':[],
+            'Provider :':[],
+            'Result :':[],
+            'Output :':[],
+        };
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m)=>{
+                msg['Request ID :'].push(m.msg.request_id);
+                msg['Provider :'].push(m.msg.provider);
+                msg['Result :'].push(m.msg.result);
+                msg['Output :'].push(m.msg.output);
+            })
+        }
+        return msg;
+    }
+
+    static txTypePauseRequestContext(tx){
+        const msg = {
+            'Service Name :':[],
+            'Request Context ID :':[],
+            'Consumer :':[],
+        };
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m)=>{
+                if(m.msg.ex && m.msg.ex.service_name){
+                    msg['Service Name :'].push(m.msg.ex.service_name);
+                }
+                msg['Request Context ID :'].push(m.msg.request_context_id);
+                msg['Consumer :'].push(m.msg.consumer);
+            })
+        }
+        return msg;
+    }
+
+    static txTypeStartRequestContext(tx){
+        const msg = {
+            'Service Name :':[],
+            'Request Context ID :':[],
+            'Consumer :':[],
+        };
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m)=>{
+                if(m.msg.ex && m.msg.ex.service_name){
+                    msg['Service Name :'].push(m.msg.ex.service_name);
+                }
+                msg['Request Context ID :'].push(m.msg.request_context_id);
+                msg['Consumer :'].push(m.msg.consumer);
+            })
+        }
+        return msg;
+    }
+
+    static txTypeKillRequestContext(tx){
+        const msg = {
+            'Service Name :':[],
+            'Request Context ID :':[],
+            'Consumer :':[],
+        };
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m)=>{
+                if(m.msg.ex && m.msg.ex.service_name){
+                    msg['Service Name :'].push(m.msg.ex.service_name);
+                }
+                msg['Request Context ID :'].push(m.msg.request_context_id);
+                msg['Consumer :'].push(m.msg.consumer);
+            })
+        }
+        return msg;
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
