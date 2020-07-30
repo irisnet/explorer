@@ -4,6 +4,7 @@
 import BigNumber from 'bignumber.js';
 import moveDecimal  from "move-decimal-point"
 import Constant from "../constant/Constant"
+import bech32 from 'bech32';
 export default class Tools{
 	/**
 	 * 根据展示的需求拼接字符串展示成 > xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs
@@ -679,12 +680,14 @@ export default class Tools{
 					if(data.msgs){
                         data.msgs.forEach( item => {
                             if(item.msg){
-                                item.msg.inputs.forEach( item => {
-                                    fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.address,data.monikers));
-                                })
-                                item.msg.outputs.forEach( item => {
-                                    toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.address,data.monikers))
-                                })
+                                /*item.msg.inputs.forEach( item => {
+
+                                })*/
+                                fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.from_address,data.monikers));
+                                toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.to_address,data.monikers))
+                                /*item.msg.outputs.forEach( item => {
+
+                                })*/
                             }
                         });
                     }
@@ -886,6 +889,17 @@ export default class Tools{
                             }
                         })
                     }
+                    break;
+                case Constant.TxType.FundCommunityPool:
+                    amount = Tools.formatListByAmount(data.amount);
+                    break;
+                    //TODO(lvshenchao) this type of tx need to be configured
+                case Constant.TxType.WithdrawValidatorCommission:
+                    amount = Tools.formatListByAmount(data.amount);
+                    break;
+                    //TODO(lvshenchao) this type of tx need to be configured
+
+
 
 			}
 		}
@@ -1052,4 +1066,27 @@ export default class Tools{
 
             return resData
         }
+
+    static isBech32(prefix, str) {
+        if (!prefix || prefix.length == 0) {
+            return false
+        }
+
+        let preReg = new RegExp('^' + prefix + '1');
+        if (!preReg.test(str) ){
+            return false
+        }
+        let allReg = new RegExp(/^[0-9a-zA-Z]*$/i);
+        if (!allReg.test(str)){
+            return false
+        }
+
+        try {
+            bech32.decode(str);
+            return true
+        }catch (e) {
+            return false
+        }
+    }
+
 }

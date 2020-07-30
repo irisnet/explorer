@@ -41,6 +41,8 @@ TxType.WITHDRAWADDRESS = 'WithdrawAddress';
 TxType.STAKES = 'Stakes';
 TxType.GOVERNANCE = 'Governance';
 TxType.DECLARATIONS = 'Declarations';
+TxType.FundCommunityPool = 'FundCommunityPool';
+TxType.WithdrawValidatorCommission = 'WithdrawValidatorCommission';
 
 
 

@@ -124,25 +124,21 @@ export default class formatMsgsAndTags {
             dataTx.msgs.forEach(item => {
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
-                    if(item.msg && item.msg.inputs && Array.isArray(item.msg.inputs)){
-                        item.msg.inputs.forEach(item => {
-                            message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.address)
+                    if(item.msg){
+                        message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.from_address)
+                        message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.to_address);
+                    }
+
+                    amountObj = Tools.formatAmountOfTxDetail(item.msg.amount);
+                    if(amountObj && amountObj.moreAmountsNumber && amountObj.moreAmountsNumber.length > 0){
+                        //handle more tokens
+                        amountObj.moreAmountsNumber.forEach( (item) => {
+                            message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(item.amount)} ${item.denom}`)
                         })
+                    }else {
+                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
                     }
-                    if(item.msg && item.msg.outputs && Array.isArray(item.msg.outputs)){
-                        item.msg.outputs.forEach(item => {
-                            message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.address);
-                            amountObj = Tools.formatAmountOfTxDetail(item.coins);
-                            if(amountObj && amountObj.moreAmountsNumber && amountObj.moreAmountsNumber.length > 0){
-                                //handle more tokens
-                                amountObj.moreAmountsNumber.forEach( (item) => {
-                                    message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(item.amount)} ${item.denom}`)
-                                })
-                            }else {
-                                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
-                            }
-                        });
-                    }
+
                 }
             })
         }

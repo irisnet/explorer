@@ -586,9 +586,9 @@
 						this.searchTx();
 					} else if(/^[a-f0-9]{64}$/.test(this.searchInputValue)){
                         this.searchHashLock()
-                    } else if (this.$Codec.Bech32.isBech32(this.$Crypto.config.iris.bech32.accAddr, this.searchInputValue)) {
+                    } else if (Tools.isBech32(this.$Crypto.config.iris.bech32.accAddr, this.searchInputValue)) {
 						this.searchDelegator();
-					} else if (this.$Codec.Bech32.isBech32(this.$Crypto.config.iris.bech32.valAddr, this.searchInputValue)) {
+					} else if (Tools.isBech32(this.$Crypto.config.iris.bech32.valAddr, this.searchInputValue)) {
 						this.searchValidator();
 					} else if (/^\+?[1-9][0-9]*$/.test(this.searchInputValue)) {
 						this.searchBlockAndProposal();
@@ -647,6 +647,7 @@
 			getConfig () {
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
+				        if(!res.configs) return;
 						sessionStorage.setItem('skinEnvInformation',JSON.stringify(res));
                         if(res.cur_env === constant.ENVCONFIG.TESTNET || res.cur_env === constant.ENVCONFIG.MAINNET){
                             this.$store.commit('hideTestSkinStyle',false)
@@ -659,17 +660,20 @@
                         this.setNetWorkLogo();
                         this.flShowHeaderNetwork = true;
 						this.chainId = `${res.chain_id.toUpperCase()} ${res.cur_env.toUpperCase()}`;
-						res.configs.forEach(item => {
-							if (res.cur_env === item.env && res.chain_id === item.chain_id) {
-								if (item.show_faucet && item.show_faucet === 1) {
-									this.flShowFaucet = true;
-									sessionStorage.setItem("Show_faucet", JSON.stringify(1))
-								} else {
-									this.flShowFaucet = false;
-									sessionStorage.setItem("Show_faucet", JSON.stringify(0))
-								}
-							}
-						})
+						if(res.configs && Array.isArray(res.configs)){
+                            res.configs.forEach(item => {
+                                if (res.cur_env === item.env && res.chain_id === item.chain_id) {
+                                    if (item.show_faucet && item.show_faucet === 1) {
+                                        this.flShowFaucet = true;
+                                        sessionStorage.setItem("Show_faucet", JSON.stringify(1))
+                                    } else {
+                                        this.flShowFaucet = false;
+                                        sessionStorage.setItem("Show_faucet", JSON.stringify(0))
+                                    }
+                                }
+                            })
+                        }
+
 					}catch (e) {
 						console.error(e);
 						this.explorerLogo = require("../../assets/logo.png")
