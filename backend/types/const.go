@@ -58,6 +58,10 @@ const (
 	UrlFaucetAccountService = "%s/account"
 	UrlFaucetApplyService   = "%s/apply"
 
+	//Service
+	UrlRegisterQueryServiceBindings = "/service/bindings/{servicename}"
+	UrlRegisterQueryServiceRequest  = "service/requests/{contextid}"
+
 	//Stake
 	UrlRegisterGetValidators                         = "/stake/validators"
 	UrlRegisterUpdateIcons                           = "/stake/validators/update_icons"

@@ -43,6 +43,7 @@ func GetServiceBindings(servicename string) (resp []ServiceBinding) {
 		logger.Error("Query Bindings failed",
 			logger.String("servicename", servicename),
 			logger.String("err", err.Error()))
+		return
 	}
 
 	for _, val := range bindingData {
@@ -66,12 +67,13 @@ func GetServiceContexts(reqcontextid string) (resp RequestContext) {
 		logger.Error("Query Request Contexts failed",
 			logger.String("reqcontextid", reqcontextid),
 			logger.String("err", err.Error()))
+		return
 	}
 	ConverAddrs := func() (ret []string){
 		for _,val := range reqContext.Providers {
 			ret = append(ret,val.String())
 		}
-		return 
+		return
 	}
 	resp = RequestContext{
 		ServiceName:reqContext.ServiceName,

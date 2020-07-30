@@ -232,11 +232,12 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 	result = make(vo.AccountUnbondingDelegationsRespond, 0, len(unbondingdelegations))
 
 	for _, val := range unbondingdelegations {
+		amount, _ := utils.ParseStringToFloat(val.Balance)
 		data := vo.AccountUnbondingDelegationsVo{
 			Address: val.ValidatorAddr,
 			EndTime: val.MinTime,
 			Height:  val.CreationHeight,
-			Amount:  utils.ParseCoin(val.Balance),
+			Amount:  utils.Coin{Amount: amount},
 		}
 		if validatorMap != nil {
 			if valdator, ok := validatorMap[val.ValidatorAddr]; ok {

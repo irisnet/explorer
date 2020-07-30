@@ -14,5 +14,6 @@ var (
 	bondedtokens service.BondedTokensService
 	assets       service.AssetsService
 	htlc         service.HtlcService
+	iservice     service.IServiceService
 	//caculate     service.CaculateService
 )
