@@ -290,8 +290,7 @@ func StakePool() (result StakePoolVo) {
 	result = StakePoolVo{
 		LooseTokens:  stakepool.NotBondedTokens,
 		BondedTokens: stakepool.BondedTokens,
-		//TotalSupply: ,
-		//BondedRatio:,
+
 	}
 	return
 }

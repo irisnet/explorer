@@ -2,10 +2,6 @@ package lcd
 
 import (
 	"fmt"
-
-	"github.com/irisnet/explorer/backend/conf"
-
-	"github.com/irisnet/explorer/backend/utils"
 )
 
 const (
@@ -126,9 +122,19 @@ func GetAssetKeyWithRangeMap() map[string]RangeDescription {
 	return result
 }
 
-func GetGovModuleParam(module string) ([]byte, error) {
-	url := fmt.Sprintf(UrlGovParam, conf.Get().Hub.LcdUrl, module)
-	return utils.Get(url)
+func GetGovModuleParam(module string) (Params, error) {
+	datas, err := client.Params().QueryParams(module)
+	if err != nil {
+		return nil, err
+	}
+	var resp Params
+	for _, val := range datas {
+		resp = append(resp, Param{
+			Type:  val.Type,
+			Value: val.Value,
+		})
+	}
+	return resp, nil
 }
 
 func GetGovModuleParamMap(module string) (map[string]interface{}, error) {

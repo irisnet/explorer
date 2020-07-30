@@ -8,14 +8,13 @@ import (
 )
 
 const (
-
-	UrlGovParam                                  = "%s/params?module=%s"
-	UrlDistributionRewardsByValidatorAcc         = "%s/distribution/%s/rewards"
-	UrlValidatorsSigningInfoByConsensuPublicKey  = "%s/slashing/validators/%s/signing-info"
-	UrlTokenStatsSupply                          = "https://rpc.irisnet.org/token-stats/supply"
-	UrlTokenStatsCirculation                     = "https://rpc.irisnet.org/token-stats/circulation"
-	UrlLookupIconsByKeySuffix                    = "https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=%s"
-	CommunityTaxAddr                             = "iaa18rtw90hxz4jsgydcusakz6q245jh59kfma3e5h"
+	//UrlGovParam                                  = "%s/params?module=%s"
+	UrlDistributionRewardsByValidatorAcc        = "%s/distribution/%s/rewards"
+	UrlValidatorsSigningInfoByConsensuPublicKey = "%s/slashing/validators/%s/signing-info"
+	UrlTokenStatsSupply                         = "https://rpc.irisnet.org/token-stats/supply"
+	UrlTokenStatsCirculation                    = "https://rpc.irisnet.org/token-stats/circulation"
+	UrlLookupIconsByKeySuffix                   = "https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=%s"
+	CommunityTaxAddr                            = "iaa18rtw90hxz4jsgydcusakz6q245jh59kfma3e5h"
 )
 
 type AccountVo struct {
@@ -102,7 +101,12 @@ type NodeInfoVo struct {
 	//} `json:"other"`
 }
 
+type Param struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+}
 
+type Params []Param
 
 type BlockVo struct {
 	BlockMeta BlockMeta `json:"block_meta"`
