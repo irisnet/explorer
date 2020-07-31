@@ -195,8 +195,12 @@ func (service *TxService) QueryTxDetail(hash string) interface{} {
 	txList := buildTxVOsFromDoc([]document.CommonTx{txAsDoc})
 	txVOs := service.buildTxs(txList)
 
-	//items := parseFromAndToByAmountCoinFlow([]interface{}{txVOs}, true)
 	items := service.getValidatorMonikerByAddress(txVOs)
+    //add events in tx detail api
+	if serviceTx, ok := items[0].(vo.ServiceTx); ok {
+		serviceTx.Events = serviceTx.BaseTx.Events
+		return serviceTx
+	}
 
 	logger.Debug("getTxsByFilter end", service.GetTraceLog())
 	return items[0]
