@@ -10,9 +10,12 @@ type IServiceService struct {
 	BaseService
 }
 
-func (service *IServiceService) QueryServiceBindings(servicename string) vo.ServiceBindingRespond {
-	bindings := lcd.GetServiceBindings(servicename)
+func (service *IServiceService) QueryServiceBindings(servicename, provider string) vo.ServiceBindingRespond {
+	bindings := lcd.GetServiceBindings(servicename, provider)
 	var resp vo.ServiceBindingRespond
+	if len(bindings) == 0 {
+		return resp
+	}
 	for _, val := range bindings {
 		resp = append(resp, vo.ServiceBinding{
 			ServiceName:  val.ServiceName,

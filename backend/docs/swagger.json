@@ -1125,6 +1125,12 @@
                         "name": "servicename",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "provider",
+                        "name": "provider",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2862,16 +2868,13 @@
         "vo.AssetTokens": {
             "type": "object",
             "properties": {
-                "decimal": {
-                    "type": "integer"
-                },
                 "initial_supply": {
                     "type": "string"
                 },
                 "max_supply": {
                     "type": "string"
                 },
-                "min_unit_alias": {
+                "min_unit": {
                     "type": "string"
                 },
                 "mintable": {
@@ -2882,6 +2885,9 @@
                 },
                 "owner": {
                     "type": "string"
+                },
+                "scale": {
+                    "type": "integer"
                 },
                 "symbol": {
                     "type": "string"
@@ -2896,16 +2902,13 @@
             "items": {
                 "type": "object",
                 "properties": {
-                    "decimal": {
-                        "type": "integer"
-                    },
                     "initial_supply": {
                         "type": "string"
                     },
                     "max_supply": {
                         "type": "string"
                     },
-                    "min_unit_alias": {
+                    "min_unit": {
                         "type": "string"
                     },
                     "mintable": {
@@ -2916,6 +2919,9 @@
                     },
                     "owner": {
                         "type": "string"
+                    },
+                    "scale": {
+                        "type": "integer"
                     },
                     "symbol": {
                         "type": "string"

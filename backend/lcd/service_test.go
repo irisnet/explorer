@@ -7,8 +7,14 @@ import (
 )
 
 func TestGetServiceBindings(t *testing.T) {
-	res := GetServiceBindings("assettransfer")
+	res := GetServiceBindings("assettransfer","")
 	data,_ := json.Marshal(res)
+	fmt.Println(string(data))
+	res = GetServiceBindings("assettransfer","iaa18e2e9fxxrr88k78gg7fhuuqgccfv8self9ye65")
+	data,_ = json.Marshal(res)
+	fmt.Println(string(data))
+	res = GetServiceBindings("assettransfer","iaa18e2e9fxxrr88k78gg7fhuuqgccfv8self9ye66")
+	data,_ = json.Marshal(res)
 	fmt.Println(string(data))
 }
 

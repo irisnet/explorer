@@ -37,7 +37,7 @@ type RequestContext struct {
 	State              int32    `json:"state"`
 }
 
-func GetServiceBindings(servicename string) (resp []ServiceBinding) {
+func GetServiceBindings(servicename, provider string) (resp []ServiceBinding) {
 	bindingData, err := client.Service().QueryBindings(servicename)
 	if err != nil {
 		logger.Error("Query Bindings failed",
@@ -47,16 +47,32 @@ func GetServiceBindings(servicename string) (resp []ServiceBinding) {
 	}
 
 	for _, val := range bindingData {
-		resp = append(resp,ServiceBinding{
-			ServiceName:val.ServiceName,
-			Provider:val.Provider,
-			Deposit:LoadCoins(val.Deposit),
-			Pricing:val.Pricing,
-			Available:val.Available,
-			DisabledTime:val.DisabledTime,
-			Owner:val.Owner,
-			Qos:val.Qos,
-		})
+		if provider == "" {
+			resp = append(resp, ServiceBinding{
+				ServiceName:  val.ServiceName,
+				Provider:     val.Provider,
+				Deposit:      LoadCoins(val.Deposit),
+				Pricing:      val.Pricing,
+				Available:    val.Available,
+				DisabledTime: val.DisabledTime,
+				Owner:        val.Owner,
+				Qos:          val.Qos,
+			})
+		} else {
+			if provider == val.Provider {
+				resp = append(resp, ServiceBinding{
+					ServiceName:  val.ServiceName,
+					Provider:     val.Provider,
+					Deposit:      LoadCoins(val.Deposit),
+					Pricing:      val.Pricing,
+					Available:    val.Available,
+					DisabledTime: val.DisabledTime,
+					Owner:        val.Owner,
+					Qos:          val.Qos,
+				})
+			}
+		}
+
 	}
 	return
 }
@@ -69,30 +85,30 @@ func GetServiceContexts(reqcontextid string) (resp RequestContext) {
 			logger.String("err", err.Error()))
 		return
 	}
-	ConverAddrs := func() (ret []string){
-		for _,val := range reqContext.Providers {
-			ret = append(ret,val.String())
+	ConverAddrs := func() (ret []string) {
+		for _, val := range reqContext.Providers {
+			ret = append(ret, val.String())
 		}
 		return
 	}
 	resp = RequestContext{
-		ServiceName:reqContext.ServiceName,
-		Providers:ConverAddrs(),
-		Consumer:reqContext.Consumer.String(),
-		Input:reqContext.Input,
-		ServiceFeeCap:LoadCoins(reqContext.ServiceFeeCap),
-		State:reqContext.State,
-		SuperMode:reqContext.SuperMode,
-		ModuleName:reqContext.ModuleName,
-		Timeout:reqContext.Timeout,
-		ResponseThreshold:reqContext.ResponseThreshold,
-		RepeatedFrequency:reqContext.RepeatedFrequency,
-		RepeatedTotal:reqContext.RepeatedTotal,
-		Repeated:reqContext.Repeated,
-		BatchCounter:reqContext.BatchCounter,
-		BatchRequestCount:reqContext.BatchRequestCount,
-		BatchResponseCount:reqContext.BatchResponseCount,
-		BatchState:reqContext.BatchState,
+		ServiceName:        reqContext.ServiceName,
+		Providers:          ConverAddrs(),
+		Consumer:           reqContext.Consumer.String(),
+		Input:              reqContext.Input,
+		ServiceFeeCap:      LoadCoins(reqContext.ServiceFeeCap),
+		State:              reqContext.State,
+		SuperMode:          reqContext.SuperMode,
+		ModuleName:         reqContext.ModuleName,
+		Timeout:            reqContext.Timeout,
+		ResponseThreshold:  reqContext.ResponseThreshold,
+		RepeatedFrequency:  reqContext.RepeatedFrequency,
+		RepeatedTotal:      reqContext.RepeatedTotal,
+		Repeated:           reqContext.Repeated,
+		BatchCounter:       reqContext.BatchCounter,
+		BatchRequestCount:  reqContext.BatchRequestCount,
+		BatchResponseCount: reqContext.BatchResponseCount,
+		BatchState:         reqContext.BatchState,
 	}
 	return
 }

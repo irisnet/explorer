@@ -26,13 +26,15 @@ func RegisterServices(r *mux.Router) error {
 // @Accept  json
 // @Produce  json
 // @Param   servicename    path   string true    "servicename"
+// @Param   provider    query   string false    "provider"
 // @Success 200 {object} vo.ServiceBindingRespond   "success"
 // @Router /api/service/bindings/{servicename} [get]
 func RegisterQueryServiceBindings(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryServiceBindings, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		servicename := Var(request, "servicename")
-		return iservice.QueryServiceBindings(servicename)
+		provider := QueryParam(request, "provider")
+		return iservice.QueryServiceBindings(servicename, provider)
 	})
 	return nil
 }
