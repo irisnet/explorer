@@ -628,7 +628,7 @@ export default {
 	                        this.minUnitAliasValue = data.proposal.min_unit_alias ? data.proposal.min_unit_alias : "--";
 	                        this.destAddressValue = data.proposal.dest_address ? data.proposal.dest_address : '--';
 	                        if (data.proposal && data.proposal.total_deposit.length !== 0) {
-                                this.totalDeposit = `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(data.proposal.total_deposit[0].amount)))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
+                                this.totalDeposit = `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(data.proposal.total_deposit[0].amount))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
                             } else {
                                 this.totalDeposit = "";
                             }

@@ -377,7 +377,6 @@
             },
             getAssetList(){
                 this.assetsItems = this.assetList.map( item => {
-                    console.log('----',item)
 	            	if(item && item.denom === 'iris-atto'){
 			            return {
 				            token: Tools.formatDenom(item.denom),
@@ -566,6 +565,7 @@
 						        this.flAllTxNextPage = false
                             }
 					        this.transactionsItems = res.Data.map( item => {
+					            //console.error('------',item)
 					        	let Amount = '--',fromInformation,toInformation;
                                 fromInformation = Tools.formatListAmount(item).fromAddressAndMoniker;
                                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;

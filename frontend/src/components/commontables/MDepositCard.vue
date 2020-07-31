@@ -172,7 +172,7 @@
 	            if(depositObj.level.gov_param.min_deposit.amount === 0){
 		            this.minDepositToken = '0 IRIS'
 	            }else {
-		            this.minDepositToken = `${new bigNumber(Tools.numberMoveDecimal(depositObj.level.gov_param.min_deposit.amount)).toFormat()}`;
+		            this.minDepositToken = `${new bigNumber(depositObj.level.gov_param.min_deposit.amount).toFormat()}`;
 		            this.minDepositTokenDenom = `${Tools.formatDenom(depositObj.level.gov_param.min_deposit.denom)}`
 
 	            }
@@ -181,14 +181,14 @@
 	            if(depositObj.total_deposit.amount === 0){
 		            this.totalDeposit = '0'
 	            }else {
-		            this.totalDeposit = `${Tools.numberMoveDecimal(depositObj.total_deposit.amount)}`;
+		            this.totalDeposit = `${depositObj.total_deposit.amount}`;
                }
             },
             setInitialDeposit(depositObj){
                 if(depositObj.intial_deposit.amount === 0){
 	                this.initialDeposit = '0'
                 }else {
-	                this.initialDeposit = `${Tools.numberMoveDecimal(depositObj.intial_deposit.amount)}`
+	                this.initialDeposit = `${depositObj.intial_deposit.amount}`
                 }
             },
             getAgeHour(time){

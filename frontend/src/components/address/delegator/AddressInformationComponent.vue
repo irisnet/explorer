@@ -14,7 +14,7 @@
 							</li>
 							<li class="address_information_item">
 								<span class="address_information_label">Token:</span>
-								<span class="address_information_value">IRIS</span>
+								<span class="address_information_value">{{ tokenName.toUpperCase() }}</span>
 							</li>
 							<li class="address_information_item">
 								<span class="address_information_label">Total Amount:</span>
@@ -64,7 +64,9 @@
 	import Tools from "../../../util/Tools"
 	import AddressInformationPie from "./AddressInformationPie";
 	import moveDecimal from 'move-decimal-point'
-	export default {
+	import {GetNativeTokenName} from "../../../helper/ConfigHelper";
+
+    export default {
 		name: "AddressInformationComponent",
 		components: {AddressInformationPie, MClip},
 		props:{
@@ -109,13 +111,13 @@
 				delegated:'',
 				unbonding:'',
 				rewards:'',
-				otherTokenList:[]
+				otherTokenList:[],
+                tokenName:'IRIS',
 			}
 		},
 		watch:{
 			data(){
 				this.assetInformation = this.data;
-                console.error('---------',this.assetInformation)
 				this.formatAssetInformation(this.assetInformation)
 			}
 		},
@@ -130,28 +132,37 @@
 				 });
 				return res
 			},
-			formatAssetInformation(assetInformation){
-				assetInformation.forEach( item => {
-					if(item && item.token === 'IRIS'){
+			async formatAssetInformation(assetInformation){
+			    try{
+			        const res = await GetNativeTokenName();
+                    if(res && res.msg === 'success'){
+			            this.tokenName = res.data;
+                    }
+                    assetInformation.forEach( item => {
+                        if(item && item.token === this.tokenName){
 
-						this.totalAmount = item.totalAmount;
-						this.assetConstitute.forEach( res => {
-							 if(res.label === "UnBonding"){
-								res.value = item['unBonding'] || "--";
-								res.numberValue = item['unBonding'] ? item['unBonding'].replace(/[^\d.]/g,"") : 0;
-								res.percent = this.formatDecimalNumberToFixedNumber(item.totalAmount.replace(/[^\d.]/g,""),res.numberValue)
-							}else {
-								res.value = item[Tools.firstWordLowerCase(res.label)] && item[Tools.firstWordLowerCase(res.label)] !== 0 ? item[Tools.firstWordLowerCase(res.label)] : "--";
-								res.numberValue = item[Tools.firstWordLowerCase(res.label)] ?
-									item[Tools.firstWordLowerCase(res.label)].replace(/[^\d.]/g,"") : 0;
-								res.percent = this.formatDecimalNumberToFixedNumber(item.totalAmount.replace(/[^\d.]/g,""),res.numberValue)
-							}
-						})
-					}
-				});
-				this.otherTokenList = assetInformation.filter((item) => {
-					return item.token !== 'IRIS'
-				})
+                            this.totalAmount = item.totalAmount;
+                            this.assetConstitute.forEach( res => {
+                                if(res.label === "UnBonding"){
+                                    res.value = item['unBonding'] || "--";
+                                    res.numberValue = item['unBonding'] ? item['unBonding'].replace(/[^\d.]/g,"") : 0;
+                                    res.percent = this.formatDecimalNumberToFixedNumber(item.totalAmount.replace(/[^\d.]/g,""),res.numberValue)
+                                }else {
+                                    res.value = item[Tools.firstWordLowerCase(res.label)] && item[Tools.firstWordLowerCase(res.label)] !== 0 ? item[Tools.firstWordLowerCase(res.label)] : "--";
+                                    res.numberValue = item[Tools.firstWordLowerCase(res.label)] ?
+                                        item[Tools.firstWordLowerCase(res.label)].replace(/[^\d.]/g,"") : 0;
+                                    res.percent = this.formatDecimalNumberToFixedNumber(item.totalAmount.replace(/[^\d.]/g,""),res.numberValue)
+                                }
+                            })
+                        }
+                    });
+                    this.otherTokenList = assetInformation.filter((item) => {
+                        return item.token !== this.tokenName
+                    })
+                }catch (e) {
+			        console.error(e);
+                }
+
 			},
 			formatDecimalNumberToFixedNumber(total,data) {
 				let percentNumber = (Number(data) / Number(total)).toString();

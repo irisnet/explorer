@@ -110,13 +110,6 @@ export default {
           sortMethod: this.sortMethodNumber('delegatorNum'),
           className: 'text_right'
         },
-        {
-          title: 'Bond_Height',
-          key: 'bondHeight',
-          sortable: true,
-          sortMethod: this.sortMethodNumber('bondHeight'),
-          className: 'text_right'
-        }
       ],
       jailedValidatorFields: [
           {
@@ -152,13 +145,6 @@ export default {
           key: 'selfBond',
           sortable: true,
           sortMethod: this.sortMethodSplit('selfBond'),
-          className: 'text_right'
-        },
-        {
-          title: 'Bond_Height',
-          key: 'bondHeight',
-          sortable: true,
-          sortMethod: this.sortMethodNumber('bondHeight'),
           className: 'text_right'
         },
         {
@@ -210,13 +196,6 @@ export default {
           key: 'delegatorNum',
           sortable: true,
           sortMethod: this.sortMethodNumber('delegatorNum'),
-          className: 'text_right'
-        },
-        {
-          title: 'Bond_Height',
-          key: 'bondHeight',
-          sortable: true,
-          sortMethod: this.sortMethodNumber('bondHeight'),
           className: 'text_right'
         },
         {

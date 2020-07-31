@@ -248,7 +248,8 @@ export default class Tools{
 		return new BigNumber(num).toFixed(2);
 	}
 	static formatFeeToFixedNumber(num){
-		return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4);
+		//return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4);
+		return  Tools.toFixedformatNumber(num ,4);
 	}
 	static formatDecimalNumberToFixedNumber(num){
 		if(typeof num === 'number' && !Object.is(num, NaN)) {

@@ -397,19 +397,20 @@
 					return b.proposal_id - a.proposal_id
                 });
 				depositPeriodDatas.forEach(v => {
+				    console.error('=======',v)
 					if (v.level && v.level.gov_param && v.level.gov_param.min_deposit && (typeof v.level.gov_param.min_deposit.amount === 'number')) {
 						v.min_deposit_number = Number(v.level.gov_param.min_deposit.amount);
-						let n = v.min_deposit_number === 0 ? v.min_deposit_number : Tools.formatAmount(v.level.gov_param.min_deposit.amount);
+						let n = v.min_deposit_number === 0 ? v.min_deposit_number : v.level.gov_param.min_deposit.amount;
 						v.min_deposit_format = `${n} IRIS`;
 					}
 					if (v.intial_deposit && (typeof v.intial_deposit.amount === 'number')) {
 						v.intial_deposit_number = Number(v.intial_deposit.amount);
-						let n = v.intial_deposit_number === 0 ? v.intial_deposit_number : Tools.formatAmount(v.intial_deposit.amount);
+						let n = v.intial_deposit_number === 0 ? v.intial_deposit_number : v.intial_deposit.amount;
 						v.intial_deposit_format = `${n} IRIS`;
 					}
 					if (v.total_deposit && (typeof v.total_deposit.amount === 'number')) {
 						v.total_deposit_number = Number(v.total_deposit.amount);
-						let n = v.total_deposit_number === 0 ? v.total_deposit_number : Tools.formatAmount(v.total_deposit.amount);
+						let n = v.total_deposit_number === 0 ? v.total_deposit_number : v.total_deposit.amount;
 						v.total_deposit_format = `${n} IRIS`;
 					}
 					v.intial_deposit_number_per = this.isNumber(v.intial_deposit_number) && this.isNumber(v.min_deposit_number) ?
