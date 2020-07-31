@@ -30,7 +30,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 			if err != nil {
 				logger.Error("GetValidatorListByPage have error", logger.String("error", err.Error()))
 			}
-			panic(types.CodeNotFound)
+			return nil
 		}
 
 		var totalVotingPower = getTotalVotingPower(validatorList)
@@ -555,7 +555,7 @@ func (service *ValidatorService) QueryCandidatesTopN() vo.ValDetailVo {
 
 	if err != nil {
 		logger.Error("GetCandidatesTopN have error", logger.String("error", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ValDetailVo{}
 	}
 
 	var validators []vo.Validator
@@ -579,7 +579,7 @@ func (service *ValidatorService) QueryValidator(address string) vo.CandidatesInf
 	validator, err := lcd.Validator(address)
 	if err != nil {
 		logger.Error("lcd.Validator have error", logger.String("error", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.CandidatesInfoVo{}
 	}
 
 	var moniker = validator.Description.Moniker
@@ -682,7 +682,7 @@ func (service *ValidatorService) QueryCandidateStatus(address string) (resp vo.V
 
 	if err != nil {
 		logger.Error("query candidate status", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ValStatus{}
 	}
 
 	resp = vo.ValStatus{

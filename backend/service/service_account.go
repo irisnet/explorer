@@ -101,15 +101,15 @@ func getValidatorStatus(validator document.Validator) string {
 }
 
 func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
+	var accList []vo.AccountInfo
 
 	result, err := document.Account{}.GetAccountList()
 
 	if err != nil {
 		logger.Error("GetAccountList have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return accList
 	}
 
-	var accList []vo.AccountInfo
 	var totalAmt = float64(0)
 	//AccountAmtMap := make(map[string]float64,len(result))
 

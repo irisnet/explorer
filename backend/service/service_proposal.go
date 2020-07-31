@@ -5,7 +5,6 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"strconv"
@@ -92,7 +91,7 @@ func (service *ProposalService) QueryDeposit(id int) vo.ProposalNewStyle {
 	data, err := document.Proposal{}.QueryProposalById(id)
 	if err != nil {
 		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ProposalNewStyle{}
 	}
 
 	proposal := vo.ProposalNewStyle{
@@ -107,7 +106,7 @@ func (service *ProposalService) QueryDeposit(id int) vo.ProposalNewStyle {
 	tx, err := document.CommonTx{}.QueryProposalInitAmountTxById(id)
 	if err != nil {
 		logger.Error("QueryProposalInitAmountTxById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ProposalNewStyle{}
 	}
 	proposal.InitialDeposit = vo.Coin{
 		Denom:  tx.Amount[0].Denom,
@@ -145,11 +144,11 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 	data, err := document.Proposal{}.QueryProposalById(id)
 	if err != nil {
 		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ProposalNewStyle{}
 	}
 
 	if data.Status == document.ProposalStatusDeposit {
-		panic(types.CodeNotFound)
+		return vo.ProposalNewStyle{}
 	}
 
 	var systemVotingPower float64
@@ -651,7 +650,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	data, err := document.Proposal{}.QueryProposalById(id)
 	if err != nil {
 		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ProposalInfoVo{}
 	}
 
 	coinsAsUtils := make(utils.Coins, 0, len(data.TotalDeposit))
@@ -807,7 +806,7 @@ func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int, istotal b
 	proposal, err := document.Proposal{}.QueryProposalById(int(proposalId))
 	if err != nil {
 		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return res
 	}
 
 	if len(proposal.Votes) == 0 {
