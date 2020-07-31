@@ -1,7 +1,6 @@
 package service
 
 import (
-	"math"
 	"math/big"
 
 	"github.com/irisnet/explorer/backend/lcd"
@@ -48,7 +47,7 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (utils.Coin, ut
 
 	}
 
-	selfBondAsFloat64, exact := new(big.Rat).Mul(selfBondAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+	selfBondAsFloat64, exact := selfBondAsRat.Float64()
 	if !exact {
 		logger.Info("convert selfBondAsRat type (big.Rat to float64) ",
 			logger.Any("exact", exact),
@@ -57,7 +56,7 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (utils.Coin, ut
 
 	selfBondTokensAsRat := new(big.Rat).Mul(selfBondAsRat, rate)
 	BondStakeAsRat := new(big.Rat).Sub(tokensAsRat, selfBondTokensAsRat)
-	BondStakeAsFloat64, exact := new(big.Rat).Mul(BondStakeAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+	BondStakeAsFloat64, exact := BondStakeAsRat.Float64()
 	if !exact {
 		logger.Info("convert otherBondAsRat type (big.Rat to float64) ",
 			logger.Any("exact", exact),
@@ -65,12 +64,12 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (utils.Coin, ut
 	}
 
 	return utils.Coin{
-		Denom:      utils.CoinTypeStake,
-			Amount: selfBondAsFloat64,
-		}, utils.Coin{
-		Denom:      utils.CoinTypeStake,
-			Amount: BondStakeAsFloat64,
-		}
+		Denom:  utils.CoinTypeStake,
+		Amount: selfBondAsFloat64,
+	}, utils.Coin{
+		Denom:  utils.CoinTypeStake,
+		Amount: BondStakeAsFloat64,
+	}
 }
 
 func (service *DelegatorService) GetDeposits(addressAsAccount string) utils.Coin {
@@ -108,7 +107,7 @@ func (service *DelegatorService) GetDeposits(addressAsAccount string) utils.Coin
 
 		totalAmtAsRat.Add(totalAmtAsRat, new(big.Rat).Mul(delegationSharesAsRat, rate))
 	}
-	totalAmtAsFloat64, exact := new(big.Rat).Mul(totalAmtAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+	totalAmtAsFloat64, exact := totalAmtAsRat.Float64()
 	if !exact {
 		logger.Info("convert totalAmtAsFloat64 type (big.Rat to float64) ",
 			logger.Any("exact", exact),

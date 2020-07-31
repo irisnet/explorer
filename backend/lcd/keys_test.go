@@ -27,6 +27,17 @@ func TestAccountInfo(t *testing.T) {
 	}
 }
 
+func TestAccountBalances(t *testing.T) {
+	address := "iaa1x98k5n7xj0h3udnf5dcdzw85tsfa75qm0kqak0"
+
+	if res, err := AccountBalances(address); err != nil {
+		t.Fatal(err)
+	} else {
+		resBytes, _ := json.MarshalIndent(res, "", "\t")
+		t.Log(string(resBytes))
+	}
+}
+
 func TestGetIconsByKey(t *testing.T) {
 	pic, err := GetIconsByKey("8E15046A255C20CC")
 	if err != nil {

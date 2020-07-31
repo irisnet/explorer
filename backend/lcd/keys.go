@@ -46,12 +46,8 @@ func Account(address string) (result AccountVo, err error) {
 	if err != nil {
 		return result, err
 	}
-	coinsStrArr := []string{}
-	for _, v := range ret {
-		coinsStrArr = append(coinsStrArr, v.Amount+v.Denom)
-	}
 	result.Address = address
-	result.Coins = coinsStrArr
+	result.Coins = ret
 	return result, nil
 }
 

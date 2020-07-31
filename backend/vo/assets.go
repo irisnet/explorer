@@ -58,8 +58,8 @@ type AssetTokens struct {
 	Mintable      bool   `json:"mintable,string"`
 	Symbol        string `json:"symbol"`
 	Name          string `json:"name"`
-	MinUnitAlias  string `json:"min_unit_alias"`
-	Decimal       int    `json:"decimal"`
+	MinUnit       string `json:"min_unit"`
+	Scale         int    `json:"scale"`
 }
 
 type AssetTokensRespond []AssetTokens

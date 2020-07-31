@@ -19,7 +19,7 @@ const (
 
 type AccountVo struct {
 	Address       string   `json:"address"`
-	Coins         []string `json:"coins"`
+	Coins         []Coin `json:"coins"`
 	PublicKey     string   `json:"public_key"`
 	AccountNumber uint64   `json:"account_number"`
 	Sequence      string   `json:"sequence"`

@@ -37,10 +37,10 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 				//decimalMap := make(map[string]int, len(res.Coins))
 				var unit []string
 				var amount utils.Coins
-				for _, coinStr := range res.Coins {
-					coin := utils.ParseCoin(coinStr)
+				for _, coin := range res.Coins {
+					val, _ := utils.ParseStringToFloat(coin.Amount)
 					unit = append(unit, strings.Split(coin.Denom, types.AssetMinDenom)[0])
-					amount = append(amount, coin)
+					amount = append(amount, utils.Coin{Denom: coin.Denom, Amount: val})
 				}
 				decimalMap := getDecimalMapData(unit)
 				for i, val := range amount {
@@ -55,7 +55,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 			}
 		}()
 
-		//result.Deposits = delegatorService.GetDeposits(address)
+		result.Deposits = delegatorService.GetDeposits(address)
 		valaddress := utils.Convert(conf.Get().Hub.Prefix.ValAddr, address)
 		validator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(valaddress)
 		if err == nil {
@@ -72,7 +72,6 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 	}()
 
 	group.Wait()
-
 
 	result.IsProfiler = isProfiler(address)
 	result.Address = address

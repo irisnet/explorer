@@ -147,8 +147,6 @@ func convertModelActualFee(actfee document.ActualFee) vo.ActualFee {
 	}
 }
 
-
-
 func (service *AssetsService) UpdateAssetTokens() {
 
 	var vMap map[string]bson.ObjectId
@@ -167,7 +165,7 @@ func (service *AssetsService) UpdateAssetTokens() {
 			Symbol:        v.BaseToken.Symbol,
 			Scale:         v.BaseToken.Scale,
 			AssetName:     v.BaseToken.Name,
-			MinUnitAlias:  v.BaseToken.MinUnitAlias,
+			MinUnit:       v.BaseToken.MinUnitAlias,
 			MaxSupply:     v.BaseToken.MaxSupply,
 			Mintable:      v.BaseToken.Mintable,
 			Owner:         v.BaseToken.Owner,
@@ -216,10 +214,9 @@ func isDiffAssetToken(src, dst document.AssetToken) bool {
 	if src.Symbol != dst.Symbol ||
 		src.AssetName != dst.AssetName ||
 		src.Scale != dst.Scale ||
-		src.MinUnitAlias != dst.MinUnitAlias ||
+		src.MinUnit != dst.MinUnit ||
 		src.InitialSupply != dst.InitialSupply ||
 		src.MaxSupply != dst.MaxSupply ||
-	//src.TotalSupply != dst.TotalSupply ||
 		src.Owner != dst.Owner {
 		return true
 	}
@@ -237,14 +234,13 @@ func (service *AssetsService) QueryAssetTokens() (vo.AssetTokensRespond, error) 
 
 	for _, v := range res {
 		tmp := vo.AssetTokens{
-			Owner: v.Owner,
-			//TotalSupply:   utils.CovertAssetUnit(v.TotalSupply, v.Scale),
-			InitialSupply: utils.CovertAssetUnit(v.InitialSupply, v.Scale),
-			MaxSupply:     utils.CovertAssetUnit(v.MaxSupply, v.Scale),
-			MinUnitAlias:  v.MinUnitAlias,
+			Owner:         v.Owner,
+			InitialSupply: v.InitialSupply,
+			MaxSupply:     v.MaxSupply,
+			MinUnit:       v.MinUnit,
 			Mintable:      v.Mintable,
 			Name:          v.AssetName,
-			Decimal:       v.Scale,
+			Scale:         v.Scale,
 			Symbol:        v.Symbol,
 		}
 		assetinfos = append(assetinfos, tmp)
@@ -263,12 +259,12 @@ func (service *AssetsService) QueryAssetTokenDetail(symbol string) (vo.AssetToke
 	ret := vo.AssetTokens{
 		Owner: res.Owner,
 		//TotalSupply:   utils.CovertAssetUnit(res.TotalSupply, res.Scale),
-		InitialSupply: utils.CovertAssetUnit(res.InitialSupply, res.Scale),
-		MaxSupply:     utils.CovertAssetUnit(res.MaxSupply, res.Scale),
-		MinUnitAlias:  res.MinUnitAlias,
+		InitialSupply: res.InitialSupply,
+		MaxSupply:     res.MaxSupply,
+		MinUnit:       res.MinUnit,
 		Mintable:      res.Mintable,
 		Name:          res.AssetName,
-		Decimal:       res.Scale,
+		Scale:         res.Scale,
 		Symbol:        res.Symbol,
 	}
 

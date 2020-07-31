@@ -1,7 +1,6 @@
 package task
 
 import (
-	"github.com/irisnet/explorer/backend/utils"
 	"github.com/robfig/cron/v3"
 	"github.com/shopspring/decimal"
 	"testing"
@@ -27,9 +26,9 @@ func TestTxNumGroupByDayTask_init(t *testing.T) {
 
 func TestTxNumGroupByDayTask_getTokenStat(t *testing.T) {
 	task := TxNumGroupByDayTask{}
-
-	res := task.getTokenStat()
-	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
+	task.DoTask(HeartBeat)
+	//res := task.getTokenStat()
+	//t.Log(string(utils.MarshalJsonIgnoreErr(res)))
 }
 
 func TestTxNumGroupByDayTask_decimalShift(t *testing.T) {

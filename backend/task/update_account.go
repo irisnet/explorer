@@ -8,7 +8,6 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/types"
 	"math/big"
-	"math"
 	"strings"
 )
 
@@ -172,7 +171,6 @@ func getDelegationInfo(address string) (float64, error) {
 			}
 		}
 	}
-	token = new(big.Rat).Mul(token, new(big.Rat).SetFloat64(math.Pow10(18)))
 	return utils.ParseStringToFloat(token.FloatString(18))
 }
 

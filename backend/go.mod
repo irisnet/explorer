@@ -8,7 +8,7 @@ require (
 	github.com/go-openapi/spec v0.19.3 // indirect
 	github.com/gorilla/handlers v1.4.2
 	github.com/gorilla/mux v1.7.3
-	github.com/irisnet/irishub-sdk-go v0.0.0-20200730054222-476bf5300423
+	github.com/irisnet/irishub-sdk-go v0.0.0-20200730102011-ac816d319025
 	github.com/mailru/easyjson v0.7.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/rakyll/statik v0.1.6

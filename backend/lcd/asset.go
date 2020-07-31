@@ -40,7 +40,6 @@ func GetAssetTokens() (result []AssetToken) {
 //		result = append(result, AssetToken{BaseToken: BaseToken{
 //			Symbol:        val.Symbol,
 //			Scale:         int(val.Scale),
-//			MinUnitAlias:  val.MinUnit,
 //			InitialSupply: fmt.Sprint(val.InitialSupply),
 //			MaxSupply:     fmt.Sprint(val.MaxSupply),
 //			Mintable:      val.Mintable,
