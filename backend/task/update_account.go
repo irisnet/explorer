@@ -180,8 +180,11 @@ func getUnbondingDelegationInfo(address string) (float64, error) {
 	token, _ := new(big.Rat).SetString("0")
 	if len(unbondingDelegations) > 0 {
 		for _, v := range unbondingDelegations {
-			coin := utils.ParseCoin(v.InitialBalance)
-			token = new(big.Rat).Add(token, new(big.Rat).SetFloat64(coin.Amount))
+			if v.InitialBalance != "" {
+				balances, _ := new(big.Rat).SetString(v.InitialBalance)
+				token = new(big.Rat).Add(token, balances)
+			}
+
 		}
 	}
 

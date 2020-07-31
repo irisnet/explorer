@@ -174,6 +174,9 @@ func GetDistributionCommissionRewardsByAddress(validatorAcc string) (utils.Coins
 	var (
 		commission utils.CoinsAsStr
 	)
+	if !strings.HasPrefix(validatorAcc, conf.Get().Hub.Prefix.ValAddr) {
+		return nil, nil
+	}
 
 	commissionData, err := client.Distr().QueryCommission(validatorAcc)
 	if err != nil {
