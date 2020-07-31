@@ -755,7 +755,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	return
 }
 
-
 func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint64]vo.Coin, error) {
 
 	if len(idArr) == 0 {
@@ -863,7 +862,8 @@ func (s *ProposalService) GetDepositTxs(proposalId int64, page, size int, istota
 	num, txs, err := document.CommonTx{}.QueryProposalTxByIdWithSubmitOrDepositType(proposalId, page, size, istotal)
 
 	if err != nil {
-		panic(err)
+		logger.Error("Query ProposalTx ByIdWithSubmitOrDepositType failed", logger.String("err", err.Error()))
+		return res
 	}
 	items := s.buildTx(txs)
 	res.Total = num
@@ -897,15 +897,9 @@ func (s *ProposalService) buildTx(txs []document.CommonTx) []vo.Tx {
 			Type:      v.Type,
 			Timestamp: v.Time.UTC(),
 		}
-		valaddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.From)
-		validator, err := lcd.Validator(valaddr)
-		if err != nil {
-			logger.Error("lcd.Validator have error", logger.String("valaddr", valaddr), logger.String("err", err.Error()))
-		}
+		moniker, _ := s.BuildFTMoniker(v.From, v.To)
+		tx.Moniker = moniker
 
-		if moniker := validator.Description.Moniker; len(moniker) > 0 {
-			tx.Moniker = moniker
-		}
 
 		res = append(res, tx)
 	}

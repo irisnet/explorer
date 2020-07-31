@@ -338,20 +338,12 @@ func (service *ValidatorService) GetDalegationbyPageSize(lcdDelegations []lcd.De
 func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, size int) vo.RedelegationPage {
 
 	lcdReDelegations := lcd.GetRedelegationsByValidatorAddr(valAddr)
-	blacklist := service.QueryBlackList()
 
 	items := make([]vo.Redelegation, 0, size)
 
 	for k, v := range lcdReDelegations {
 		if k >= page*size && k < (page+1)*size {
-
-			tomoniker := ""
-			if validator, err := document.GetValidatorByAddr(v.ValidatorDstAddr); err == nil {
-				tomoniker = validator.Description.Moniker
-			}
-			if blockone, ok := blacklist[v.ValidatorDstAddr]; ok {
-				tomoniker = blockone.Moniker
-			}
+			tomoniker, _ := service.BuildFTMoniker(v.ValidatorDstAddr, "")
 			tmp := vo.Redelegation{
 				Address:   v.DelegatorAddr,
 				Amount:    v.Balance,

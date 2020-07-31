@@ -18,6 +18,9 @@ func Validator(address string) (result ValidatorVo, err error) {
 	}
 	//data,_ := json.Marshal(validator)
 	//fmt.Println(string(data))
+	if validator.OperatorAddress == "" {
+		return result, fmt.Errorf("not found this validator %v", address)
+	}
 
 	uptime, _ := time.Parse(ctypes.TimeLayout1, validator.Commission.UpdateTime)
 	unbondtime, _ := time.Parse(ctypes.TimeLayout1, validator.UnbondingTime)
@@ -93,7 +96,7 @@ func BondStatusToInt(b string) int {
 	case ctypes.TypeValStatusBonded:
 		return 2
 	default:
-		panic("improper use of BondStatusToString")
+		return -1
 	}
 }
 
@@ -163,7 +166,7 @@ func GetDistributionRewardsByValidatorAcc(validatorAcc string) ([]RewardsFromDel
 		delegations = append(delegations, item)
 	}
 
-	return  delegations, total, nil
+	return delegations, total, nil
 }
 
 func GetDistributionCommissionRewardsByAddress(validatorAcc string) (utils.CoinsAsStr, error) {
@@ -290,7 +293,6 @@ func StakePool() (result StakePoolVo) {
 	result = StakePoolVo{
 		LooseTokens:  stakepool.NotBondedTokens,
 		BondedTokens: stakepool.BondedTokens,
-
 	}
 	return
 }
