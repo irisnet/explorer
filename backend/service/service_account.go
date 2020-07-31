@@ -23,12 +23,12 @@ type AccountService struct {
 func (service *AccountService) Query(address string) (result vo.AccountVo) {
 	var group sync.WaitGroup
 	prefix, _, _ := utils.DecodeAndConvert(address)
-	if prefix == conf.Get().Hub.Prefix.ValAddr {
-		self, delegated := delegatorService.QueryDelegation(address)
-		result.Amount = utils.Coins{self}
-		result.Deposits = delegated
-
-	} else {
+	if prefix != conf.Get().Hub.Prefix.ValAddr {
+		//	self, delegated := delegatorService.QueryDelegation(address)
+		//	result.Amount = utils.Coins{self}
+		//	result.Deposits = delegated
+		//
+		//} else {
 		group.Add(1)
 		go func() {
 			defer group.Done()
@@ -55,7 +55,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 			}
 		}()
 
-		result.Deposits = delegatorService.GetDeposits(address)
+		//result.Deposits = delegatorService.GetDeposits(address)
 		valaddress := utils.Convert(conf.Get().Hub.Prefix.ValAddr, address)
 		validator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(valaddress)
 		if err == nil {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2"
 )
 
 const (
@@ -38,6 +39,20 @@ func (d BlackList) Name() string {
 func (d BlackList) PkKvPair() map[string]interface{} {
 	return bson.M{BlackListFieldValAddr: d.OperatorAddr}
 }
+
+
+func (d BlackList) EnsureIndexes() []mgo.Index {
+	indexes := []mgo.Index{
+		{
+			Key:        []string{BlackListFieldValAddr},
+			Unique:     true,
+			Background: true,
+		},
+	}
+
+	return indexes
+}
+
 
 func (b BlackList) QueryBlackList() map[string]BlackList {
 	var (
