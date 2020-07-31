@@ -556,12 +556,12 @@ func (service *ProposalService) QueryList(page, size int, istotal bool) (resp vo
 			}
 		}
 
-		var level vo.Level
+		var l vo.Level
 		name, err := lcd.GetProposalLevelByType(propo.Type)
 		if err != nil {
 			logger.Error("get proposal level by type", logger.String("err", err.Error()), logger.String("param", propo.Type))
 		}
-		level.Name = name
+		l.Name = name
 
 		tmp := vo.ProposalNewStyle{
 			ProposalId:       propo.ProposalId,
@@ -574,26 +574,8 @@ func (service *ProposalService) QueryList(page, size int, istotal bool) (resp vo
 			Votes:            tmpVoteArr,
 			TotalVotingPower: totalVotingPower,
 			FinalVotes:       finalVotes,
-			Level:            level,
+			Level:            l,
 		}
-
-		tx, err := document.CommonTx{}.QueryProposalInitAmountTxById(int(tmp.ProposalId))
-		if err != nil {
-			logger.Error("QueryProposalInitAmountTxById have error", logger.String("err", err.Error()))
-		}
-		if len(tx.Amount) > 0 {
-			tmp.InitialDeposit = vo.Coin{
-				Denom:  tx.Amount[0].Denom,
-				Amount: tx.Amount[0].Amount,
-			}
-		}
-		if len(propo.TotalDeposit) > 0 {
-			tmp.TotalDeposit = vo.Coin{
-				Denom:propo.TotalDeposit[0].Denom,
-				Amount:propo.TotalDeposit[0].Amount,
-			}
-		}
-
 		proposals = append(proposals, tmp)
 	}
 
@@ -916,6 +898,7 @@ func (s *ProposalService) buildTx(txs []document.CommonTx) []vo.Tx {
 		}
 		moniker, _ := s.BuildFTMoniker(v.From, v.To)
 		tx.Moniker = moniker
+
 
 		res = append(res, tx)
 	}
