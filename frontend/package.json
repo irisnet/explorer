@@ -15,11 +15,12 @@
     "echarts": "^4.1.0",
     "element-ui": "^2.13.0",
     "fs": "^0.0.1-security",
-    "irisnet-crypto": "git+https://github.com/irisnet/irisnet-crypto.git#v1.3.1",
+    "irisnet-crypto": "git+https://github.com/irisnet/irisnet-crypto.git#v1.3.6-rc0",
     "jquery": "^3.2.1",
     "js-yaml": "^3.13.1",
     "lodash.defaultsdeep": "^4.6.1",
     "mem": "^5.1.1",
+    "moment": "^2.27.0",
     "move-decimal-point": "^0.0.4",
     "swiper": "^5.3.8",
     "typescript": "^3.0.1",
@@ -31,7 +32,8 @@
     "vue-property-decorator": "^6.0.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
-    "webpack-bundle-analyzer": "^3.3.2"
+    "webpack-bundle-analyzer": "^3.3.2",
+    "vue-i18n": "^8.17.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.7.6",

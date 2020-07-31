@@ -41,7 +41,26 @@ TxType.WITHDRAWADDRESS = 'WithdrawAddress';
 TxType.STAKES = 'Stakes';
 TxType.GOVERNANCE = 'Governance';
 TxType.DECLARATIONS = 'Declarations';
-
+// iservice
+TxType.send = 'Send';
+TxType.define_service = 'DefineService';
+TxType.bind_service = 'BindService';
+TxType.update_service_binding = 'UpdateServiceBinding';
+TxType.disable_service_binding = 'DisableServiceBinding';
+TxType.enable_service_binding = 'EnableServiceBinding';
+TxType.refund_service_deposit = 'RefundServiceDeposit';
+TxType.call_service = 'CallService';
+TxType.respond_service = 'RespondService';
+TxType.pause_request_context = 'PauseRequestContext';
+TxType.start_request_context = 'StartRequestContext';
+TxType.kill_request_context = 'KillRequestContext';
+TxType.update_request_context = 'UpdateRequestContext';
+TxType.create_record = 'CreateRecord';
+TxType.burn_nft = 'BurnNft';
+TxType.transfer_nft = 'TransferNft';
+TxType.edit_nft = 'EditNft';
+TxType.issue_denom = 'IssueDenom';
+TxType.mint_nft = 'MintNft';
 
 
 const ValidatorStatus = {};
@@ -201,3 +220,37 @@ export default {
   TRANSACTIONMESSAGENAME,
   SUBMITPROPOSALTYPE
 };
+
+export const TX_TYPE = TxType;
+
+export const TX_STATUS = {
+    success : 'success',
+    fail : 'fail',
+}
+
+export const ColumnMinWidth = {
+    txHash:'120',
+    blockHeight:'90',
+    txType:'130',
+    address:'120',
+    time:'180',
+    txn:'',
+    blockAge:'120',
+    validatirName:'120',
+    votingPower:'120',
+    publickKey:'450',
+    denom:'155',
+    tokenId:'200',
+    schema:'450',
+    URI:'120',
+    respondTimes:'100',
+    available:'100',
+    qos:'120',
+    requestId:'130',
+    state:'120',
+    serviceName:'120',
+    No:'50',
+    price:'120',
+    deposit:'120'
+}
+

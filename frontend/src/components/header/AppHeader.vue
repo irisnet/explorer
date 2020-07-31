@@ -35,6 +35,10 @@
                                 :class="activeFaucet ? 'nav_item_active' : ''"
                                 @mouseenter="showTwoMenu('faucet')" @mouseleave="hideTwoMenu('faucet')"
                             ><router-link :to="`/faucet`">Faucet</router-link> <div class="active_block"></div></li>
+                            <li class="header_menu_item"
+                                :class="activeIService ? 'nav_item_active' : ''"
+                                @mouseenter="showTwoMenu('iService')" @mouseleave="hideTwoMenu('iService')">
+                                <router-link :to="`/services`">service</router-link> <div class="active_block"></div></li>
                         </ul>
                     </div>
 
@@ -311,6 +315,7 @@
                 flShowAssets: false,
                 flShowGov: false,
                 flShowStats: false,
+                flShowIService: false,
                 flShowNetworkLogo: false,
 				flShowBlockchainMenu:false,
 				flShowStakingMenu:false,
@@ -325,6 +330,7 @@
 				activeAssets:false,
 				activeGov:false,
 				activeStats:false,
+                activeIService:false,
 				activeFaucet:false,
                 hoverBlockChainTag:false,
                 menuActiveName: '',
@@ -432,6 +438,12 @@
 	                    this.offSetLeft = `5.065rem`;
 	                    this.contentWidth = '1.15rem';
 	                    this.flShowStats = true;
+                        break;
+                    case 'iService' :
+                        this.offSetLeft = `6.215rem`;
+                        this.contentWidth = '1.15rem';
+                        this.flShowIService = true;
+                        break;
 				}
             },
 			hideTwoMenu(v){
@@ -455,6 +467,10 @@
 						break;
 					case 'stats' :
 						this.flShowStats = false;
+                        break;
+                    case 'iService' :
+                        this.flShowIService = false;
+                        break;
 				}
 				this.listenRouteForChangeActiveButton()
             },
@@ -616,6 +632,7 @@
 				this.activeStats  = false;
 				this.activeClassName  = false;
 				this.activeFaucet = false;
+                this.activeIService = false;
             },
 			listenRouteForChangeActiveButton () {
 				//刷新的时候路由不变，active按钮不变
@@ -636,6 +653,8 @@
 					this.activeFaucet = '/faucet';
 				}else if(this.$route.fullPath === '/validators') {
 					this.activeStaking  = true
+                }else if(this.$route.fullPath === '/services') {
+                    this.activeIService  = true
                 }
 			},
 			clearSearchContent () {
@@ -659,7 +678,7 @@
                         this.setNetWorkLogo();
                         this.flShowHeaderNetwork = true;
 						this.chainId = `${res.chain_id.toUpperCase()} ${res.cur_env.toUpperCase()}`;
-						res.configs.forEach(item => {
+						(res.configs || []).forEach(item => {
 							if (res.cur_env === item.env && res.chain_id === item.chain_id) {
 								if (item.show_faucet && item.show_faucet === 1) {
 									this.flShowFaucet = true;
@@ -677,6 +696,7 @@
                 });
 			},
 			handleConfigs (configs) {
+                if (!configs) {return;}
 				this.netWorkArray = configs.map(item => {
 					if(item.network_name === constant.CHAINID.IRISHUB){
 						item.icon = 'iconfont iconiris'

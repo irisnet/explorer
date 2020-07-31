@@ -3,10 +3,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import VueRouter from 'vue-router';
-import store from './store'
-import './style/reset.css'
-import '../icon/iconfont.css'
-import Umeng from "./umeng/umeng"
+import store from './store';
+import VueI18n from 'vue-i18n'
+import './style/reset.css';
+import '../icon/iconfont.css';
+import Umeng from "./umeng/umeng";
 /*引入自定义修饰器*/
 import directives from './directives';
 Vue.use(directives);
@@ -18,20 +19,41 @@ import MTable from './components/commontables/MTable.vue';
 Vue.component('MTable', MTable);
 import Tools from './util/Tools';
 import 'element-ui/lib/theme-chalk/index.css'
-import {Select} from 'element-ui'
-import {DatePicker} from 'element-ui'
-import {Option} from 'element-ui'
-import {Tooltip} from 'element-ui'
-import {Cascader} from 'element-ui'
+// import ElementUI from "element-ui"
+import {
+    Select,
+    DatePicker,
+    Option,
+    Tooltip,
+    Cascader,
+    Table,
+    TableColumn,
+    Message} from 'element-ui'
+
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 locale.use(lang);
+Vue.use(locale);
+
 Vue.component('el-select',Select);
 Vue.component('el-option',Option);
 Vue.component('el-date-picker',DatePicker);
 Vue.component('el-tooltip',Tooltip);
 Vue.component('el-cascader',Cascader);
-Vue.use(locale);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.prototype.$message = Message;
+
+// Vue.use(ElementUI)
+
+Vue.use(VueI18n)
+const i18n = new VueI18n({
+  locale:'zh-CN',
+  messages: {
+    "zh-CN" : require('./lang/CN-Cindy')
+  }
+})
+
 /*引入轮播*/
 import VueAwesomeSwiper  from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
@@ -42,10 +64,10 @@ Vue.component('swipe', Swipe);
 Vue.component('swipe-item', SwipeItem);
 
 import axios from "axios"
-const  codec  = require("irisnet-crypto/util/codec.js") ;
+// const  codec  = require("irisnet-crypto/util/codec.js") ;
 const  crypto = require("irisnet-crypto");
 Vue.prototype.$Crypto = crypto;
-Vue.prototype.$Codec = codec;
+Vue.prototype.$Codec = {};
 Vue.prototype.$uMeng = Umeng;
 
 Vue.config.productionTip = false;
@@ -85,5 +107,6 @@ Vue.prototype.addressRoute = Tools.addressRoute;
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App)
 }).$mount('#app')
