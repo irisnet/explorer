@@ -41,18 +41,9 @@ type ActualFee struct {
 	Amount float64 `json:"amount"`
 }
 
-//type AssetGateways struct {
-//	Owner    string `json:"owner"`
-//	Moniker  string `json:"moniker"`
-//	Identity string `json:"identity"`
-//	Details  string `json:"details"`
-//	Website  string `json:"website"`
-//	Icons    string `json:"icons"`
-//}
 
 type AssetTokens struct {
 	Owner         string `json:"owner"`
-	TotalSupply   string `json:"total_supply"`
 	InitialSupply string `json:"initial_supply"`
 	MaxSupply     string `json:"max_supply"`
 	Mintable      bool   `json:"mintable,string"`

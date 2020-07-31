@@ -23,7 +23,7 @@ func (assets *AssetsService) GetNativeAsset(symbol, txtype string, page, size in
 		txtype = ""
 	}
 
-	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Native, txtype, symbol, "", page, size, istotal)
+	total, retassets, err := document.CommonTx{}.QueryTxAsset(txtype, symbol, page, size, istotal)
 	if err != nil {
 		logger.Error("GetNativeAsset have error", logger.String("error", err.Error()))
 		return vo.AssetsRespond{}, err

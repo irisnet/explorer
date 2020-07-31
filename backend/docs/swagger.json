@@ -2891,9 +2891,6 @@
                 },
                 "symbol": {
                     "type": "string"
-                },
-                "total_supply": {
-                    "type": "string"
                 }
             }
         },
@@ -2924,9 +2921,6 @@
                         "type": "integer"
                     },
                     "symbol": {
-                        "type": "string"
-                    },
-                    "total_supply": {
                         "type": "string"
                     }
                 }

@@ -342,8 +342,6 @@ definitions:
         type: integer
       symbol:
         type: string
-      total_supply:
-        type: string
     type: object
   vo.AssetTokensRespond:
     items:
@@ -363,8 +361,6 @@ definitions:
         scale:
           type: integer
         symbol:
-          type: string
-        total_supply:
           type: string
       type: object
     type: array

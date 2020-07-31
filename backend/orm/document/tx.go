@@ -463,7 +463,7 @@ func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, p
 	return num, txs, err
 }
 
-func (_ CommonTx) QueryTxAsset(assetType, tokenType, symbol, gateway string, page, size int, total bool) (int, []CommonTx, error) {
+func (_ CommonTx) QueryTxAsset(tokenType, symbol string, page, size int, total bool) (int, []CommonTx, error) {
 	txs := []CommonTx{}
 	selector := bson.M{
 		Tx_Field_Hash:      1,
