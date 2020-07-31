@@ -95,6 +95,10 @@
                                     <router-link v-if="key === 'Provider :' && value !== '-'"
                                                  :to="addressRoute(value)">{{value}}
                                     </router-link>
+                                    <router-link v-if="key === 'Providers :' && value !== '-'"
+                                                 :to="addressRoute(value)">{{value}}
+                                    </router-link>
+
                                     <router-link v-if="key === 'Consumer :' && value !== '-'"
                                                  :to="addressRoute(value)">{{value}}
                                     </router-link>
@@ -290,6 +294,7 @@
                 return (key !== 'From :'
                     && key !== 'To :'
                     && key !== 'Provider :'
+                    && key !== 'Providers :'
                     && key !== 'Consumer :'
                     && key !== 'Withdraw Address :'
                     && key !== 'Author :'
@@ -325,6 +330,7 @@
                     || key === 'Consumer :'
                     || key === 'Withdraw Address :'
                     || key === 'Provider :'
+                    || key === 'Providers :'
                     || key === 'Owner :'
                     || key === 'Operator Address :'
                     || key === 'Owner Address :'
@@ -363,9 +369,7 @@
                 }
             },
             getTxDetailInformation(){
-                console.error('======',this.$route.query.txHash)
                 Server.commonInterface({txDetail : {txHash : this.$route.query.txHash}}, (res) =>{
-                    console.error('------', res)
                     try {
                         if(res){
 
@@ -393,7 +397,7 @@
                             this.fromMoniker = fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].moniker : '';
                             this.toMoniker = toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].moniker : '';
                             this.messageList = formatMessage.switchTxType(res);
-                            console.error('------', this.messageList)
+                            console.error('------', res)
                             if(this.messageList && this.messageList.tooltip){
                                 this.flShowRateToolTip = true
                             }

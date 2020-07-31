@@ -32,7 +32,6 @@ const Server = {
         } else {
             Store.commit('flShowLoading', true)
         }
-        console.error(url)
         Service.http(url).then(res =>{
             Store.commit('flShowLoading', false)
             callback(res);

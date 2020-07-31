@@ -137,18 +137,17 @@ export default class formatMsgsAndTags {
                 return formatMsgsAndTags.txTypeStartRequestContext(dataTx);
             case Constant.TxType.KILL_REQUEST_CONTEXT :
                 return formatMsgsAndTags.txTypeKillRequestContext(dataTx);
-
-
-
-
-
-
+            case Constant.TxType.UPDATE_REQUEST_CONTEXT :
+                return formatMsgsAndTags.txTypeUpdateRequestContext(dataTx);
+            case Constant.TxType.WITHDRAW_EARNED_FEES :
+                return formatMsgsAndTags.txTypeWithdrawEarnedFees(dataTx);
 
         }
 
     }
     static txTypeDefineService(tx){
         const msg = {
+            'Type :':[],
             'Name :':[],
             'Description :':[],
             'Tags :':[],
@@ -156,13 +155,14 @@ export default class formatMsgsAndTags {
             'Author Description :':[],
             'Schemas :':[],
         };
+        msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
-                msg['Name :'].push(m.msg.name);
-                msg['Description :'].push(m.msg.description);
+                msg['Name :'].push(m.msg.name || '--');
+                msg['Description :'].push(m.msg.description || '--');
                 msg['Tags :'].push(m.msg.tags);
-                msg['Author :'].push(m.msg.author);
-                msg['Author Description :'].push(m.msg.authorDescription);
+                msg['Author :'].push(m.msg.author || '--');
+                msg['Author Description :'].push(m.msg.authorDescription || '--');
                 msg['Schemas :'].push(m.msg.schemas);
             })
         }
@@ -171,24 +171,26 @@ export default class formatMsgsAndTags {
 
     static txTypeBindService(tx){
         const msg = {
+            'Type :':[],
             'Service Name :':[],
-            'Provider :':[],
-            'Deposit :':[],
             'Pricing :':[],
             'QoS :':[],
+            'Deposit :':[],
+            'Provider :':[],
             'Owner :':[],
         };
+        msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
-                msg['Service Name :'].push(m.msg.service_name);
-                msg['Provider :'].push(m.msg.provider);
+                msg['Service Name :'].push(m.msg.service_name || '--');
+                msg['Provider :'].push(m.msg.provider || '--');
                 if(m.msg.deposit && Array.isArray(m.msg.deposit) && m.msg.deposit.length > 0){
                     msg['Deposit :'].push(`${m.msg.deposit[0].amount} ${m.msg.deposit[0].denom}`);
                 }else {
                     msg['Deposit :'].push('--')
                 }
 
-                msg['Pricing :'].push(JSON.parse(m.msg.pricing).price);
+                msg['Pricing :'].push(m.msg.pricing ? JSON.parse(m.msg.pricing).price : '--');
                 msg['QoS :'].push(`${m.msg.qos} blocks`);
                 msg['Owner :'].push(m.msg.owner);
             })
@@ -198,16 +200,18 @@ export default class formatMsgsAndTags {
 
     static txTypeUpdateServiceBinding(tx){
         const msg = {
+            'Type :':[],
             'Service Name :':[],
-            'Provider :':[],
-            'Deposit :':[],
             'Pricing :':[],
             'QoS :':[],
+            'Deposit :':[],
+            'Provider :':[],
             'Owner :':[],
         };
+        msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
-                msg['Service Name :'].push(m.msg.service_name);
+                msg['Service Name :'].push(m.msg.service_name || '--');
                 msg['Provider :'].push(m.msg.provider);
                 if(m.msg.deposit && Array.isArray(m.msg.deposit) && m.msg.deposit.length > 0){
                     msg['Deposit :'].push(`${m.msg.deposit[0].amount} ${m.msg.deposit[0].denom}`);
@@ -215,7 +219,7 @@ export default class formatMsgsAndTags {
                     msg['Deposit :'].push('--')
                 }
 
-                msg['Pricing :'].push(JSON.parse(m.msg.pricing).price);
+                msg['Pricing :'].push(m.msg.pricing ? JSON.parse(m.msg.pricing).price : '--');
                 msg['QoS :'].push(`${m.msg.qos} blocks`);
                 msg['Owner :'].push(m.msg.owner);
             })
@@ -225,9 +229,11 @@ export default class formatMsgsAndTags {
 
     static txTypeSetWithdrawFeesAddress(tx){
         const msg = {
+            'Type :':[],
             'Owner :':[],
             'Withdraw Address :':[],
         };
+        msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
                 msg['Owner :'].push(m.msg.owner);
@@ -239,13 +245,15 @@ export default class formatMsgsAndTags {
 
     static txTypeDisableServiceBinding(tx){
         const msg = {
+            'Type :':[],
             'Service Name :':[],
             'Provider :':[],
             'Owner :':[],
         };
+        msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
-                msg['Service Name :'].push(m.msg.service_name);
+                msg['Service Name :'].push(m.msg.service_name || '--');
                 msg['Provider :'].push(m.msg.provider);
                 msg['Owner :'].push(m.msg.owner);
             })
@@ -255,14 +263,16 @@ export default class formatMsgsAndTags {
 
     static txTypeEnableServiceBinding(tx){
         const msg = {
+            'Type :':[],
             'Service Name :':[],
-            'Provider :':[],
             'Deposit :':[],
+            'Provider :':[],
             'Owner :':[],
         };
+        msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
-                msg['Service Name :'].push(m.msg.service_name);
+                msg['Service Name :'].push(m.msg.service_name || '--');
                 msg['Provider :'].push(m.msg.provider);
                 if(m.msg.deposit && Array.isArray(m.msg.deposit) && m.msg.deposit.length > 0){
                     msg['Deposit :'].push(`${m.msg.deposit[0].amount} ${m.msg.deposit[0].denom}`);
@@ -277,13 +287,15 @@ export default class formatMsgsAndTags {
 
     static txTypeRefundServiceDeposit(tx){
         const msg = {
+            'Type :':[],
             'Service Name :':[],
             'Provider :':[],
             'Owner :':[],
         };
+        msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
-                msg['Service Name :'].push(m.msg.service_name);
+                msg['Service Name :'].push(m.msg.service_name || '--');
                 msg['Provider :'].push(m.msg.provider);
                 msg['Owner :'].push(m.msg.owner);
             })
@@ -294,24 +306,42 @@ export default class formatMsgsAndTags {
 
     static txTypeCallService(tx){
         const msg = {
+            'Type :':[],
             'Service Name :':[],
-            'Provider :':[],
+            'Request Context ID :':[],
             'Consumer :':[],
             'Input :':[],
-            'Service Fee Cap :':[],
-            'Time Out :':[],
-            'Super Mode :':[],
+            'Providers :':[],
             'Repeated :':[],
             'Repeated Frequency :':[],
             'Repeated Total :':[],
+            'Service Fee Cap :':[],
+            'Super Mode :':[],
+            'Time Out :':[],
+
+
         };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.events && Array.isArray(tx.events) && tx.events.length > 0){
+            for(let e of tx.events){
+                if(e.attributes.request_context_id){
+                    msg['Request Context ID :'].push(e.attributes.request_context_id);
+                }
+            }
+        }
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
-                msg['Service Name :'].push(m.msg.service_name);
+                if(m.msg.ex && m.msg.ex.service_name){
+                    msg['Service Name :'].push(m.msg.ex.service_name);
+                }else{
+                    msg['Service Name :'].push('--');
+                }
                 if(m.msg.providers && Array.isArray(m.msg.providers) && m.msg.providers.length > 0){
                     m.msg.providers.forEach((p)=>{
-                        msg['Provider :'].push(p);
+                        msg['Providers :'].push(p);
                     })
+                }else{
+                    msg['Providers :'].push('--');
                 }
                 msg['Consumer :'].push(m.msg.consumer);
                 msg['Input :'].push(m.msg.input);
@@ -332,14 +362,27 @@ export default class formatMsgsAndTags {
 
     static txTypeRespondService(tx){
         const msg = {
-            'Request ID :':[],
+            'Type :':[],
+            'Service Name :':[],
+            'Request Context ID :':[],
             'Provider :':[],
             'Result :':[],
             'Output :':[],
         };
+        msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
-                msg['Request ID :'].push(m.msg.request_id);
+                if(m.msg.ex && m.msg.ex.service_name){
+                    msg['Service Name :'].push(m.msg.ex.service_name);
+                }else{
+                    msg['Service Name :'].push('--');
+                }
+                if(m.msg.ex && m.msg.ex.request_context_id){
+                    msg['Request Context ID :'].push(m.msg.ex.request_context_id);
+                }else{
+                    msg['Request Context ID :'].push('--');
+                }
+
                 msg['Provider :'].push(m.msg.provider);
                 msg['Result :'].push(m.msg.result);
                 msg['Output :'].push(m.msg.output);
@@ -350,14 +393,18 @@ export default class formatMsgsAndTags {
 
     static txTypePauseRequestContext(tx){
         const msg = {
+            'Type :':[],
             'Service Name :':[],
             'Request Context ID :':[],
             'Consumer :':[],
         };
+        msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
                 if(m.msg.ex && m.msg.ex.service_name){
                     msg['Service Name :'].push(m.msg.ex.service_name);
+                }else{
+                    msg['Service Name :'].push('--');
                 }
                 msg['Request Context ID :'].push(m.msg.request_context_id);
                 msg['Consumer :'].push(m.msg.consumer);
@@ -368,14 +415,18 @@ export default class formatMsgsAndTags {
 
     static txTypeStartRequestContext(tx){
         const msg = {
+            'Type :':[],
             'Service Name :':[],
             'Request Context ID :':[],
             'Consumer :':[],
         };
+        msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
                 if(m.msg.ex && m.msg.ex.service_name){
                     msg['Service Name :'].push(m.msg.ex.service_name);
+                }else{
+                    msg['Service Name :'].push('--');
                 }
                 msg['Request Context ID :'].push(m.msg.request_context_id);
                 msg['Consumer :'].push(m.msg.consumer);
@@ -386,14 +437,18 @@ export default class formatMsgsAndTags {
 
     static txTypeKillRequestContext(tx){
         const msg = {
+            'Type :':[],
             'Service Name :':[],
             'Request Context ID :':[],
             'Consumer :':[],
         };
+        msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m)=>{
                 if(m.msg.ex && m.msg.ex.service_name){
                     msg['Service Name :'].push(m.msg.ex.service_name);
+                }else{
+                    msg['Service Name :'].push('--');
                 }
                 msg['Request Context ID :'].push(m.msg.request_context_id);
                 msg['Consumer :'].push(m.msg.consumer);
@@ -402,24 +457,69 @@ export default class formatMsgsAndTags {
         return msg;
     }
 
+    static txTypeUpdateRequestContext(tx){
+        const msg = {
+            'Type :':[],
+            'Service Name :':[],
+            'Request Context ID :':[],
+            'Consumer :':[],
+            'Providers :':[],
+            'Repeated Frequency :':[],
+            'Repeated Total :':[],
+            'Service Fee Cap :':[],
+            'Time Out :':[],
 
 
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m)=>{
+                if(m.msg.ex && m.msg.ex.service_name){
+                    msg['Service Name :'].push(m.msg.ex.service_name);
+                }else{
+                    msg['Service Name :'].push('--');
+                }
+                msg['Request Context ID :'].push(m.msg.request_context_id);
+                msg['Consumer :'].push(m.msg.consumer);
+                if(m.msg.providers && Array.isArray(m.msg.providers) && m.msg.providers.length > 0){
+                    m.msg.providers.forEach((p)=>{
+                        msg['Providers :'].push(p);
+                    })
+                }else{
+                    msg['Providers :'].push('--');
+                }
+
+                if(m.msg.service_fee_cap && Array.isArray(m.msg.service_fee_cap) && m.msg.service_fee_cap.length > 0){
+                    msg['Service Fee Cap :'].push(`${m.msg.service_fee_cap[0].amount} ${m.msg.service_fee_cap[0].denom}`);
+                }else {
+                    msg['Service Fee Cap :'].push('--')
+                }
+                msg['Time Out :'].push(m.msg.timeout);
+                msg['Repeated Frequency :'].push(m.msg.repeated_frequency);
+                msg['Repeated Total :'].push(m.msg.repeated_total);
 
 
+            })
+        }
+        return msg;
+    }
 
+    static txTypeWithdrawEarnedFees(tx){
+        const msg = {
+            'Type :':[],
+            'Provider :':[],
+            'Owner :':[],
 
-
-
-
-
-
-
-
-
-
-
-
-
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m)=>{
+                msg['Provider :'].push(m.msg.provider);
+                msg['Owner :'].push(m.msg.owner);
+            })
+        }
+        return msg;
+    }
 
 
     static txTypeTransfer(dataTx,txType){
