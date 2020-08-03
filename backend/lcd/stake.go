@@ -138,6 +138,9 @@ func GetWithdrawAddressByAddress(validatorAcc string) (string, error) {
 		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()))
 		return "", err
 	}
+	if withdrawAddr != "" {
+		withdrawAddr = string([]byte(withdrawAddr)[1 : len(withdrawAddr)-1])
+	}
 
 	return withdrawAddr, nil
 }
