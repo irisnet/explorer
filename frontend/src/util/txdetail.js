@@ -1,116 +1,117 @@
-
 import Constant from "../constant/Constant"
 import numberMoveDecimal from "move-decimal-point"
 import Tools from "../util/Tools"
 import bigNumber from 'bignumber.js'
+
 export default class formatMsgsAndTags {
     static formatAmount(amount){
         return new bigNumber(amount).toFormat()
     }
+
     static switchTxType(dataTx){
         let message;
-        switch (dataTx.type) {
+        switch (dataTx.type){
             case Constant.TxType.TRANSFER :
-                return message = formatMsgsAndTags.txTypeTransfer(dataTx,Constant.TxType.TRANSFER);
+                return message = formatMsgsAndTags.txTypeTransfer(dataTx, Constant.TxType.TRANSFER);
                 break;
             case Constant.TxType.BURN :
-                return message = formatMsgsAndTags.txTypeBurn(dataTx,Constant.TxType.BURN);
+                return message = formatMsgsAndTags.txTypeBurn(dataTx, Constant.TxType.BURN);
                 break;
             case Constant.TxType.SETMEMOREGEXP :
-                return message = formatMsgsAndTags.txTypeSetMemoRegexp(dataTx,Constant.TxType.SETMEMOREGEXP);
+                return message = formatMsgsAndTags.txTypeSetMemoRegexp(dataTx, Constant.TxType.SETMEMOREGEXP);
                 break;
             case Constant.TxType.CREATEVALIDATOR :
-                return message = formatMsgsAndTags.txTypeCreateValidator(dataTx,Constant.TxType.CREATEVALIDATOR);
+                return message = formatMsgsAndTags.txTypeCreateValidator(dataTx, Constant.TxType.CREATEVALIDATOR);
                 break;
             case Constant.TxType.EDITVALIDATOR :
-                return message = formatMsgsAndTags.txTypeEditValidator(dataTx,Constant.TxType.EDITVALIDATOR);
+                return message = formatMsgsAndTags.txTypeEditValidator(dataTx, Constant.TxType.EDITVALIDATOR);
                 break;
             case Constant.TxType.UNJAIL :
-                return message = formatMsgsAndTags.txTypeUnjail(dataTx,Constant.TxType.UNJAIL);
+                return message = formatMsgsAndTags.txTypeUnjail(dataTx, Constant.TxType.UNJAIL);
                 break;
             case Constant.TxType.DELEGATE :
-                return message = formatMsgsAndTags.txTypeDelegate(dataTx,Constant.TxType.DELEGATE);
+                return message = formatMsgsAndTags.txTypeDelegate(dataTx, Constant.TxType.DELEGATE);
                 break;
             case Constant.TxType.BEGINREDELEGATE :
-                return message = formatMsgsAndTags.txTypeBeginRedelegate(dataTx,Constant.TxType.BEGINREDELEGATE);
+                return message = formatMsgsAndTags.txTypeBeginRedelegate(dataTx, Constant.TxType.BEGINREDELEGATE);
                 break;
             case Constant.TxType.SETWITHDRAWADDRESS :
-                return message = formatMsgsAndTags.txTypeSetWithdrawAddress(dataTx,Constant.TxType.SETWITHDRAWADDRESS);
+                return message = formatMsgsAndTags.txTypeSetWithdrawAddress(dataTx, Constant.TxType.SETWITHDRAWADDRESS);
                 break;
             case Constant.TxType.BEGINUNBONDING :
-                return message = formatMsgsAndTags.txTypeBeginUnbonding(dataTx,Constant.TxType.BEGINUNBONDING);
+                return message = formatMsgsAndTags.txTypeBeginUnbonding(dataTx, Constant.TxType.BEGINUNBONDING);
                 break;
             case Constant.TxType.WITHDRAWDELEGATORREWARD :
-                return message = formatMsgsAndTags.txTypeWithdrawDelegatorReward(dataTx,Constant.TxType.WITHDRAWDELEGATORREWARD);
+                return message = formatMsgsAndTags.txTypeWithdrawDelegatorReward(dataTx, Constant.TxType.WITHDRAWDELEGATORREWARD);
                 break;
             case Constant.TxType.WITHDRAWDELEGATORREWARDSALL :
-                return message = formatMsgsAndTags.txTypeWithdrawDelegatorRewardsAll(dataTx,Constant.TxType.WITHDRAWDELEGATORREWARDSALL);
+                return message = formatMsgsAndTags.txTypeWithdrawDelegatorRewardsAll(dataTx, Constant.TxType.WITHDRAWDELEGATORREWARDSALL);
                 break;
             case Constant.TxType.WITHDRAWVALIDATORREWARDSALL :
-                return message = formatMsgsAndTags.txTypeWithdrawValidatorRewardsAll(dataTx,Constant.TxType.WITHDRAWVALIDATORREWARDSALL);
+                return message = formatMsgsAndTags.txTypeWithdrawValidatorRewardsAll(dataTx, Constant.TxType.WITHDRAWVALIDATORREWARDSALL);
                 break;
             case Constant.TxType.SUBMITPROPOSAL :
-                return message = formatMsgsAndTags.txTypeSubmitProposal(dataTx,Constant.TxType.SUBMITPROPOSAL);
+                return message = formatMsgsAndTags.txTypeSubmitProposal(dataTx, Constant.TxType.SUBMITPROPOSAL);
                 break;
             case Constant.TxType.DEPOSIT :
-                return message = formatMsgsAndTags.txTypeDeposit(dataTx,Constant.TxType.DEPOSIT);
+                return message = formatMsgsAndTags.txTypeDeposit(dataTx, Constant.TxType.DEPOSIT);
                 break;
             case Constant.TxType.VOTE :
-                return message = formatMsgsAndTags.txTypeVote(dataTx,Constant.TxType.VOTE);
+                return message = formatMsgsAndTags.txTypeVote(dataTx, Constant.TxType.VOTE);
                 break;
             case Constant.TxType.ISSUETOKEN :
-                return message = formatMsgsAndTags.txTypeIssueToken(dataTx,Constant.TxType.ISSUETOKEN);
+                return message = formatMsgsAndTags.txTypeIssueToken(dataTx, Constant.TxType.ISSUETOKEN);
                 break;
             case Constant.TxType.EDITTOKEN :
-                return message = formatMsgsAndTags.txTypeEditToken(dataTx,Constant.TxType.EDITTOKEN);
+                return message = formatMsgsAndTags.txTypeEditToken(dataTx, Constant.TxType.EDITTOKEN);
                 break;
             case Constant.TxType.MINTTOKEN :
-                return message = formatMsgsAndTags.txTypeMintToken(dataTx,Constant.TxType.MINTTOKEN);
+                return message = formatMsgsAndTags.txTypeMintToken(dataTx, Constant.TxType.MINTTOKEN);
                 break;
             case Constant.TxType.TRANSFERTOKENOWNER :
-                return message = formatMsgsAndTags.txTypeTransferTokenOwner(dataTx,Constant.TxType.TRANSFERTOKENOWNER);
+                return message = formatMsgsAndTags.txTypeTransferTokenOwner(dataTx, Constant.TxType.TRANSFERTOKENOWNER);
                 break;
             case Constant.TxType.CREATEGATEWAY :
-                return message = formatMsgsAndTags.txTypeCreateGateway(dataTx,Constant.TxType.CREATEGATEWAY);
+                return message = formatMsgsAndTags.txTypeCreateGateway(dataTx, Constant.TxType.CREATEGATEWAY);
                 break;
             case Constant.TxType.EDITGATEWAY :
-                return message = formatMsgsAndTags.txTypeEditGateway(dataTx,Constant.TxType.EDITGATEWAY);
+                return message = formatMsgsAndTags.txTypeEditGateway(dataTx, Constant.TxType.EDITGATEWAY);
                 break;
             case Constant.TxType.TRANSFERGATEWAYOWNER :
-                return message = formatMsgsAndTags.txTypeTransferGatewayOwner(dataTx,Constant.TxType.TRANSFERGATEWAYOWNER);
+                return message = formatMsgsAndTags.txTypeTransferGatewayOwner(dataTx, Constant.TxType.TRANSFERGATEWAYOWNER);
                 break;
             case Constant.TxType.REQUESTRAND :
-                return message = formatMsgsAndTags.txTypeRequestRand(dataTx,Constant.TxType.REQUESTRAND);
+                return message = formatMsgsAndTags.txTypeRequestRand(dataTx, Constant.TxType.REQUESTRAND);
                 break;
             case Constant.TxType.ADDPROFILER :
-                return message = formatMsgsAndTags.txTypeAddProfiler(dataTx,Constant.TxType.ADDPROFILER);
+                return message = formatMsgsAndTags.txTypeAddProfiler(dataTx, Constant.TxType.ADDPROFILER);
                 break;
             case Constant.TxType.ADDTRUSTEE :
-                return message = formatMsgsAndTags.txTypeAddTrustee(dataTx,Constant.TxType.ADDTRUSTEE);
+                return message = formatMsgsAndTags.txTypeAddTrustee(dataTx, Constant.TxType.ADDTRUSTEE);
                 break;
             case Constant.TxType.DELETEPROFIKER :
-                return message = formatMsgsAndTags.txTypeDeleteProfiler(dataTx,Constant.TxType.DELETEPROFIKER);
+                return message = formatMsgsAndTags.txTypeDeleteProfiler(dataTx, Constant.TxType.DELETEPROFIKER);
                 break;
             case Constant.TxType.DELETETRUSTEE :
-                return message = formatMsgsAndTags.txTypeDeleteTrustee(dataTx,Constant.TxType.DELETETRUSTEE);
+                return message = formatMsgsAndTags.txTypeDeleteTrustee(dataTx, Constant.TxType.DELETETRUSTEE);
                 break;
             case Constant.TxType.CLAIMHTLC :
-                return message = formatMsgsAndTags.txTypeClaimHTLC(dataTx,Constant.TxType.CLAIMHTLC);
+                return message = formatMsgsAndTags.txTypeClaimHTLC(dataTx, Constant.TxType.CLAIMHTLC);
                 break;
             case Constant.TxType.CREATEHTLC :
-                return message = formatMsgsAndTags.txTypeCreateHTLC(dataTx,Constant.TxType.CREATEHTLC);
+                return message = formatMsgsAndTags.txTypeCreateHTLC(dataTx, Constant.TxType.CREATEHTLC);
                 break;
             case Constant.TxType.REFUNDHTLC :
-                return message = formatMsgsAndTags.txTypeRefundHTLC(dataTx,Constant.TxType.REFUNDHTLC);
+                return message = formatMsgsAndTags.txTypeRefundHTLC(dataTx, Constant.TxType.REFUNDHTLC);
                 break;
             case Constant.TxType.ADDLIQUIDITY :
-                return message = formatMsgsAndTags.txTypeAddLiquidity(dataTx,Constant.TxType.ADDLIQUIDITY);
+                return message = formatMsgsAndTags.txTypeAddLiquidity(dataTx, Constant.TxType.ADDLIQUIDITY);
                 break;
             case Constant.TxType.REMOVELIQUIDITY :
-                return message = formatMsgsAndTags.txTypeRemoveLiquidity(dataTx,Constant.TxType.REMOVELIQUIDITY);
+                return message = formatMsgsAndTags.txTypeRemoveLiquidity(dataTx, Constant.TxType.REMOVELIQUIDITY);
                 break;
             case Constant.TxType.SWAPORDER :
-                return message = formatMsgsAndTags.txTypeSwapOrder(dataTx,Constant.TxType.SWAPORDER);
+                return message = formatMsgsAndTags.txTypeSwapOrder(dataTx, Constant.TxType.SWAPORDER);
             case Constant.TxType.DEFINE_SERVICE :
                 return formatMsgsAndTags.txTypeDefineService(dataTx);
             case Constant.TxType.BIND_SERVICE :
@@ -142,22 +143,47 @@ export default class formatMsgsAndTags {
             case Constant.TxType.WITHDRAW_EARNED_FEES :
                 return formatMsgsAndTags.txTypeWithdrawEarnedFees(dataTx);
 
+            case Constant.TxType.FundCommunityPool :
+                return formatMsgsAndTags.txTypeFundCommunityPool(dataTx);
+            case Constant.TxType.ISSUE_DENOM :
+                return formatMsgsAndTags.txTypeIssueDenom(dataTx);
+            case Constant.TxType.EDIT_NFT :
+                return formatMsgsAndTags.txTypeEditNft(dataTx);
+            case Constant.TxType.TRANSFER_NFT :
+                return formatMsgsAndTags.txTypeTransferNft(dataTx);
+            case Constant.TxType.MINT_NFT :
+                return formatMsgsAndTags.txTypeMintNft(dataTx);
+            case Constant.TxType.BURN_NFT :
+                return formatMsgsAndTags.txTypeBurnNft(dataTx);
+            case Constant.TxType.CREATE_FEED :
+                return formatMsgsAndTags.txTypeCreateFeed(dataTx);
+            case Constant.TxType.START_FEED :
+                return formatMsgsAndTags.txTypeStartFeed(dataTx);
+            case Constant.TxType.PAUSE_FEED :
+                return formatMsgsAndTags.txTypePauseFeed(dataTx);
+            case Constant.TxType.EDIT_FEED :
+                return formatMsgsAndTags.txTypeEditFeed(dataTx);
+
+
+
+
         }
 
     }
+
     static txTypeDefineService(tx){
         const msg = {
-            'Type :':[],
-            'Name :':[],
-            'Description :':[],
-            'Tags :':[],
-            'Author :':[],
-            'Author Description :':[],
-            'Schemas :':[],
+            'Type :' : [],
+            'Name :' : [],
+            'Description :' : [],
+            'Tags :' : [],
+            'Author :' : [],
+            'Author Description :' : [],
+            'Schemas :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 msg['Name :'].push(m.msg.name || '--');
                 msg['Description :'].push(m.msg.description || '--');
                 msg['Tags :'].push(m.msg.tags);
@@ -171,22 +197,22 @@ export default class formatMsgsAndTags {
 
     static txTypeBindService(tx){
         const msg = {
-            'Type :':[],
-            'Service Name :':[],
-            'Pricing :':[],
-            'QoS :':[],
-            'Deposit :':[],
-            'Provider :':[],
-            'Owner :':[],
+            'Type :' : [],
+            'Service Name :' : [],
+            'Pricing :' : [],
+            'QoS :' : [],
+            'Deposit :' : [],
+            'Provider :' : [],
+            'Owner :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 msg['Service Name :'].push(m.msg.service_name || '--');
                 msg['Provider :'].push(m.msg.provider || '--');
                 if(m.msg.deposit && Array.isArray(m.msg.deposit) && m.msg.deposit.length > 0){
                     msg['Deposit :'].push(`${m.msg.deposit[0].amount} ${m.msg.deposit[0].denom}`);
-                }else {
+                } else {
                     msg['Deposit :'].push('--')
                 }
 
@@ -200,22 +226,22 @@ export default class formatMsgsAndTags {
 
     static txTypeUpdateServiceBinding(tx){
         const msg = {
-            'Type :':[],
-            'Service Name :':[],
-            'Pricing :':[],
-            'QoS :':[],
-            'Deposit :':[],
-            'Provider :':[],
-            'Owner :':[],
+            'Type :' : [],
+            'Service Name :' : [],
+            'Pricing :' : [],
+            'QoS :' : [],
+            'Deposit :' : [],
+            'Provider :' : [],
+            'Owner :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 msg['Service Name :'].push(m.msg.service_name || '--');
                 msg['Provider :'].push(m.msg.provider);
                 if(m.msg.deposit && Array.isArray(m.msg.deposit) && m.msg.deposit.length > 0){
                     msg['Deposit :'].push(`${m.msg.deposit[0].amount} ${m.msg.deposit[0].denom}`);
-                }else {
+                } else {
                     msg['Deposit :'].push('--')
                 }
 
@@ -229,13 +255,13 @@ export default class formatMsgsAndTags {
 
     static txTypeSetWithdrawFeesAddress(tx){
         const msg = {
-            'Type :':[],
-            'Owner :':[],
-            'Withdraw Address :':[],
+            'Type :' : [],
+            'Owner :' : [],
+            'Withdraw Address :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 msg['Owner :'].push(m.msg.owner);
                 msg['Withdraw Address :'].push(m.msg.withdraw_address);
             })
@@ -245,14 +271,14 @@ export default class formatMsgsAndTags {
 
     static txTypeDisableServiceBinding(tx){
         const msg = {
-            'Type :':[],
-            'Service Name :':[],
-            'Provider :':[],
-            'Owner :':[],
+            'Type :' : [],
+            'Service Name :' : [],
+            'Provider :' : [],
+            'Owner :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 msg['Service Name :'].push(m.msg.service_name || '--');
                 msg['Provider :'].push(m.msg.provider);
                 msg['Owner :'].push(m.msg.owner);
@@ -263,20 +289,20 @@ export default class formatMsgsAndTags {
 
     static txTypeEnableServiceBinding(tx){
         const msg = {
-            'Type :':[],
-            'Service Name :':[],
-            'Deposit :':[],
-            'Provider :':[],
-            'Owner :':[],
+            'Type :' : [],
+            'Service Name :' : [],
+            'Deposit :' : [],
+            'Provider :' : [],
+            'Owner :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 msg['Service Name :'].push(m.msg.service_name || '--');
                 msg['Provider :'].push(m.msg.provider);
                 if(m.msg.deposit && Array.isArray(m.msg.deposit) && m.msg.deposit.length > 0){
                     msg['Deposit :'].push(`${m.msg.deposit[0].amount} ${m.msg.deposit[0].denom}`);
-                }else {
+                } else {
                     msg['Deposit :'].push('--')
                 }
                 msg['Owner :'].push(m.msg.owner);
@@ -287,14 +313,14 @@ export default class formatMsgsAndTags {
 
     static txTypeRefundServiceDeposit(tx){
         const msg = {
-            'Type :':[],
-            'Service Name :':[],
-            'Provider :':[],
-            'Owner :':[],
+            'Type :' : [],
+            'Service Name :' : [],
+            'Provider :' : [],
+            'Owner :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 msg['Service Name :'].push(m.msg.service_name || '--');
                 msg['Provider :'].push(m.msg.provider);
                 msg['Owner :'].push(m.msg.owner);
@@ -306,18 +332,18 @@ export default class formatMsgsAndTags {
 
     static txTypeCallService(tx){
         const msg = {
-            'Type :':[],
-            'Service Name :':[],
-            'Request Context ID :':[],
-            'Consumer :':[],
-            'Input :':[],
-            'Providers :':[],
-            'Repeated :':[],
-            'Repeated Frequency :':[],
-            'Repeated Total :':[],
-            'Service Fee Cap :':[],
-            'Super Mode :':[],
-            'Time Out :':[],
+            'Type :' : [],
+            'Service Name :' : [],
+            'Request Context ID :' : [],
+            'Consumer :' : [],
+            'Input :' : [],
+            'Providers :' : [],
+            'Repeated :' : [],
+            'Repeated Frequency :' : [],
+            'Repeated Total :' : [],
+            'Service Fee Cap :' : [],
+            'Super Mode :' : [],
+            'Time Out :' : [],
 
 
         };
@@ -330,24 +356,24 @@ export default class formatMsgsAndTags {
             }
         }
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 if(m.msg.ex && m.msg.ex.service_name){
                     msg['Service Name :'].push(m.msg.ex.service_name);
-                }else{
+                } else {
                     msg['Service Name :'].push('--');
                 }
                 if(m.msg.providers && Array.isArray(m.msg.providers) && m.msg.providers.length > 0){
-                    m.msg.providers.forEach((p)=>{
+                    m.msg.providers.forEach((p) =>{
                         msg['Providers :'].push(p);
                     })
-                }else{
+                } else {
                     msg['Providers :'].push('--');
                 }
                 msg['Consumer :'].push(m.msg.consumer);
                 msg['Input :'].push(m.msg.input);
                 if(m.msg.service_fee_cap && Array.isArray(m.msg.service_fee_cap) && m.msg.service_fee_cap.length > 0){
                     msg['Service Fee Cap :'].push(`${m.msg.service_fee_cap[0].amount} ${m.msg.service_fee_cap[0].denom}`);
-                }else {
+                } else {
                     msg['Service Fee Cap :'].push('--')
                 }
                 msg['Time Out :'].push(m.msg.timeout);
@@ -362,24 +388,24 @@ export default class formatMsgsAndTags {
 
     static txTypeRespondService(tx){
         const msg = {
-            'Type :':[],
-            'Service Name :':[],
-            'Request Context ID :':[],
-            'Provider :':[],
-            'Result :':[],
-            'Output :':[],
+            'Type :' : [],
+            'Service Name :' : [],
+            'Request Context ID :' : [],
+            'Provider :' : [],
+            'Result :' : [],
+            'Output :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 if(m.msg.ex && m.msg.ex.service_name){
                     msg['Service Name :'].push(m.msg.ex.service_name);
-                }else{
+                } else {
                     msg['Service Name :'].push('--');
                 }
                 if(m.msg.ex && m.msg.ex.request_context_id){
                     msg['Request Context ID :'].push(m.msg.ex.request_context_id);
-                }else{
+                } else {
                     msg['Request Context ID :'].push('--');
                 }
 
@@ -393,17 +419,17 @@ export default class formatMsgsAndTags {
 
     static txTypePauseRequestContext(tx){
         const msg = {
-            'Type :':[],
-            'Service Name :':[],
-            'Request Context ID :':[],
-            'Consumer :':[],
+            'Type :' : [],
+            'Service Name :' : [],
+            'Request Context ID :' : [],
+            'Consumer :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 if(m.msg.ex && m.msg.ex.service_name){
                     msg['Service Name :'].push(m.msg.ex.service_name);
-                }else{
+                } else {
                     msg['Service Name :'].push('--');
                 }
                 msg['Request Context ID :'].push(m.msg.request_context_id);
@@ -415,17 +441,17 @@ export default class formatMsgsAndTags {
 
     static txTypeStartRequestContext(tx){
         const msg = {
-            'Type :':[],
-            'Service Name :':[],
-            'Request Context ID :':[],
-            'Consumer :':[],
+            'Type :' : [],
+            'Service Name :' : [],
+            'Request Context ID :' : [],
+            'Consumer :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 if(m.msg.ex && m.msg.ex.service_name){
                     msg['Service Name :'].push(m.msg.ex.service_name);
-                }else{
+                } else {
                     msg['Service Name :'].push('--');
                 }
                 msg['Request Context ID :'].push(m.msg.request_context_id);
@@ -437,17 +463,17 @@ export default class formatMsgsAndTags {
 
     static txTypeKillRequestContext(tx){
         const msg = {
-            'Type :':[],
-            'Service Name :':[],
-            'Request Context ID :':[],
-            'Consumer :':[],
+            'Type :' : [],
+            'Service Name :' : [],
+            'Request Context ID :' : [],
+            'Consumer :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 if(m.msg.ex && m.msg.ex.service_name){
                     msg['Service Name :'].push(m.msg.ex.service_name);
-                }else{
+                } else {
                     msg['Service Name :'].push('--');
                 }
                 msg['Request Context ID :'].push(m.msg.request_context_id);
@@ -459,39 +485,39 @@ export default class formatMsgsAndTags {
 
     static txTypeUpdateRequestContext(tx){
         const msg = {
-            'Type :':[],
-            'Service Name :':[],
-            'Request Context ID :':[],
-            'Consumer :':[],
-            'Providers :':[],
-            'Repeated Frequency :':[],
-            'Repeated Total :':[],
-            'Service Fee Cap :':[],
-            'Time Out :':[],
+            'Type :' : [],
+            'Service Name :' : [],
+            'Request Context ID :' : [],
+            'Consumer :' : [],
+            'Providers :' : [],
+            'Repeated Frequency :' : [],
+            'Repeated Total :' : [],
+            'Service Fee Cap :' : [],
+            'Time Out :' : [],
 
 
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 if(m.msg.ex && m.msg.ex.service_name){
                     msg['Service Name :'].push(m.msg.ex.service_name);
-                }else{
+                } else {
                     msg['Service Name :'].push('--');
                 }
                 msg['Request Context ID :'].push(m.msg.request_context_id);
                 msg['Consumer :'].push(m.msg.consumer);
                 if(m.msg.providers && Array.isArray(m.msg.providers) && m.msg.providers.length > 0){
-                    m.msg.providers.forEach((p)=>{
+                    m.msg.providers.forEach((p) =>{
                         msg['Providers :'].push(p);
                     })
-                }else{
+                } else {
                     msg['Providers :'].push('--');
                 }
 
                 if(m.msg.service_fee_cap && Array.isArray(m.msg.service_fee_cap) && m.msg.service_fee_cap.length > 0){
                     msg['Service Fee Cap :'].push(`${m.msg.service_fee_cap[0].amount} ${m.msg.service_fee_cap[0].denom}`);
-                }else {
+                } else {
                     msg['Service Fee Cap :'].push('--')
                 }
                 msg['Time Out :'].push(m.msg.timeout);
@@ -506,14 +532,14 @@ export default class formatMsgsAndTags {
 
     static txTypeWithdrawEarnedFees(tx){
         const msg = {
-            'Type :':[],
-            'Provider :':[],
-            'Owner :':[],
+            'Type :' : [],
+            'Provider :' : [],
+            'Owner :' : [],
 
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
-            tx.msgs.forEach((m)=>{
+            tx.msgs.forEach((m) =>{
                 msg['Provider :'].push(m.msg.provider);
                 msg['Owner :'].push(m.msg.owner);
             })
@@ -521,15 +547,270 @@ export default class formatMsgsAndTags {
         return msg;
     }
 
+    static txTypeFundCommunityPool(tx){
+        const msg = {
+            'Type :' : [],
+            'Amount :' : [],
+            'Depositor :' : [],
 
-    static txTypeTransfer(dataTx,txType){
-        let message = {},amountObj;
-            message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-            message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
-            message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
-            message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                if(m.msg.amount && Array.isArray(m.msg.amount) && m.msg.amount.length > 0){
+                    msg['Amount :'].push(`${m.msg.amount[0].amount} ${m.msg.amount[0].denom}`);
+                }
+                msg['Depositor :'].push(m.msg.depositor);
+            })
+        }
+        return msg;
+    }
+
+    static txTypeIssueDenom(tx){
+        const msg = {
+            'Type :' : [],
+            'Sender :' : [],
+            'Denom :' : [],
+            'Schema :' : [],
+
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Sender :'].push(m.msg.sender);
+                msg['Denom :'].push(m.msg.denom);
+                msg['Schema :'].push(m.msg.schema);
+            })
+        }
+        return msg;
+    }
+
+    static txTypeEditNft(tx){
+        console.log('=====')
+        const msg = {
+            'Type :' : [],
+            'Sender :' : [],
+            'NFT ID :' : [],
+            'Denom :' : [],
+            'Token Uri :' : [],
+            'Token Data :' : [],
+
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Sender :'].push(m.msg.sender);
+                msg['NFT ID :'].push(m.msg.id);
+                msg['Denom :'].push(m.msg.denom);
+                msg['Token Uri :'].push(m.msg.token_uri);
+                msg['Token Data :'].push(m.msg.token_data);
+            })
+        }
+        return msg;
+    }
+
+    static txTypeTransferNft(tx){
+        const msg = {
+            'Type :' : [],
+            'Sender :' : [],
+            'Recipient :' : [],
+            'NFT ID :' : [],
+            'Denom :' : [],
+            'Token Uri :' : [],
+            'Token Data :' : [],
+
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Sender :'].push(m.msg.sender);
+                msg['Recipient :'].push(m.msg.recipient);
+                msg['NFT ID :'].push(m.msg.id);
+                msg['Denom :'].push(m.msg.denom);
+                msg['Token Uri :'].push(m.msg.token_uri);
+                msg['Token Data :'].push(m.msg.token_data);
+            })
+        }
+        return msg;
+    }
+
+
+
+    static txTypeMintNft(tx){
+        const msg = {
+            'Type :' : [],
+            'Sender :' : [],
+            'Recipient :' : [],
+            'NFT ID :' : [],
+            'Denom :' : [],
+            'Token Uri :' : [],
+            'Token Data :' : [],
+
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Sender :'].push(m.msg.sender);
+                msg['Recipient :'].push(m.msg.recipient);
+                msg['NFT ID :'].push(m.msg.id);
+                msg['Denom :'].push(m.msg.denom);
+                msg['Token Uri :'].push(m.msg.token_uri);
+                msg['Token Data :'].push(m.msg.token_data);
+            })
+        }
+        return msg;
+    }
+
+    static txTypeBurnNft(tx){
+        const msg = {
+            'Type :' : [],
+            'Sender :' : [],
+            'NFT ID :' : [],
+            'Denom :' : [],
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Sender :'].push(m.msg.sender);
+                msg['NFT ID :'].push(m.msg.id);
+                msg['Denom :'].push(m.msg.denom);
+            })
+        }
+        return msg;
+    }
+
+    static txTypeCreateFeed(tx){
+        const msg = {
+            'Type :' : [],
+            'Feed Name :' : [],
+            'Latest History :' : [],
+            'Description :' : [],
+            'Creator :' : [],
+            'Service Name :' : [],
+            'Providers :' : [],
+            'Input :' : [],
+            'Timeout :' : [],
+            'Service Fee Cap :' : [],
+            'Repeated Frequency :' : [],
+            'Aggregate Func :' : [],
+            'Value Json Path :' : [],
+            'Response Threshold :' : [],
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Feed Name :'].push(m.msg.feed_name);
+                msg['Latest History :'].push(m.msg.latest_history);
+                msg['Description :'].push(m.msg.description);
+                msg['Creator :'].push(m.msg.creator);
+                msg['Service Name :'].push(m.msg.service_name);
+                msg['Input :'].push(m.msg.input);
+                msg['Timeout :'].push(m.msg.timeout);
+                msg['Repeated Frequency :'].push(m.msg.repeated_frequency);
+                msg['Aggregate Func :'].push(m.msg.aggregate_func);
+                msg['Value Json Path :'].push(m.msg.value_json_path);
+                msg['Response Threshold :'].push(m.msg.response_threshold);
+                if(m.msg.providers && Array.isArray(m.msg.providers) && m.msg.providers.length > 0){
+                    m.msg.providers.forEach((p) =>{
+                        msg['Providers :'].push(p);
+                    })
+                } else {
+                    msg['Providers :'].push('--');
+                }
+
+                if(m.msg.service_fee_cap && Array.isArray(m.msg.service_fee_cap) && m.msg.service_fee_cap.length > 0){
+                    msg['Service Fee Cap :'].push(`${m.msg.service_fee_cap[0].amount} ${m.msg.service_fee_cap[0].denom}`);
+                } else {
+                    msg['Service Fee Cap :'].push('--')
+                }
+            })
+        }
+        return msg;
+    }
+
+    static txTypeStartFeed(tx){
+        const msg = {
+            'Type :' : [],
+            'Feed Name :' : [],
+            'Creator :' : [],
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Feed Name :'].push(m.msg.feed_name);
+                msg['Creator :'].push(m.msg.creator);
+            })
+        }
+        return msg;
+    }
+
+    static txTypePauseFeed(tx){
+        const msg = {
+            'Type :' : [],
+            'Feed Name :' : [],
+            'Creator :' : [],
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Feed Name :'].push(m.msg.feed_name);
+                msg['Creator :'].push(m.msg.creator);
+            })
+        }
+        return msg;
+    }
+
+    static txTypeEditFeed(tx){
+        const msg = {
+            'Type :' : [],
+            'Feed Name :' : [],
+            'Latest History :' : [],
+            'Description :' : [],
+            'Creator :' : [],
+            'Providers :' : [],
+            'Timeout :' : [],
+            'Service Fee Cap :' : [],
+            'Repeated Frequency :' : [],
+            'Response Threshold :' : [],
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Feed Name :'].push(m.msg.feed_name);
+                msg['Latest History :'].push(m.msg.latest_history);
+                msg['Description :'].push(m.msg.description);
+                msg['Creator :'].push(m.msg.creator);
+                msg['Timeout :'].push(m.msg.timeout);
+                msg['Repeated Frequency :'].push(m.msg.repeated_frequency);
+                msg['Response Threshold :'].push(m.msg.response_threshold);
+                if(m.msg.providers && Array.isArray(m.msg.providers) && m.msg.providers.length > 0){
+                    m.msg.providers.forEach((p) =>{
+                        msg['Providers :'].push(p);
+                    })
+                } else {
+                    msg['Providers :'].push('--');
+                }
+
+                if(m.msg.service_fee_cap && Array.isArray(m.msg.service_fee_cap) && m.msg.service_fee_cap.length > 0){
+                    msg['Service Fee Cap :'].push(`${m.msg.service_fee_cap[0].amount} ${m.msg.service_fee_cap[0].denom}`);
+                } else {
+                    msg['Service Fee Cap :'].push('--')
+                }
+            })
+        }
+        return msg;
+    }
+
+
+
+    static txTypeTransfer(dataTx, txType){
+        let message = {}, amountObj;
+        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach(item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -540,10 +821,10 @@ export default class formatMsgsAndTags {
                     amountObj = Tools.formatAmountOfTxDetail(item.msg.amount);
                     if(amountObj && amountObj.moreAmountsNumber && amountObj.moreAmountsNumber.length > 0){
                         //handle more tokens
-                        amountObj.moreAmountsNumber.forEach( (item) => {
+                        amountObj.moreAmountsNumber.forEach((item) =>{
                             message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(item.amount)} ${item.denom}`)
                         })
-                    }else {
+                    } else {
                         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
                     }
 
@@ -552,13 +833,14 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeBurn(dataTx,txType){
-        let message = {},amountObj;
+
+    static txTypeBurn(dataTx, txType){
+        let message = {}, amountObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -571,13 +853,14 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeSetMemoRegexp(dataTx,txType){
+
+    static txTypeSetMemoRegexp(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.OWNER] = [];
         message[Constant.TRANSACTIONMESSAGENAME.MEMOREGEXP] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -589,8 +872,9 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeCreateValidator(dataTx,txType){
-        let message = {},selfBondedObj;
+
+    static txTypeCreateValidator(dataTx, txType){
+        let message = {}, selfBondedObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.OPERATORADDRESS] = [];
         message[Constant.TRANSACTIONMESSAGENAME.MONIKER] = [];
@@ -602,7 +886,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.WEBSITE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DETAILS] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -613,12 +897,12 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.SELFBONDED].unshift(`${formatMsgsAndTags.formatAmount(selfBondedObj.amountNumber)} ${selfBondedObj.tokenName}`);
                         message[Constant.TRANSACTIONMESSAGENAME.OWNERADDRESS].unshift(item.msg.delegator_address);
                         message[Constant.TRANSACTIONMESSAGENAME.CONSENSUSPUBKEY].unshift(item.msg.pubkey);
-                        message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(`${Tools.formatPercentage(item.msg.commission.rate )} %`)
+                        message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(`${Tools.formatPercentage(item.msg.commission.rate)} %`)
                         message[Constant.TRANSACTIONMESSAGENAME.WEBSITE].unshift(item.msg.valdescription.website ? item.msg.valdescription.website : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.DETAILS].unshift(item.msg.valdescription.details ? item.msg.valdescription.details : '--');
                         message.tooltip = {
-                            maxChangeRate:  `${Tools.formatPercentage(item.msg.commission.max_change_rate)}%`,
-                            maxRate: `${Tools.formatPercentage(item.msg.commission.max_rate)} %`
+                            maxChangeRate : `${Tools.formatPercentage(item.msg.commission.max_change_rate)}%`,
+                            maxRate : `${Tools.formatPercentage(item.msg.commission.max_rate)} %`
                         }
                     }
                 }
@@ -626,7 +910,8 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeEditValidator(dataTx,txType){
+
+    static txTypeEditValidator(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.OPERATORADDRESS] = [];
@@ -636,7 +921,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.WEBSITE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DETAILS] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -647,7 +932,7 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.DETAILS].unshift(item.msg.valdescription.details ? item.msg.valdescription.details : '--');
                         if(dataTx.status === 'success'){
                             message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(item.msg.commission_rate ? `${ Tools.formatPercentage(item.msg.commission_rate)} %` : '--');
-                        }else {
+                        } else {
                             message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(item.msg.commission_rate ? `${ Tools.formatPercentage(item.msg.commission_rate)} %` : '--');
                         }
                     }
@@ -656,12 +941,13 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeUnjail(dataTx,txType){
+
+    static txTypeUnjail(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.OPERATORADDRESS] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -672,14 +958,15 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeDelegate(dataTx,txType){
-        let message = {},amountObj;
+
+    static txTypeDelegate(dataTx, txType){
+        let message = {}, amountObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -693,8 +980,9 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeBeginRedelegate(dataTx,txType){
-        let message = {},amountObj;
+
+    static txTypeBeginRedelegate(dataTx, txType){
+        let message = {}, amountObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
@@ -713,9 +1001,9 @@ export default class formatMsgsAndTags {
                 message[Constant.TRANSACTIONMESSAGENAME.TOSHARES].unshift(`${Tools.numberMoveDecimal(dataTx.tags['shares-dst'])} SHARES`);
                 message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(dataTx.tags['end-time']));
             }
-        }else {
+        } else {
             if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-                dataTx.msgs.forEach( item => {
+                dataTx.msgs.forEach(item =>{
                     if(item.type === txType){
                         if(item.msg){
                             message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
@@ -731,13 +1019,14 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeSetWithdrawAddress(dataTx,txType){
+
+    static txTypeSetWithdrawAddress(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ORIGINALADDRESS] = [];
         message[Constant.TRANSACTIONMESSAGENAME.NEWADDRESS] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -749,8 +1038,9 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeBeginUnbonding(dataTx,txType){
-        let message = {},amountObj;
+
+    static txTypeBeginUnbonding(dataTx, txType){
+        let message = {}, amountObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.SHARES] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
@@ -760,35 +1050,35 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         if(dataTx.status === 'success'){
             if(dataTx.tags){
-                amountObj = Tools.formatListByTagsBalance(dataTx.tags,true);
+                amountObj = Tools.formatListByTagsBalance(dataTx.tags, true);
                 message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(dataTx.tags['source-validator']);
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`);
                 message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.delegator);
                 message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(dataTx.tags['end-time']))
             }
             if(dataTx.msgs){
-                if(dataTx.msgs && Array.isArray(dataTx.msgs)&& dataTx.msgs !== null){
-                    dataTx.msgs.forEach( item => {
+                if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
+                    dataTx.msgs.forEach(item =>{
                         if(item.msg){
                             message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(`${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES`)
                         }
                     })
                 }
             }
-        }else {
+        } else {
             if(dataTx.tags && dataTx.tags.balance && dataTx.tags['end-time']){
                 amountObj = Tools.formatListByTagsBalance(dataTx.tags);
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`);
                 message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(dataTx.tags['end-time']))
 
-            }else {
+            } else {
                 message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift('--')
             }
             if(dataTx.msgs){
                 if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-                    dataTx.msgs.forEach(item => {
+                    dataTx.msgs.forEach(item =>{
                         if(item.msg){
-                            amountObj = Tools.formatListByTagsBalance(item.msg.shares_amount,true);
+                            amountObj = Tools.formatListByTagsBalance(item.msg.shares_amount, true);
                             amountObj.amountNumber !== '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`) : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
                             message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(`${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES`)
                             message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg['validator_addr']);
@@ -800,8 +1090,9 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeWithdrawDelegatorReward(dataTx,txType){
-        let message = {},amountObj;
+
+    static txTypeWithdrawDelegatorReward(dataTx, txType){
+        let message = {}, amountObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
@@ -811,17 +1102,17 @@ export default class formatMsgsAndTags {
             if(dataTx.tags && dataTx.tags['withdraw-reward-total']){
                 let tags = {};
                 tags.balance = dataTx.tags['withdraw-reward-total']
-                amountObj = Tools.formatListByTagsBalance(tags,true);
+                amountObj = Tools.formatListByTagsBalance(tags, true);
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
-            }else {
+            } else {
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
             }
-        }else {
+        } else {
             message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
         }
 
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach(item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.msg){
                     message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_addr);
                     message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr)
@@ -830,15 +1121,16 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeWithdrawDelegatorRewardsAll(dataTx,txType){
-        let message = {},amountObj;
+
+    static txTypeWithdrawDelegatorRewardsAll(dataTx, txType){
+        let message = {}, amountObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         if(dataTx.status === 'success'){
-            let formAddressArray = [],toAddressArray=[];
+            let formAddressArray = [], toAddressArray = [];
             if(dataTx.tags){
                 for(let item in dataTx.tags){
                     if(item.startsWith('withdraw-reward-from-validator')){
@@ -851,25 +1143,25 @@ export default class formatMsgsAndTags {
             }
             message[Constant.TRANSACTIONMESSAGENAME.FROM] = formAddressArray.length > 0 ? formAddressArray : '-';
             if(dataTx.monikers){
-                message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map( item => {
+                message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map(item =>{
                     return {
-                        address: item,
-                        moniker: dataTx.monikers[item]
+                        address : item,
+                        moniker : dataTx.monikers[item]
                     }
                 })
             }
-            if(dataTx.amount && dataTx.amount.length > 0 ){
+            if(dataTx.amount && dataTx.amount.length > 0){
                 amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
-            }else {
+            } else {
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
             }
             message[Constant.TRANSACTIONMESSAGENAME.TO] = toAddressArray.length > 0 ? toAddressArray : '-';
-        }else {
+        } else {
             if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-                dataTx.msgs.forEach(item => {
+                dataTx.msgs.forEach(item =>{
                     if(item.msg){
-                        amountObj = Tools.formatAmountOfTxDetail(dataTx.amount) ;
+                        amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
                         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(dataTx.amount.length > 0 ? `${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}` : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_addr ? item.msg.validator_addr : '-');
                         message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr ? item.msg.delegator_addr : '-')
@@ -880,14 +1172,15 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeWithdrawValidatorRewardsAll(dataTx,txType){
-        let message = {},amountObj;
+
+    static txTypeWithdrawValidatorRewardsAll(dataTx, txType){
+        let message = {}, amountObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
-        let formAddressArray = [],toAddressArray=[];
+        let formAddressArray = [], toAddressArray = [];
         if(dataTx.status === 'success'){
             if(dataTx.tags){
                 for(let item in dataTx.tags){
@@ -899,9 +1192,9 @@ export default class formatMsgsAndTags {
                     }
                 }
             }
-        }else {
+        } else {
             if(dataTx.msgs){
-                dataTx.msgs.forEach( item => {
+                dataTx.msgs.forEach(item =>{
                     if(item.msg){
                         formAddressArray.unshift(item.msg.validator_addr ? item.msg.validator_addr : '--')
                     }
@@ -911,17 +1204,17 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = formAddressArray.length > 0 ? formAddressArray : '-';
         if(dataTx.monikers){
             if(message[Constant.TRANSACTIONMESSAGENAME.FROM] !== '-'){
-                message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map( item => {
+                message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map(item =>{
                     if(dataTx.monikers[item]){
                         return {
-                            address: item,
-                            moniker: dataTx.monikers[item]
+                            address : item,
+                            moniker : dataTx.monikers[item]
                         }
-                    }else {
+                    } else {
                         return {
-                            address: item,
-                            moniker: dataTx.monikers[item],
-                            isLink: true,
+                            address : item,
+                            moniker : dataTx.monikers[item],
+                            isLink : true,
                         }
                     }
 
@@ -933,8 +1226,9 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TO] = toAddressArray.length > 0 ? toAddressArray : '-';
         return message
     }
-    static txTypeSubmitProposal(dataTx,txType){
-        let message = {},initialDepositObj;
+
+    static txTypeSubmitProposal(dataTx, txType){
+        let message = {}, initialDepositObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.PROPOSER] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TITLE] = [];
@@ -943,8 +1237,8 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
-                switch (item.type) {
+            dataTx.msgs.forEach(item =>{
+                switch (item.type){
                     case Constant.SUBMITPROPOSALTYPE.SUBMITPROPOSAL:
                         if(item.msg){
                             initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.initialDeposit);
@@ -1010,10 +1304,10 @@ export default class formatMsgsAndTags {
                             message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.doctxmsgsubmitproposal.description);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.msg.doctxmsgsubmitproposal.proposalType);
                             message[Constant.TRANSACTIONMESSAGENAME.USAGE].unshift(item.msg.usage);
-                            message[Constant.TRANSACTIONMESSAGENAME.PERCENT].unshift(`${numberMoveDecimal(item.msg.percent,2)} %`);
+                            message[Constant.TRANSACTIONMESSAGENAME.PERCENT].unshift(`${numberMoveDecimal(item.msg.percent, 2)} %`);
                             if(item.msg.usage === Constant.TxType.BURN){
                                 message[Constant.TRANSACTIONMESSAGENAME.DESTADDRESS].unshift('-');
-                            }else {
+                            } else {
                                 message[Constant.TRANSACTIONMESSAGENAME.DESTADDRESS].unshift(item.msg.dest_address);
                             }
                         }
@@ -1023,14 +1317,15 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeDeposit(dataTx,txType){
-        let message = {},depositAmoutObj;
+
+    static txTypeDeposit(dataTx, txType){
+        let message = {}, depositAmoutObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DEPOSITOR] = [];
         message[Constant.TRANSACTIONMESSAGENAME.PROPOSALID] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DEPOSIT] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1044,14 +1339,15 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeVote(dataTx,txType){
+
+    static txTypeVote(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.VOTER] = [];
         message[Constant.TRANSACTIONMESSAGENAME.PROPOSALID] = [];
         message[Constant.TRANSACTIONMESSAGENAME.OPTION] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1064,7 +1360,8 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeIssueToken(dataTx,txType){
+
+    static txTypeIssueToken(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         //message[Constant.TRANSACTIONMESSAGENAME.FAMILY] = [];
@@ -1080,7 +1377,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.MINTABLE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.OWNER] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1090,8 +1387,8 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.SYMBOL].unshift(item.msg.symbol ? item.msg.symbol : '--');
                         //message[Constant.TRANSACTIONMESSAGENAME.CANONICALSYMBOL].unshift(item.msg.canonical_symbol ? item.msg.canonical_symbol : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.NAME].unshift(item.msg.name ? item.msg.name : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.DECIMAL].unshift((item.msg.scale  || item.msg.scale === 0) ? String(item.msg.scale) : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.SYMBOLMINALIAS].unshift(item.msg.min_unit? item.msg.min_unit : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.DECIMAL].unshift((item.msg.scale || item.msg.scale === 0) ? String(item.msg.scale) : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.SYMBOLMINALIAS].unshift(item.msg.min_unit ? item.msg.min_unit : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.INITIALSUPPLY].unshift(item.msg.initial_supply || item.msg.initial_supply === 0 ? formatMsgsAndTags.formatAmount(item.msg.initial_supply) : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.MAXSUPPLY].unshift(item.msg.max_supply || item.msg.max_supply === 0 ? formatMsgsAndTags.formatAmount(item.msg.max_supply) : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.MINTABLE].unshift(item.msg.mintable);
@@ -1102,7 +1399,8 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeEditToken(dataTx,txType){
+
+    static txTypeEditToken(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.CANONICALSYMBOL] = [];
@@ -1111,7 +1409,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.MINTABLE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.OWNER] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1126,14 +1424,15 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeMintToken(dataTx,txType){
+
+    static txTypeMintToken(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.OWNER] = [];
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1146,13 +1445,14 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeTransferTokenOwner(dataTx,txType){
+
+    static txTypeTransferTokenOwner(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ORIGINALOWNER] = [];
         message[Constant.TRANSACTIONMESSAGENAME.NEWOWNER] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1164,7 +1464,8 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeCreateGateway(dataTx,txType){
+
+    static txTypeCreateGateway(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.OWNER] = [];
@@ -1173,7 +1474,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.DETAILS] = [];
         message[Constant.TRANSACTIONMESSAGENAME.WEBSITE] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1189,7 +1490,8 @@ export default class formatMsgsAndTags {
         return message
 
     }
-    static txTypeEditGateway(dataTx,txType){
+
+    static txTypeEditGateway(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.OWNER] = [];
@@ -1198,7 +1500,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.DETAILS] = [];
         message[Constant.TRANSACTIONMESSAGENAME.WEBSITE] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1213,7 +1515,8 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeTransferGatewayOwner(dataTx,txType){
+
+    static txTypeTransferGatewayOwner(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ORIGINALOWNER] = [];
@@ -1221,7 +1524,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.NEWOWNER] = [];
 
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1234,18 +1537,19 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeRequestRand(dataTx,txType){
+
+    static txTypeRequestRand(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.BLOCKINTERVAL] = [];
         message[Constant.TRANSACTIONMESSAGENAME.REQUESTID] = [];
         message[Constant.TRANSACTIONMESSAGENAME.RANDHEIGHT] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.BLOCKINTERVAL].unshift(item.msg['block-interval']  || item.msg['block-interval'] === 0 ? item.msg['block-interval'] : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.BLOCKINTERVAL].unshift(item.msg['block-interval'] || item.msg['block-interval'] === 0 ? item.msg['block-interval'] : '--');
                     }
                 }
             })
@@ -1256,14 +1560,15 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeAddProfiler(dataTx,txType){
+
+    static txTypeAddProfiler(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ADDRESS] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ADDRESSBY] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1276,14 +1581,15 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeAddTrustee(dataTx,txType){
+
+    static txTypeAddTrustee(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ADDRESS] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ADDRESSBY] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1296,13 +1602,14 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeDeleteProfiler(dataTx,txType){
+
+    static txTypeDeleteProfiler(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ADDRESS] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DELETEDBY] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1315,13 +1622,14 @@ export default class formatMsgsAndTags {
         return message
 
     }
-    static txTypeDeleteTrustee(dataTx,txType){
+
+    static txTypeDeleteTrustee(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ADDRESS] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DELETEDBY] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1334,7 +1642,8 @@ export default class formatMsgsAndTags {
         return message
 
     }
-    static txTypeClaimHTLC(dataTx,txType){
+
+    static txTypeClaimHTLC(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK] = [];
@@ -1349,9 +1658,9 @@ export default class formatMsgsAndTags {
                 message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(dataTx.tags['hash-lock']);
                 message[Constant.TRANSACTIONMESSAGENAME.SECRET].unshift(dataTx.tags.secret);
             }
-        }else {
+        } else {
             if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-                dataTx.msgs.forEach( item => {
+                dataTx.msgs.forEach(item =>{
                     if(item.type === txType){
                         if(item.msg){
                             message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg['hash_lock']);
@@ -1366,8 +1675,9 @@ export default class formatMsgsAndTags {
 
         return message
     }
-    static txTypeCreateHTLC(dataTx,txType){
-        let message = {},amountObj;
+
+    static txTypeCreateHTLC(dataTx, txType){
+        let message = {}, amountObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
@@ -1378,7 +1688,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.EXPIRYHEIGHT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.CROSSCHAINREVEIVER] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1397,7 +1707,8 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeRefundHTLC(dataTx,txType){
+
+    static txTypeRefundHTLC(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
@@ -1409,9 +1720,9 @@ export default class formatMsgsAndTags {
                     message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(dataTx.tags['hash-lock']);
                     message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.sender);
                 }
-            }else {
+            } else {
                 if(dataTx.msgs){
-                    dataTx.msgs.forEach( item => {
+                    dataTx.msgs.forEach(item =>{
                         if(item.type === txType){
                             message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                             if(item.msg){
@@ -1422,7 +1733,7 @@ export default class formatMsgsAndTags {
                 }
                 if(dataTx.tags && dataTx.tags.sender){
                     message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.sender ? dataTx.tags.sender : '-');
-                }else {
+                } else {
                     message[Constant.TRANSACTIONMESSAGENAME.TO].unshift('-');
                 }
             }
@@ -1430,7 +1741,8 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeAddLiquidity(dataTx,txType){
+
+    static txTypeAddLiquidity(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.MAXTOKEN] = [];
@@ -1439,7 +1751,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.SENDER] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1454,7 +1766,8 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeRemoveLiquidity(dataTx,txType){
+
+    static txTypeRemoveLiquidity(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.MINTOKEN] = [];
@@ -1463,7 +1776,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.SENDER] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1478,8 +1791,9 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-    static txTypeSwapOrder(dataTx,txType){
-        let message = {},amountObj;
+
+    static txTypeSwapOrder(dataTx, txType){
+        let message = {}, amountObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.INPUTADDRESS] = [];
         message[Constant.TRANSACTIONMESSAGENAME.OUTPUTADDRESS] = [];
@@ -1488,7 +1802,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ISBUYORDER] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
+            dataTx.msgs.forEach(item =>{
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
@@ -1498,9 +1812,9 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
                         message[Constant.TRANSACTIONMESSAGENAME.ISBUYORDER].unshift(item.msg.is_buy_order);
                         if(item.msg.output.coin.denom === Constant.Denom.IRISATTO){
-                            amountObj =  Tools.formatAmountOfTxDetail(item.msg.output.coin);
+                            amountObj = Tools.formatAmountOfTxDetail(item.msg.output.coin);
                             message[Constant.TRANSACTIONMESSAGENAME.OUTPUT].unshift(amountObj);
-                        }else {
+                        } else {
                             message[Constant.TRANSACTIONMESSAGENAME.OUTPUT].unshift(`${item.msg.input.coin.amount} ${item.msg.input.coin.denom.toUpperCase()}`);
                         }
                     }

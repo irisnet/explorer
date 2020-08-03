@@ -62,6 +62,26 @@ TxType.WITHDRAW_EARNED_FEES = 'WithdrawEarnedFees';
 
 
 
+//nft type of txs
+TxType.ISSUE_DENOM = 'IssueDenom';
+TxType.EDIT_NFT = 'NFTEdit';
+TxType.TRANSFER_NFT = 'NFTTransfer';
+TxType.MINT_NFT = 'NFTMint';
+TxType.BURN_NFT = 'NFTBurn';
+
+
+
+//oracle type of txs
+TxType.CREATE_FEED = 'CreateFeed';
+TxType.START_FEED = 'StartFeed';
+TxType.PAUSE_FEED = 'PauseFeed';
+TxType.EDIT_FEED = 'EditFeed';
+
+
+
+
+
+
 
 
 const ValidatorStatus = {};

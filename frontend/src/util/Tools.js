@@ -569,7 +569,7 @@ export default class Tools{
 	 *   return string
 	 *   fixedNumber: nonzero
 	 * */
-	static formatAmount2(param,fixedNumber){
+	static formatAmount2(param,fixedNumber, defaultValue){
 		let amount,amountDenom, amountNumber,amountRadixNumber;
 		if(param instanceof Array){
 			amount = param[0].amount;
@@ -584,14 +584,14 @@ export default class Tools{
 			}else {
 				amountNumber = new BigNumber(amount).toFixed().toString() + ".";
 			}
-			amountRadixNumber = Tools.amountRadix(amountDenom);
+			amountRadixNumber = Tools.amountRadix(amountDenom, defaultValue);
 		}else {
 			if(amount.toString().indexOf('.') !== -1){
 				amountNumber = amount.toString();
 			}else {
 				amountNumber = amount.toString() + ".";
 			}
-			amountRadixNumber = Tools.amountRadix(amountDenom);
+			amountRadixNumber = Tools.amountRadix(amountDenom, defaultValue);
 		}
 		if(amountDenom){
 			return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber)} ${Constant.RADIXDENOM.IRIS.toLocaleUpperCase()}`
@@ -604,8 +604,8 @@ export default class Tools{
 	 *   param string
 	 *   return Radix length
 	* */
-	static amountRadix(param){
-	let diffValue = 1,defaultValue = 18;
+	static amountRadix(param,defaultValue = 18){
+	let diffValue = 1;
 	if(param){
 		//radix number length need to minus 1;
 		switch (param) {
