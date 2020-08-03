@@ -1666,6 +1666,7 @@ paths:
       - description: symbol
         in: path
         name: symbol
+        required: true
         type: string
       produces:
       - application/json

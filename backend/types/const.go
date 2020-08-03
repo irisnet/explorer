@@ -96,7 +96,7 @@ const (
 	//assetTokens
 	UrlRegisterAssetTokens = "/asset/tokens"
 	//assetToken Detail
-	UrlRegisterAssetTokenInfo = "/asset/tokens/{token_id}"
+	UrlRegisterAssetTokenInfo = "/asset/tokens/{symbol}"
 	//assetGateway
 	//UrlRegisterAssetGatewayInfo = "/asset/gateways/{moniker}"
 	//version

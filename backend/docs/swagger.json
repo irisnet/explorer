@@ -206,7 +206,8 @@
                         "type": "string",
                         "description": "symbol",
                         "name": "symbol",
-                        "in": "path"
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
