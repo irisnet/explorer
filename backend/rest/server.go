@@ -70,7 +70,7 @@ func registerApi(r *mux.Router) {
 		controller.RegisterAssets,
 		controller.RegisterCronTask,
 		controller.RegisterHtlc,
-		controller.RegisterCaculate,
+		//controller.RegisterCaculate,
 	}
 
 	for _, routeRegistrar := range routeRegistrars {

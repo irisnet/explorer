@@ -6,7 +6,6 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
-	"fmt"
 )
 
 func RegisterHtlc(r *mux.Router) error {
@@ -35,7 +34,7 @@ func registerQueryHtlcInfo(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryHtlc, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		hash_lock := Var(request, "hash_lock")
-		fmt.Println(hash_lock)
+		//fmt.Println(hash_lock)
 		var result vo.HtlcInfo
 		result = htlc.QueryHtlcByHashLock(hash_lock)
 		return result

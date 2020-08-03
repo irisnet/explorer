@@ -182,7 +182,6 @@ func (d TaskControl) UnlockTaskControl(taskName string) error {
 //	q := orm.NewQuery()
 //	defer q.Release()
 //
-//	c := q.GetDb().C(d.Name())
 //
 //	selector := bson.M{
 //		TCFieldIsInProcess: true,

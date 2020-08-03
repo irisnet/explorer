@@ -7,7 +7,6 @@ import (
 
 	"errors"
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
@@ -38,53 +37,61 @@ type (
 	}
 )
 
-func buildAccountVo(acc Account01411) AccountVo {
-
-	res := AccountVo{}
-
-	res.Address = acc.Value.Address
-	res.Sequence = acc.Value.Sequence
-	res.AccountNumber = acc.Value.AccountNum
-	res.PublicKey.Type = acc.Value.PublicKey.Type
-	res.PublicKey.Value = acc.Value.PublicKey.Value
-
-	coinsStrArr := []string{}
-	for _, v := range acc.Value.Coins {
-		coinsStrArr = append(coinsStrArr, v.Amount+v.Denom)
-	}
-	res.Coins = coinsStrArr
-	return res
-}
 
 func Account(address string) (result AccountVo, err error) {
 	acc, err := AccountInfo(address)
 	if err != nil {
-		logger.Error("get account error", logger.String("err", err.Error()))
 		return result, err
 	}
-	result = buildAccountVo(acc)
+	result.Address = acc.Address
+	result.Sequence = acc.Sequence
+	result.AccountNumber = acc.AccountNumber
+	result.PublicKey = acc.PublicKey
+	ret, err := AccountBalances(address)
+	if err != nil {
+		return result, err
+	}
+	coinsStrArr := []string{}
+	for _, v := range ret {
+		coinsStrArr = append(coinsStrArr, v.Amount+v.Denom)
+	}
+	result.Address = address
+	result.Coins = coinsStrArr
 	return result, nil
 }
 
-func AccountInfo(address string) (Account01411, error) {
-	acc := Account01411{}
+func AccountInfo(address string) (AccountVo, error) {
+	acc := AccountVo{}
 	if !strings.HasPrefix(address, conf.Get().Hub.Prefix.AccAddr) {
 		return acc, fmt.Errorf("address prefix is should %v", conf.Get().Hub.Prefix.AccAddr)
 	}
-	url := fmt.Sprintf(UrlAccount, conf.Get().Hub.LcdUrl, address)
-	resBytes, err := utils.Get(url)
+	account, err := client.Bank().QueryAccount(address)
 	if err != nil {
 		return acc, err
 	}
-	if len(resBytes) == 0 {
-		return acc, nil
+	acc = AccountVo{
+		Address:       account.Address.String(),
+		AccountNumber: account.AccountNumber,
+		PublicKey:     string(account.PubKey),
+		Sequence:      fmt.Sprint(account.Sequence),
 	}
 
-	if err := json.Unmarshal(resBytes, &acc); err != nil {
-		//logger.Error("get account error", logger.String("err", err.Error()))
-		return acc, err
-	}
 	return acc, nil
+}
+
+func AccountBalances(address string) ([]Coin, error) {
+	balances, err := client.Bank().QueryBalances(address, "")
+	if err != nil {
+		return nil, err
+	}
+	var res []Coin
+	for _, val := range balances {
+		res = append(res, Coin{
+			Denom:  val.Denom,
+			Amount: val.Amount,
+		})
+	}
+	return res, nil
 }
 func Faucet(req *http.Request) (bz []byte, err error) {
 	uri := fmt.Sprintf(types.UrlFaucetAccountService, conf.Get().Server.FaucetUrl)

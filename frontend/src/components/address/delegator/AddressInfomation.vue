@@ -165,14 +165,14 @@
                     </el-table-column>
                     <el-table-column :min-width="ColumnMinWidth.address" :label="$t('ExplorerCN.addressDetail.provider')">
                         <template slot-scope="scope">
-                            <el-tooltip v-if="scope.row.txType==TX_TYPE.respond_service" 
+                            <el-tooltip v-if="scope.row.txType==TX_TYPE.RESPOND_SERVICE" 
                                         :content="scope.row.provider"
                                         placement="top">
                                 <router-link :class="scope.row.provider==headerAddress?'blackColor':''"  :to="`/address/${scope.row.provider}`">
                                     {{formatAddress(scope.row.provider)}}
                                 </router-link>
                             </el-tooltip>
-                            <div v-if="scope.row.txType==TX_TYPE.call_service">
+                            <div v-if="scope.row.txType==TX_TYPE.CALL_SERVICE">
                                     <el-tooltip v-if="(scope.row.provider || []).length === 1"
                                                 :content="scope.row.provider[0]"
                                                 placement="top">
@@ -589,7 +589,7 @@
                         	let arrayIndexOneData;
                         	if(res.amount){
                                 res.amount.forEach( item => {
-                                    if(item.denom === 'iris-atto'){
+                                    if(item && item.denom === 'iris-atto'){
                                         arrayIndexOneData = item
                                         res.amount.unshift(arrayIndexOneData);
                                     }
@@ -612,7 +612,8 @@
             getAssetList(){
                 this.assetsItems = this.assetList.map( item => {
                     if (!item) { return {}};
-	            	if(item.denom === 'iris-atto'){
+                    console.log('----',item)
+	            	if(item && item.denom === 'iris-atto'){
 			            return {
 				            token: Tools.formatDenom(item.denom),
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,
@@ -946,7 +947,6 @@
 					        address: item.address,
 					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
 					        shares: new BigNumber((Number(item.shares)).toFixed(2)).toFormat(),
-					        block: item.height,
 					        moniker: item.moniker
 				        }
 			        });
@@ -956,7 +956,6 @@
 					        address: item.address,
 					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
 					        shares: new BigNumber((Number(item.shares)).toFixed(2)).toFormat(),
-					        block: item.height,
 					        moniker: item.moniker
 				        }
 			        });

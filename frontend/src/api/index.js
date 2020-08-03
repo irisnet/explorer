@@ -114,6 +114,7 @@ const urlApi = {
   //htlc information
   htlcs: 'api/htlcs/{hashLock}',
   htlcTxList:'/api/htlcs/{hashLock}/txs?page={pageNumber}&size={pageSize}&total=true',
+  config:'',
 };
 
 export default urlApi

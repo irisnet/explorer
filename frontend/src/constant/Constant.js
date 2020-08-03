@@ -41,26 +41,32 @@ TxType.WITHDRAWADDRESS = 'WithdrawAddress';
 TxType.STAKES = 'Stakes';
 TxType.GOVERNANCE = 'Governance';
 TxType.DECLARATIONS = 'Declarations';
-// iservice
+
 TxType.send = 'Send';
-TxType.define_service = 'DefineService';
-TxType.bind_service = 'BindService';
-TxType.update_service_binding = 'UpdateServiceBinding';
-TxType.disable_service_binding = 'DisableServiceBinding';
-TxType.enable_service_binding = 'EnableServiceBinding';
-TxType.refund_service_deposit = 'RefundServiceDeposit';
-TxType.call_service = 'CallService';
-TxType.respond_service = 'RespondService';
-TxType.pause_request_context = 'PauseRequestContext';
-TxType.start_request_context = 'StartRequestContext';
-TxType.kill_request_context = 'KillRequestContext';
-TxType.update_request_context = 'UpdateRequestContext';
 TxType.create_record = 'CreateRecord';
 TxType.burn_nft = 'BurnNft';
 TxType.transfer_nft = 'TransferNft';
 TxType.edit_nft = 'EditNft';
 TxType.issue_denom = 'IssueDenom';
 TxType.mint_nft = 'MintNft';
+TxType.FundCommunityPool = 'FundCommunityPool';
+TxType.WithdrawValidatorCommission = 'WithdrawValidatorCommission';
+
+//service type txs
+TxType.DEFINE_SERVICE = 'DefineService';
+TxType.BIND_SERVICE = 'BindService';
+TxType.UPDATE_SERVICE_BINDING = 'UpdateServiceBinding';
+TxType.SET_WITHDRAW_FEES_ADDRESS = 'SetWithdrawFeesAddress';
+TxType.DISABLE_SERVICE_BINDING = 'DisableServiceBinding';
+TxType.ENABLE_SERVICE_BINDING = 'EnableServiceBinding';
+TxType.REFUND_SERVICE_DEPOSIT = 'RefundServiceDeposit';
+TxType.CALL_SERVICE = 'CallService';
+TxType.RESPOND_SERVICE = 'RespondService';
+TxType.PAUSE_REQUEST_CONTEXT = 'PauseRequestContext';
+TxType.START_REQUEST_CONTEXT = 'StartRequestContext';
+TxType.KILL_REQUEST_CONTEXT = 'KillRequestContext';
+TxType.UPDATE_REQUEST_CONTEXT = 'UpdateRequestContext';
+TxType.WITHDRAW_EARNED_FEES = 'WithdrawEarnedFees';
 
 
 const ValidatorStatus = {};

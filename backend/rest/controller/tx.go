@@ -224,6 +224,21 @@ func registerQueryTxListByType(r *mux.Router) error {
 					"$in": types.GovernanceList,
 				}
 				break
+			case types.Nft:
+				query["type"] = bson.M{
+					"$in": types.NftList,
+				}
+				break
+			case types.Service:
+				query["type"] = bson.M{
+					"$in": types.ServiceList,
+				}
+				break
+			case types.Orcale:
+				query["type"] = bson.M{
+					"$in": types.OrcaleList,
+				}
+				break
 			}
 		}
 

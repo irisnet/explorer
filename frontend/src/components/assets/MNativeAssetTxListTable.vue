@@ -245,11 +245,6 @@
 				],
 				editToken: [
 					{
-						title:'Token',
-						slot: 'Token',
-						tooltipClassName: 'tooltip_left'
-					},
-					{
 						title:'Owner',
 						slot: 'Owner',
 						tooltip: true,
@@ -286,11 +281,6 @@
 					},
 				],
 				mintToken: [
-					{
-						title:'Token',
-						slot: 'Token',
-						tooltipClassName: 'tooltip_left'
-					},
 					{
 						title:'Owner',
 						slot: 'Owner',
@@ -340,11 +330,6 @@
 					},
 				],
 				transferToken: [
-					{
-						title:'Token',
-						slot: 'Token',
-						tooltipClassName: 'tooltip_left'
-					},
 					{
 						title:'SrcOwner',
 						tooltip: true,

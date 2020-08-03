@@ -47,10 +47,6 @@
 		                slot:'Owner',
 	                },
 	                {
-		                title:'TotalSupply',
-		                key:'TotalSupply',
-	                },
-	                {
 		                title:'InitialSupply',
 		                key:'InitialSupply',
 	                },

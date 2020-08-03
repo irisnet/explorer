@@ -2,18 +2,17 @@ package lcd
 
 import (
 	"testing"
-	"encoding/json"
 	"github.com/irisnet/explorer/backend/utils"
 )
 
 func  TestGetBankTokenStats(t *testing.T) {
-	res,err := GetBankTokenStats()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	bytesData,_ := json.Marshal(res)
-	t.Log(string(bytesData))
+	//res,err := GetBankTokenStats()
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
+	//
+	//bytesData,_ := json.Marshal(res)
+	//t.Log(string(bytesData))
 }
 
 func TestGetTokenStatsCirculation(t *testing.T) {
@@ -33,7 +32,7 @@ func TestGetTokenStatsSupply(t *testing.T) {
 }
 
 func TestGetTokens(t *testing.T) {
-	res := []*Coin{{Denom: utils.CoinTypeAtto, Amount: "925050600000000000000000"}, {Denom: "kai-min", Amount: "800"}}
+	res := []*Coin{{Denom: utils.CoinTypeStake, Amount: "925050600000000000000000"}, {Denom: "kai-min", Amount: "800"}}
 	coin := GetTokens(res)
 	t.Log(coin)
 }

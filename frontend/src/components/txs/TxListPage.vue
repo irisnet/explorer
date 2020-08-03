@@ -265,7 +265,7 @@
 						type: this.type
 					}},(res) => {
 					try {
-						if(res){
+						if(res && Array.isArray(res)){
 							let typeArray;
 							typeArray = res.map(item => {
 								return {

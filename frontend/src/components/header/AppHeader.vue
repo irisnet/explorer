@@ -614,9 +614,9 @@
 						this.searchTx();
 					} else if(/^[a-f0-9]{64}$/.test(this.searchInputValue)){
                         this.searchHashLock()
-                    } else if (this.$Codec.Bech32.isBech32(this.$Crypto.config.iris.bech32.accAddr, this.searchInputValue)) {
+                    } else if (Tools.isBech32(this.$Crypto.config.iris.bech32.accAddr, this.searchInputValue)) {
 						this.searchDelegator();
-					} else if (this.$Codec.Bech32.isBech32(this.$Crypto.config.iris.bech32.valAddr, this.searchInputValue)) {
+					} else if (Tools.isBech32(this.$Crypto.config.iris.bech32.valAddr, this.searchInputValue)) {
 						this.searchValidator();
 					} else if (/^\+?[1-9][0-9]*$/.test(this.searchInputValue)) {
 						this.searchBlockAndProposal();
@@ -678,6 +678,7 @@
 			getConfig () {
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
+				        if(!res.configs) return;
 						sessionStorage.setItem('skinEnvInformation',JSON.stringify(res));
                         if(res.cur_env === constant.ENVCONFIG.TESTNET || res.cur_env === constant.ENVCONFIG.MAINNET){
                             this.$store.commit('hideTestSkinStyle',false)

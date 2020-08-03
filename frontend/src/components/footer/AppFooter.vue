@@ -88,7 +88,6 @@
                     let configs = JSON.parse(sessionStorage.getItem('skinEnvInformation')),
                         currnetEnv = JSON.parse(sessionStorage.getItem('skinEnvInformation')).cur_env,
                         currendChainId = JSON.parse(sessionStorage.getItem('skinEnvInformation')).chain_id;
-
                     (configs.configs || []).forEach( item => {
                         if(currnetEnv === item.env && currendChainId === item.chain_id){
                             this.chainID = Tools.firstWordUpperCase(item.chain_id);

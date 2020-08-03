@@ -16,25 +16,25 @@ export class TxHelper {
                 res.from = msg.fromaddress;
                 res.to = msg.toaddress;
                 break;
-            case TX_TYPE.define_service:
+            case TX_TYPE.DEFINE_SERVICE:
                 res.from = msg.author;
                 break;
-            case TX_TYPE.bind_service:
+            case TX_TYPE.BIND_SERVICE:
                 res.from = msg.provider;
                 break;
-            case TX_TYPE.update_service_binding:
+            case TX_TYPE.UPDATE_SERVICE_BINDING:
                 res.from = msg.provider;
                 break;
-            case TX_TYPE.disable_service_binding:
+            case TX_TYPE.DISABLE_SERVICE_BINDING:
                 res.from = msg.provider;
                 break;
-            case TX_TYPE.enable_service_binding:
+            case TX_TYPE.ENABLE_SERVICE_BINDING:
                 res.from = msg.provider;
                 break;
-            case TX_TYPE.refund_service_deposit:
+            case TX_TYPE.REFUND_SERVICE_DEPOSIT:
                 res.from = msg.provider;
                 break;
-            case TX_TYPE.call_service:
+            case TX_TYPE.CALL_SERVICE:
                 res.from = msg.consumer;
                 if(msg.providers.length === 0){
                     res.to = '--'
@@ -46,22 +46,22 @@ export class TxHelper {
                     }
                 }
                 break;
-            case TX_TYPE.respond_service:
+            case TX_TYPE.RESPOND_SERVICE:
                 res.from = msg.provider;
                 if(msg.ex && msg.ex.consumer){
                     res.to = msg.ex.consumer;
                 }
                 break;
-            case TX_TYPE.pause_request_context:
+            case TX_TYPE.PAUSE_REQUEST_CONTEXT:
                 res.from = msg.consumer;
                 break;
-            case TX_TYPE.start_request_context:
+            case TX_TYPE.START_REQUEST_CONTEXT:
                 res.from = msg.consumer;
                 break;
-            case TX_TYPE.kill_request_context:
+            case TX_TYPE.KILL_REQUEST_CONTEXT:
                 res.from = msg.consumer;
                 break;
-            case TX_TYPE.update_request_context:
+            case TX_TYPE.UPDATE_REQUEST_CONTEXT:
                 res.from = msg.consumer;
                 break;
             case TX_TYPE.create_record:
@@ -93,25 +93,25 @@ export class TxHelper {
         let requestContextId = '';
         const {type, msg} = msgs;
         switch (type){
-            case TX_TYPE.define_service:
+            case TX_TYPE.DEFINE_SERVICE:
                 requestContextId = '--';
                 break;
-            case TX_TYPE.bind_service:
+            case TX_TYPE.BIND_SERVICE:
                 requestContextId = '--';
                 break;
-            case TX_TYPE.update_service_binding:
+            case TX_TYPE.UPDATE_SERVICE_BINDING:
                 requestContextId = '--';
                 break;
-            case TX_TYPE.disable_service_binding:
+            case TX_TYPE.DISABLE_SERVICE_BINDING:
                 requestContextId = '--';
                 break;
-            case TX_TYPE.enable_service_binding:
+            case TX_TYPE.ENABLE_SERVICE_BINDING:
                 requestContextId = '--';
                 break;
-            case TX_TYPE.refund_service_deposit:
+            case TX_TYPE.REFUND_SERVICE_DEPOSIT:
                 requestContextId = '--';
                 break;
-            case TX_TYPE.call_service:
+            case TX_TYPE.CALL_SERVICE:
                 if(events && Array.isArray(events)){
                     for(let e of events){
                         if(e && e.attributes && Array.isArray(e.attributes)){
@@ -126,19 +126,19 @@ export class TxHelper {
                     }
                 }
                 break;
-            case TX_TYPE.respond_service:
+            case TX_TYPE.RESPOND_SERVICE:
                 requestContextId = msg.ex ? msg.ex.request_context_id : '';
                 break;
-            case TX_TYPE.pause_request_context:
+            case TX_TYPE.PAUSE_REQUEST_CONTEXT:
                 requestContextId = msg.request_context_id;
                 break;
-            case TX_TYPE.start_request_context:
+            case TX_TYPE.START_REQUEST_CONTEXT:
                 requestContextId = msg.request_context_id;
                 break;
-            case TX_TYPE.kill_request_context:
+            case TX_TYPE.KILL_REQUEST_CONTEXT:
                 requestContextId = msg.request_context_id;
                 break;
-            case TX_TYPE.update_request_context:
+            case TX_TYPE.UPDATE_REQUEST_CONTEXT:
                 requestContextId = msg.request_context_id;
                 break;
         }

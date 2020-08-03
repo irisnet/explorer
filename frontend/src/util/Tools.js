@@ -4,6 +4,7 @@
 import BigNumber from 'bignumber.js';
 import moveDecimal  from "move-decimal-point"
 import Constant from "../constant/Constant"
+import bech32 from 'bech32';
 import moment from 'moment';
 export default class Tools {
 	/**
@@ -891,6 +892,17 @@ export default class Tools {
                             }
                         })
                     }
+                    break;
+                case Constant.TxType.FundCommunityPool:
+                    amount = Tools.formatListByAmount(data.amount);
+                    break;
+                    //TODO(lvshenchao) this type of tx need to be configured
+                case Constant.TxType.WithdrawValidatorCommission:
+                    amount = Tools.formatListByAmount(data.amount);
+                    break;
+                    //TODO(lvshenchao) this type of tx need to be configured
+
+
 
 			}
 		}
@@ -1065,5 +1077,27 @@ export default class Tools {
 
     static getFormatDate(date, format = "YYYY-MM-DD HH:mm:ss"){
 	    return moment(date).utcOffset(+480).format(format);
+    }
+
+    static isBech32(prefix, str) {
+        if (!prefix || prefix.length == 0) {
+            return false
+        }
+
+        let preReg = new RegExp('^' + prefix + '1');
+        if (!preReg.test(str) ){
+            return false
+        }
+        let allReg = new RegExp(/^[0-9a-zA-Z]*$/i);
+        if (!allReg.test(str)){
+            return false
+        }
+
+        try {
+            bech32.decode(str);
+            return true
+        }catch (e) {
+            return false
+        }
     }
 }

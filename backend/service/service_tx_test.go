@@ -6,7 +6,6 @@ import (
 
 	"encoding/json"
 	"github.com/irisnet/explorer/backend/vo"
-	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -65,35 +64,37 @@ func TestQueryTxNumGroupByDay(t *testing.T) {
 }
 
 func TestTxService_checkTags(t *testing.T) {
-	tags := map[string]string{
-		"voting-period-start": "41",
-		"action":              "submit_proposal",
-		"proposer":            "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
-		"proposal-id":         "41",
-		"param":               "[{\"subspace\":\"stake\",\"key\":\"UnbondingTime\",\"value\":\"123m\"}]",
-	}
-	tags1 := map[string]string{
-		"voting-period-start": "41",
-		"action":              "submit_proposal",
-		"proposer":            "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
-		"proposal-id":         "41",
-	}
-	submitprodata := msgvo.TxMsgSubmitProposal{
-		Params: []msgvo.Param{
-			{Subspace: "stake", Key: "UnbondingTime", Value: "12m"},
-		},
-	}
-	data := checkTags(tags, submitprodata.Params)
-	t.Log(tags)
-	t.Log(data)
-	data1 := checkTags(tags1, submitprodata.Params)
-	t.Log(tags1)
-	t.Log(data1)
+	//tags := map[string]string{
+	//	"voting-period-start": "41",
+	//	"action":              "submit_proposal",
+	//	"proposer":            "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
+	//	"proposal-id":         "41",
+	//	"param":               "[{\"subspace\":\"stake\",\"key\":\"UnbondingTime\",\"value\":\"123m\"}]",
+	//}
+	//tags1 := map[string]string{
+	//	"voting-period-start": "41",
+	//	"action":              "submit_proposal",
+	//	"proposer":            "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
+	//	"proposal-id":         "41",
+	//}
+	//submitprodata := msgvo.TxMsgSubmitProposal{
+	//	//Params: []msgvo.Param{
+	//	//	{Subspace: "stake", Key: "UnbondingTime", Value: "12m"},
+	//	//},
+	//}
+	//data := checkTags(tags, submitprodata.Params)
+	//t.Log(tags)
+	//t.Log(data)
+	//data1 := checkTags(tags1, submitprodata.Params)
+	//t.Log(tags1)
+	//t.Log(data1)
 
 }
 
 func TestTxService_QueryBaseList(t *testing.T) {
-	res := new(TxService).QueryBaseList(bson.M{"from": "faa174qyl02cupyqq77cqqtdl0frda6dl3rpjcrgnp"}, 1, 10, false)
+
+	res := new(TxService).QueryBaseList(bson.M{"$or": []bson.M{{"signers.addr_bech32": "iaa1x98k5n7xj0h3udnf5dcdzw85tsfa75qm0kqak0"},
+		{"to": "iaa1x98k5n7xj0h3udnf5dcdzw85tsfa75qm0kqak0"}}}, 1, 10, true)
 	bytestr, _ := json.Marshal(res)
 	t.Logf(" %v \n", string(bytestr))
 }

@@ -1,6 +1,9 @@
 package msgvo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"github.com/irisnet/explorer/backend/utils"
+)
 
 type TxMsgSetWithdrawAddress struct {
 	DelegatorAddr string `json:"delegator_addr"`
@@ -12,13 +15,14 @@ type TxMsgWithdrawDelegatorReward struct {
 	ValidatorAddr string `json:"validator_addr"`
 }
 
-type TxMsgWithdrawDelegatorRewardsAll struct {
-	DelegatorAddr string `json:"delegator_addr"`
+type TxTypeMsgWithdrawValidatorCommission struct {
+	ValidatorAddr string `json:"validator_addr"`
 }
 
 // msg struct for validator withdraw
-type TxMsgWithdrawValidatorRewardsAll struct {
-	ValidatorAddr string `json:"validator_addr"`
+type TxTypeMsgFundCommunityPool struct {
+	Amount    utils.Coins `json:"amount"`
+	Depositor string      `json:"depositor"`
 }
 
 func (vo *TxMsgSetWithdrawAddress) BuildMsgByUnmarshalJson(data []byte) error {
@@ -29,10 +33,10 @@ func (vo *TxMsgWithdrawDelegatorReward) BuildMsgByUnmarshalJson(data []byte) err
 	return json.Unmarshal(data, vo)
 }
 
-func (vo *TxMsgWithdrawDelegatorRewardsAll) BuildMsgByUnmarshalJson(data []byte) error {
+func (vo *TxTypeMsgWithdrawValidatorCommission) BuildMsgByUnmarshalJson(data []byte) error {
 	return json.Unmarshal(data, vo)
 }
 
-func (vo *TxMsgWithdrawValidatorRewardsAll) BuildMsgByUnmarshalJson(data []byte) error {
+func (vo *TxTypeMsgFundCommunityPool) BuildMsgByUnmarshalJson(data []byte) error {
 	return json.Unmarshal(data, vo)
 }
