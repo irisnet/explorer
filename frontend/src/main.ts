@@ -28,7 +28,8 @@ import {
     Cascader,
     Table,
     TableColumn,
-    Message} from 'element-ui'
+    Message,
+    Input} from 'element-ui'
 
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
@@ -40,6 +41,7 @@ Vue.component('el-option',Option);
 Vue.component('el-date-picker',DatePicker);
 Vue.component('el-tooltip',Tooltip);
 Vue.component('el-cascader',Cascader);
+Vue.use(Input);
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.prototype.$message = Message;

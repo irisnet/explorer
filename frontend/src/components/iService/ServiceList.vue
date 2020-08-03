@@ -4,6 +4,13 @@
 			<div class="service_list_title">
                 {{$t('ExplorerCN.service.services')}}
             </div>
+            <div class="service_list_search_wrap">
+                <el-input class="search_input" v-model="input" :placeholder="$t('ExplorerCN.service.serviceName')"></el-input>
+                <div class="tx_type_mobile_content">
+                    <div class="search_btn" @click="searchServiceList">{{$t('ExplorerCN.common.search')}}</div>
+                    <div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
+                </div>
+            </div>
 			<div class="service_list_content" v-for="service in serviceList">
                 <div class="service_list_top">
                     <span class="service_list_service_name bold_name">
@@ -17,7 +24,6 @@
                         </router-link>
                     </span>
                 </div>
-
 				<el-table :data="service.bindList" :empty-text="$t('ExplorerCN.element.table.emptyDescription')">
 					<el-table-column :min-width="ColumnMinWidth.address" :label="$t('ExplorerCN.service.provider')">
 						<template slot-scope="scope">
@@ -95,6 +101,7 @@
 				serviceList:[],
 				txCount:0,
                 Tools,
+                input:'',
 			}
 		},
 		mounted () {
@@ -103,7 +110,7 @@
 		methods:{
 			async getServiceList(){
                 try {
-                    let serviceList = await getAllServiceTxList(this.pageNum,this.pageSize);
+                    let serviceList = await getAllServiceTxList(this.input, this.pageNum,this.pageSize);
                     if(serviceList && serviceList.data){
                         console.log(serviceList)
                         for(let service of serviceList.data){
@@ -144,7 +151,16 @@
 			pageChange(pageNum) {
 				this.pageNum = pageNum;
 				this.getServiceList();
-			}
+			},
+            searchServiceList(){
+                this.pageNum = 1;
+                this.getServiceList()
+            },
+            resetFilterCondition(){
+                this.input = '';
+                this.pageNum = 1;
+                this.getServiceList()
+            },
 		}
 	}
 </script>
@@ -156,7 +172,7 @@
 	.service_list_container_content{
         @media screen and (min-width: 910px){
             .service_list_title{
-                padding-left: 0.27rem;
+                // padding-left: 0.27rem;
             }
             .service_list_content_wrap{
                 max-width: 12rem;
@@ -200,6 +216,50 @@
                 font-weight: 600;
                 color: #171D44;
 			}
+            .service_list_search_wrap{
+                display: flex;
+                width: 100%;
+                margin: 0.3rem 0 0.2rem 0;
+                .search_input{
+                    max-width: 3.5rem;
+                    .el-input__inner{
+                        padding-left: 0.07rem;
+                        height: 0.32rem;
+                        font-size: 0.14rem !important;
+                        line-height: 0.32rem;
+                    }
+                }
+                .tx_type_mobile_content{
+                    display: flex;
+                    align-items: center;
+                    .reset_btn{
+                        background: var(--bgColor) !important;
+                        color: #fff;
+                        border-radius: 0.04rem;
+                        margin-left: 0.1rem;
+                        cursor: pointer;
+                        i{
+                            padding: 0.08rem;
+                            font-size: 0.14rem;
+                            line-height: 1;
+                            display: inline-block;
+                        }
+                    }
+                    .search_btn{
+                        min-width:0.4rem;
+                        text-align:center;
+                        cursor: pointer;
+                        background: var(--bgColor) !important;
+                        margin-left: 0.1rem;
+                        color: #fff;
+                        border-radius: 0.04rem;
+                        padding: 0.05rem 0.18rem;
+                        font-size: 0.14rem;
+                        line-height: 0.2rem;
+                    }
+                }
+            }
+            
             .service_list_content{
                 display:flex;
                 flex-direction:column;

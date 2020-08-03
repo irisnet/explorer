@@ -174,8 +174,8 @@ export function getDefineServiceTxList(type, status, pageNum, pageSize){
     return get(url);
 }
 
-export function getAllServiceTxList(pageNum, pageSize){
-    let url = `txs/services?pageNum=${pageNum}&pageSize=${pageSize}&useCount=true`;
+export function getAllServiceTxList(serviceName,pageNum, pageSize){
+    let url = `txs/services?serviceName=${serviceName||''}&pageNum=${pageNum}&pageSize=${pageSize}&useCount=true`;
     return get(url);
 }
 
