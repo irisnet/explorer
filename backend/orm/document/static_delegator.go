@@ -131,7 +131,7 @@ func (d ExStaticDelegator) GetAddressByPeriod(lastcaculatetime, caculatetime tim
 	cond := bson.M{
 		ExStaticDelegatorDateTag: bson.M{
 			"$gte": lastcaculatetime,
-			"$lt":  caculatetime,
+			"$lte":  caculatetime,
 		},
 	}
 	filter := bson.M{
