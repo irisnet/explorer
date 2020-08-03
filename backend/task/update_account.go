@@ -171,6 +171,7 @@ func getDelegationInfo(address string) (float64, error) {
 			}
 		}
 	}
+	token = utils.CovertValue(token, utils.CoinTypeAtto, utils.CoinTypeStake)
 	return utils.ParseStringToFloat(token.FloatString(18))
 }
 
