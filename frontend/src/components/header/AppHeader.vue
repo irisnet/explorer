@@ -209,6 +209,12 @@
                     </ul>
                 </div>
 
+                <div class="mobile_menu_container" @click="flShowBlockchain('iService')">
+                    <div class="mobile_menu_item_content"   @click="featureButtonClick(`/services`)">
+                        <span>Service</span>
+                    </div>
+                </div>
+
                 <div class="mobile_menu_container"  @click="featureButtonClick(`/faucet`)" v-if="flShowFaucet">
                     <div class="mobile_menu_item_content">
                         <span>Faucet</span>

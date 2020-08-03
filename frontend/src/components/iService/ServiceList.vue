@@ -5,7 +5,7 @@
                 {{$t('ExplorerCN.service.services')}}
             </div>
             <div class="service_list_search_wrap">
-                <el-input class="search_input" v-model="input" :placeholder="$t('ExplorerCN.service.serviceName')"></el-input>
+                <el-input class="search_input" v-model="input" :placeholder="$t('ExplorerCN.service.searchService')"></el-input>
                 <div class="tx_type_mobile_content">
                     <div class="search_btn" @click="searchServiceList">{{$t('ExplorerCN.common.search')}}</div>
                     <div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>

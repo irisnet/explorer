@@ -50,9 +50,10 @@ Vue.prototype.$message = Message;
 
 Vue.use(VueI18n)
 const i18n = new VueI18n({
-  locale:'zh-CN',
+  locale:'EN',
   messages: {
-    "zh-CN" : require('./lang/CN-Cindy')
+    "CN" : require('./lang/CN-Cindy'),
+    "EN" : require('./lang/EN-Cindy')
   }
 })
 

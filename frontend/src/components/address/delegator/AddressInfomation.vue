@@ -1503,7 +1503,7 @@
             }
 
             .address_information_transaction_container{
-                margin: 0.3rem 0 0 0;
+                margin-top: 0.3rem;
                 display: flex;
                 flex-direction: column;
                 .address_information_transaction_header_content{
@@ -1814,6 +1814,81 @@
                     .hide_style{
                         display: none;
                     }
+                }
+            }
+            .consumer_transaction_content{
+                margin: 0.48rem 0.1rem 0 0.1rem;
+                
+                .consumer_transaction_content_hash{
+                    
+                }
+                .consumer_transaction_content_available{
+                    
+                    .consumer_transaction_content_available_icon{
+                        
+                    }
+                }
+                .pagination_content{
+                    
+                }
+            }
+            .provider_transaction_content{
+                margin: 0.48rem 0.1rem 0 0.1rem;
+                .respond_transaction_content_hash{
+                    
+                }
+                .provider_transaction_content_available{
+                   
+                    .provider_transaction_content_available_icon{
+                        
+                    }
+                }
+                .pagination_content{
+                   
+                }
+            }
+
+            .address_information_transaction_container{
+                margin: 0.3rem 0.1rem 0 0.1rem;
+                .address_information_transaction_header_content{
+                    
+                    .address_information_transaction_title{
+                        
+                    }
+                    .address_information_list_filter_content{
+                        .filter_content{
+                            .tx_type_content{
+                                .tx_type_mobile_content{
+                                    
+                                    .joint_mark{
+                                        
+                                    }
+                                    .reset_btn{
+                                        
+                                        i{
+                                            
+                                        }
+                                    }
+                                    .search_btn{
+                                        
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .address_information_list_content{
+                    margin-top: 0.07rem;
+                    overflow-x: auto;
+                    background: #fff;
+                    &>div{
+                        width: 12.8rem;
+                    }
+                }
+                .pagination_content{
+                    margin-top: 0.2rem;
+                    display: flex;
+                    justify-content: flex-end;
                 }
             }
         }

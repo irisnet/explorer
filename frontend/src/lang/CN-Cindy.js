@@ -156,10 +156,4 @@ export const ExplorerCN = {
         respondHash:'响应哈希',
         txRecord:'响应记录',
     },
-    searchResult:{
-        title: '搜索结果',
-        backHome: '返回首页',
-        resultTitle: '搜索结果为空。',
-        searchTip: '尝试搜索交易哈希或区块高度。'
-    }
 }
