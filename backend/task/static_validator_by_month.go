@@ -220,7 +220,7 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(starttime time.Time, 
 			logger.String("err", err.Error()))
 	}
 
-	// calculate month should add 1 day base on startTimeGetRewards
+	// calculate month should add 1 day base on startTime
 	date := starttime.Add(time.Duration(24) * time.Hour)
 	latestone, err := task.mStaticModel.GetLatest(terminalval.OperatorAddress)
 	if err != nil {
