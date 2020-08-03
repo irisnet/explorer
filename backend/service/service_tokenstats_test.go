@@ -25,6 +25,15 @@ func TestTokenStatsService_QueryTokenStats(t *testing.T) {
 	t.Log(string(ret))
 }
 
+func TestTokenStatsService_QueryBaseDenom(t *testing.T) {
+	res, err := (&TokenStatsService{}).QueryBaseDenom()
+	if err != nil {
+		t.Fatal(res)
+	}
+	ret, err := json.Marshal(res)
+	t.Log(string(ret))
+}
+
 func TestCountNTotalAmount(t *testing.T) {
 	type args struct {
 		start   int

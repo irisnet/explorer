@@ -12,7 +12,13 @@ func GetAssetTokens() (result []AssetToken) {
 		logger.Error("Query Asset Token error", logger.String("err", err.Error()))
 		return
 	}
+
+	baseToken, _ := QueryBaseDenom()
+
 	for _, val := range tokens {
+		if baseToken != "" && val.Value.Symbol == baseToken {
+			continue
+		}
 		result = append(result, AssetToken{
 			BaseToken: BaseToken{
 				Name:          val.Value.Name,

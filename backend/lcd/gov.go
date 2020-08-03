@@ -207,3 +207,21 @@ func GetProposalVoters(proposalid uint64) (result []Voterinfo, err error) {
 	}
 	return result, nil
 }
+
+func QueryBaseDenom() (string, error) {
+	var baseDenom string
+	if stakeMap, err := GetGovAssetParam(); err == nil {
+		if data, ok := stakeMap["params"]; ok {
+			params := data.(map[string]interface{})
+			if basefee, ok := params["issue_token_base_fee"]; ok {
+				obj := basefee.(map[string]interface{})
+				if basedenom, ok := obj["denom"]; ok {
+					baseDenom = basedenom.(string)
+				}
+			}
+		}
+	} else {
+		return baseDenom, err
+	}
+	return baseDenom, nil
+}

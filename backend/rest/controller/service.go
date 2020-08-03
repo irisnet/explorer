@@ -40,13 +40,13 @@ func RegisterQueryServiceBindings(r *mux.Router) error {
 }
 
 // @Summary requests
-// @Description get service requests by contextid
+// @Description get service contexts by contextid
 // @Tags service
 // @Accept  json
 // @Produce  json
 // @Param   contextid    path   string true    "contextid"
 // @Success 200 {object} vo.ServiceRequestRespond   "success"
-// @Router /api/service/requests/{contextid} [get]
+// @Router /api/service/contexts/{contextid} [get]
 func RegisterQueryServiceRequests(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryServiceRequest, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)

@@ -17,21 +17,7 @@ type TokenStatsService struct {
 }
 
 func (service *TokenStatsService) QueryBaseDenom() (string, error) {
-	var BaseDenom string
-	if stakeMap, err := lcd.GetGovAssetParam(); err == nil {
-		if data, ok := stakeMap["params"]; ok {
-			params := data.(map[string]interface{})
-			if basefee, ok := params["issue_token_base_fee"]; ok {
-				obj := basefee.(map[string]interface{})
-				if basedenom, ok := obj["denom"]; ok {
-					BaseDenom = basedenom.(string)
-				}
-			}
-		}
-	} else {
-		return BaseDenom, err
-	}
-	return BaseDenom, nil
+	return lcd.QueryBaseDenom()
 }
 
 func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {

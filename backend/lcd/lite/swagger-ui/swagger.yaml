@@ -2305,11 +2305,11 @@ paths:
       summary: bindings
       tags:
       - service
-  /api/service/requests/{contextid}:
+  /api/service/contexts/{contextid}:
     get:
       consumes:
       - application/json
-      description: get service requests by contextid
+      description: get service contexts by contextid
       parameters:
       - description: contextid
         in: path

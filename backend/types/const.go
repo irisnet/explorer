@@ -60,7 +60,7 @@ const (
 
 	//Service
 	UrlRegisterQueryServiceBindings = "/service/bindings/{servicename}"
-	UrlRegisterQueryServiceRequest  = "service/requests/{contextid}"
+	UrlRegisterQueryServiceRequest  = "/service/contexts/{contextid}"
 
 	//Stake
 	UrlRegisterGetValidators                         = "/stake/validators"

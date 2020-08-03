@@ -36,7 +36,7 @@ const (
 
 	//Tx_Field_Msgs_UdInfo         = "msgs.msg.ud_info.source"
 	Tx_Field_Msgs_Moniker = "msgs.msg.moniker"
-	//Tx_Field_Msgs_UdInfo_Symbol  = "msgs.msg.ud_info.symbol"
+	Tx_Field_Msgs_Symbol  = "msgs.msg.symbol"
 	//Tx_Field_Msgs_UdInfo_Gateway = "msgs.msg.ud_info.gateway"
 	Tx_Field_Msgs_Hashcode = "msgs.msg.hash_lock"
 	Tx_AssetType_Native    = "native"
@@ -105,7 +105,7 @@ type CommonTx struct {
 }
 
 type Event struct {
-	Type       string    `bson:"type" json:"type"`
+	Type       string      `bson:"type" json:"type"`
 	Attributes []Attribute `bson:"attributes" json:"attributes"`
 }
 
@@ -488,12 +488,9 @@ func (_ CommonTx) QueryTxAsset(tokenType, symbol string, page, size int, total b
 			"$in": []string{types.TxTypeIssueToken, types.TxTypeEditToken, types.TxTypeMintToken, types.TxTypeTransferTokenOwner},
 		}
 	}
-	//if symbol != "" {
-	//	condition[Tx_Field_Msgs_UdInfo_Symbol] = bson.M{
-	//		"$regex":   symbol,
-	//		"$options": "$i",
-	//	}
-	//}
+	if symbol != "" {
+		condition[Tx_Field_Msgs_Symbol] = symbol
+	}
 	//if gateway != "" {
 	//	condition[Tx_Field_Msgs_UdInfo_Gateway] = bson.M{
 	//		"$regex":   gateway,
