@@ -41,6 +41,14 @@ TxType.WITHDRAWADDRESS = 'WithdrawAddress';
 TxType.STAKES = 'Stakes';
 TxType.GOVERNANCE = 'Governance';
 TxType.DECLARATIONS = 'Declarations';
+
+TxType.send = 'Send';
+TxType.create_record = 'CreateRecord';
+TxType.burn_nft = 'BurnNft';
+TxType.transfer_nft = 'TransferNft';
+TxType.edit_nft = 'EditNft';
+TxType.issue_denom = 'IssueDenom';
+TxType.mint_nft = 'MintNft';
 TxType.FundCommunityPool = 'FundCommunityPool';
 TxType.WithdrawValidatorCommission = 'WithdrawValidatorCommission';
 
@@ -59,9 +67,6 @@ TxType.START_REQUEST_CONTEXT = 'StartRequestContext';
 TxType.KILL_REQUEST_CONTEXT = 'KillRequestContext';
 TxType.UPDATE_REQUEST_CONTEXT = 'UpdateRequestContext';
 TxType.WITHDRAW_EARNED_FEES = 'WithdrawEarnedFees';
-
-
-
 
 
 const ValidatorStatus = {};
@@ -207,7 +212,7 @@ SUBMITPROPOSALTYPE.SUBMITTXTAXUSAGEPROPOSAL = 'SubmitTaxUsageProposal';
 SUBMITPROPOSALTYPE.SUBMITTOKENADDITIONPROPOSAL = 'SubmitTokenAdditionProposal';
 SUBMITPROPOSALTYPE.SUBMITPROPOSAL = 'SubmitProposal';
 
-export default {
+const C = {
   PREFIX,
   SUFFIX,
   TxType,
@@ -221,3 +226,41 @@ export default {
   TRANSACTIONMESSAGENAME,
   SUBMITPROPOSALTYPE
 };
+
+export default C;
+
+export const Constant = C;
+
+export const TX_TYPE = TxType;
+
+export const TX_STATUS = {
+    success : 'success',
+    fail : 'fail',
+}
+
+export const ColumnMinWidth = {
+    txHash:'120',
+    blockHeight:'90',
+    txType:'130',
+    address:'120',
+    time:'180',
+    txn:'',
+    blockAge:'120',
+    validatirName:'120',
+    votingPower:'120',
+    publickKey:'450',
+    denom:'155',
+    tokenId:'200',
+    schema:'450',
+    URI:'120',
+    respondTimes:'100',
+    available:'100',
+    qos:'120',
+    requestId:'130',
+    state:'120',
+    serviceName:'120',
+    No:'50',
+    price:'120',
+    deposit:'120'
+}
+
