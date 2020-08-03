@@ -206,7 +206,7 @@ SUBMITPROPOSALTYPE.SUBMITTXTAXUSAGEPROPOSAL = 'SubmitTaxUsageProposal';
 SUBMITPROPOSALTYPE.SUBMITTOKENADDITIONPROPOSAL = 'SubmitTokenAdditionProposal';
 SUBMITPROPOSALTYPE.SUBMITPROPOSAL = 'SubmitProposal';
 
-export default {
+const C = {
   PREFIX,
   SUFFIX,
   TxType,
@@ -220,6 +220,10 @@ export default {
   TRANSACTIONMESSAGENAME,
   SUBMITPROPOSALTYPE
 };
+
+export default C;
+
+export const Constant = C;
 
 export const TX_TYPE = TxType;
 

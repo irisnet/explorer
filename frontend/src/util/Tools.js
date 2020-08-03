@@ -369,6 +369,7 @@ export default class Tools {
 	}
 
 	static firstWordUpperCase (str){
+		if (!str) {return ''};
 		return str.toLowerCase().replace(/(\s|^)[a-z]/g, function(char){
 			return char.toUpperCase();
 		});

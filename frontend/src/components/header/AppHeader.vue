@@ -37,6 +37,7 @@
                             ><router-link :to="`/faucet`">Faucet</router-link> <div class="active_block"></div></li>
                             <li class="header_menu_item"
                                 :class="activeIService ? 'nav_item_active' : ''"
+                                v-if="showIService"
                                 @mouseenter="showTwoMenu('iService')" @mouseleave="hideTwoMenu('iService')">
                                 <router-link :to="`/services`">service</router-link> <div class="active_block"></div></li>
                         </ul>
@@ -363,6 +364,11 @@
 			document.getElementById('router_wrap').removeEventListener('click', this.hideFeature);
 			window.removeEventListener('resize', this.onWindowResize);
 		},
+        computed:{
+            showIService(){
+                return true;
+            }
+        },
 		methods: {
 			flShowBlockchain(v){
 				switch (v) {
@@ -766,7 +772,7 @@
 				if (currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE) {
 					this.currentSelected = lang.home.mainnet;
 				} else {
-					this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
+					this.currentSelected = `${(currentChainId || '').toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
 				}
 			},
 			setNetWorkLogo () {
