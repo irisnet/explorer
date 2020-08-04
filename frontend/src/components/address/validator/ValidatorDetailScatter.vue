@@ -111,7 +111,7 @@
 							return `<div>
 										<p>${value[2]}</p>
 										<p>Commission Rate:${value[0]}%</p>
-										<p>Bonded Tokens:<br/>${new bigNumber(value[1]).toFormat()} IRIS</p>
+										<p>Bonded Tokens:<br/>${new bigNumber(value[1]).toFormat()} ${this.$store.state.nativeToken}</p>
 										</div>`
 						}
 					},
@@ -135,7 +135,7 @@
 					},
 					yAxis: {
 						type: 'value',
-						name:'Bonded_Token(IRIS)',
+						name:`Bonded_Token(${this.$store.state.nativeToken})`,
 						nameLocation: 'end',
 						nameGap: 20,
 						nameTextStyle: {

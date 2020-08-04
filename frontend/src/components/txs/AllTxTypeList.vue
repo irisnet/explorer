@@ -262,7 +262,7 @@
 	        },
             formatFee(Fee){
 	            if(Fee.amount && Fee.denom){
-		            return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
+		            return Tools.formatAmount2(Fee,4);
 	            }
             },
             getParamsByUrlHash(){

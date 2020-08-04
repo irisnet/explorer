@@ -1,3 +1,5 @@
+import store from "../../store";
+
 export default {
 	BlockchainBlocks:'Block List',
 	BlockchainBlocksBlockDetails:'Block Details',
@@ -14,7 +16,7 @@ export default {
 	GovProposals:'Proposal List',
 	GovProposalsProposalDetails:'Proposal Details',
 	GovGovTxs:'Gov Txs List',
-	StatsIRISRichList:'IRIS Rich List',
+	StatsIRISRichList:`${store.state.nativeToken} Rich List`,
 	StatsIRISRichListAddress:'Address',
-	StatsIRISStats:'IRIS Stats Analyse',
+	StatsIRISStats:`${store.state.displayToken} Stats Analyse`,
 }

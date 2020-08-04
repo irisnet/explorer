@@ -62,10 +62,10 @@
             </template>
             <template slot-scope="{ row }" slot="token">
                 <div style="display: flex;align-items: center">
-                   <span v-if="row.token === 'IRIS'" style="display: flex;align-items: center">
+                   <span v-if="row.token === $store.state.nativeToken" style="display: flex;align-items: center">
                        <img style="width: 0.18rem;height:0.18rem;margin-right: 0.1rem;" src="../../../assets/iris_token_logo.png">
                    </span>
-                    <span v-if="row.token !== 'IRIS'">
+                    <span v-if="row.token !== $store.state.nativeToken">
                         <i style="margin-right: 0.1rem;color:#B6BAD2;font-size: 0.18rem" class="iconfont iconqitabizhongwuiconshishiyongdemorenicon"></i>
                     </span>
                     <span>{{row.token}}</span>

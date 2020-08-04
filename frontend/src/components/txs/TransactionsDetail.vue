@@ -1013,7 +1013,7 @@ export default {
                     if(data.status === 'success'){
                       if(data.type === "BeginUnbonding" || data.type === 'BeginRedelegate'){
                         let  tokenValue = Tools.formatAccountCoinsAmount(data.tags.balance)[0];
-                        fieidValue = `${Tools.numberMoveDecimal(tokenValue)} IRIS`
+                        fieidValue = `${Tools.numberMoveDecimal(tokenValue)} ${this.$store.state.nativeToken}`
                       }else {
                         fieidValue = this.forAmount(data);
                       }
