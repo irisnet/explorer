@@ -6,12 +6,8 @@
                     <router-link :to="`/address/${row.Owner}`" class="link_style">{{row.Owner}}</router-link>
                 </div>
             </template>
- <!--           <template slot-scope="{ row }" slot="Owner">
-                <router-link :to="`/address/${row.Owner}`" class="link_style">{{row.Owner}}</router-link>
-            </template>-->
             <template slot-scope="{ row }" slot="Symbol">
-                <router-link :to="`/asset/${row.TokenID}`" class="link_style">{{row.Symbol}}</router-link>
-                <!--<router-link v-if="row.Gateway" :to="`/asset/${row.Gateway}/${row.Symbol}`" class="link_style">{{row.Symbol}}</router-link>-->
+                <router-link :to="`/asset/${row.Symbol}`" class="link_style">{{row.Symbol}}</router-link>
             </template>
         </m-table>
     </div>
@@ -93,7 +89,6 @@
         },
 		mounted(){
 			this.fields = this[this.name] || [];
-
 		},
 	}
 </script>

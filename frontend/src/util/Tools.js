@@ -249,7 +249,8 @@ export default class Tools {
 		return new BigNumber(num).toFixed(2);
 	}
 	static formatFeeToFixedNumber(num){
-		return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4);
+		//return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4);
+		return  Tools.toFixedformatNumber(num ,4);
 	}
 	static formatDecimalNumberToFixedNumber(num){
 		if(typeof num === 'number' && !Object.is(num, NaN)) {
@@ -605,8 +606,8 @@ export default class Tools {
 	 *   param string
 	 *   return Radix length
 	* */
-	static amountRadix(param){
-	let diffValue = 1,defaultValue = 18;
+	static amountRadix(param,defaultValue = 18){
+	let diffValue = 1;
 	if(param){
 		//radix number length need to minus 1;
 		switch (param) {

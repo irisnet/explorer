@@ -364,10 +364,6 @@ export default {
                 {
                     title: "Shares",
                     key: "shares"
-                },
-                {
-                    title: "Block",
-                    slot: "Block"
                 }
             ],
             unbondingDelegations: [

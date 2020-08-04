@@ -73,11 +73,7 @@ export default {
                                 rank: item.rank,
                                 Address: item.address,
                                 Balance: `${Tools.formatPrice(
-                                    Tools.convertScientificNotation3Number(
-                                        Tools.formatNumber(
-                                            item.balance[0].amount
-                                        )
-                                    )
+                                    Tools.convertScientificNotation3Number(item.balance[0].amount)
                                 )}`,
                                 Percentage: this.formatPercentage(item.percent)
                             };

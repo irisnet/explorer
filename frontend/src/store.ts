@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
+import {NATIVE_TOKEN} from "@/config";
+
 const store = new Vuex.Store({
   state:{
     flShowSelectOption: false,
@@ -19,6 +21,7 @@ const store = new Vuex.Store({
     setQrImg:'',
     testSkinStyle:false,
     hideTestSkinStyle: true,
+    nativeToken: NATIVE_TOKEN,
     showHeaderUnfoldBtn:sessionStorage.getItem('flShowHeaderUnfoldBtn') ? sessionStorage.getItem('flShowHeaderUnfoldBtn') : 'show',
     flShowSearchBar: sessionStorage.getItem('flShowSearchBar') ? sessionStorage.getItem('flShowSearchBar') : 'hide',
     flShowSearchIpt: sessionStorage.getItem('flShowSearchIpt') ? sessionStorage.getItem('flShowSearchIpt') : 'hide',

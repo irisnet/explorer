@@ -6,12 +6,12 @@
             </page-title>
             <div class="asset_info_list_content">
                 <div class="asset_info_kflower_contennt">
-                    <div class="asset_info_kflower_title">
+                    <!--<div class="asset_info_kflower_title">
                         <div>
                             <span class="native_blue_style" :class="assetType === 'NATIVE' ? 'blue_style' : 'yellow_style'">{{assetType}}</span>
                             <span class="native_fungible_style">{{family}}</span>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="kflower_content" v-if="leftInfoContentArray.length > 0">
                         <ul class="kflower_left_content">
                             <li class="kflower_list_item" v-for="item in leftInfoContentArray">
@@ -156,11 +156,6 @@
                         address:''
                     },
 	                {
-		                id:'total_supply',
-		                key:'Total Supply:',
-		                value:''
-	                },
-	                {
 		                id:'initial_supply',
 		                key:'Initial Supply:',
 		                value:''
@@ -183,12 +178,12 @@
 		                value:''
 	                },
 	                {
-		                id:'decimal',
+		                id:'scale',
 		                key:'Decimal:',
 		                value:''
 	                },
 	                {
-		                id:'min_unit_alias',
+		                id:'min_unit',
 		                key:'Min Unit Alias:',
 		                value:''
 	                }
@@ -205,12 +200,12 @@
                         value:''
                     },
 					{
-						id:'decimal',
+						id:'scale',
 						key:'Decimal:',
 						value:''
 					},
 					{
-						id:'min_unit_alias',
+						id:'min_unit',
 						key:'Min Unit Alias:',
 						value:''
 					}
@@ -310,11 +305,12 @@
 	            Server.commonInterface( param, (info) => {
 	            	try {
                         if(info.data){
+                            console.log(info)
                         	this.flShowInformation = true;
-                        	this.gateway = info.data.gateway;
+                        	//this.gateway = info.data.gateway;
 	                        this.symbol = info.data.symbol;
-	                        this.source = info.data.source;
-	                        this.family = info.data.family.toLocaleUpperCase();
+	                        //this.source = info.data.source;
+	                        //this.family = info.data.family.toLocaleUpperCase();
 	                        this.leftInfoContentArray.forEach( item => {
 	                        	if('address' in item ){
 	                        		item.address = info.data[item.id]
@@ -329,15 +325,15 @@
                                 }
                             });
 	                        this.getCommonRightContent(info);
-                            this.getGatewayInfo(info);
+                            //this.getGatewayInfo(info);
                             this.getIssueToken();
                             this.getEditToken();
                             this.getMintToken();
-                            if(info.data.source === 'gateway'){
+                            /*if(info.data.source === 'gateway'){
                             	this.getTransferGatewayOwnerTxs()
-                            }else {
+                            }else {*/
 	                            this.getTransferToken();
-                            }
+                            //}
                         }else {
                         	this.flShowNoDataImg = true;
 	                        this.flShowInformation = false;
@@ -350,21 +346,23 @@
 	        getCommonRightContent(info){
 	        	this.transferOwnerTxsTitle= 'Transfer Owner Txs';
                 this.flShowGatewayInfo = false;
-                this.assetType = info.data.source.toLocaleUpperCase()
+                //this.assetType = info.data.source.toLocaleUpperCase()
                 this.headerTitle = 'NativeAssetInfo';
-                this.tokenID = info.data.token_id;
-                if(info.data.source === 'native'){
+                this.tokenID = info.data.symbol;
+                //if(info.data.source === 'native'){
+                console.error(info)
 	                this.rightInfoContentArray.forEach( item => {
-		                item.value = info.data[item.id] ? info.data[item.id] : '--'
+
+		                item.value = item.id in info.data ? info.data[item.id] : '--'
 	                })
-                }else if(info.data.source === 'gateway') {
+                /*}else if(info.data.source === 'gateway') {
 	                this.gatewayRightInfoContentArray.forEach( item => {
 		                item.value = info.data[item.id] ? info.data[item.id] : '--'
 	                })
-                }
+                }*/
 
             },
-	        getGatewayInfo(info){
+	        /*getGatewayInfo(info){
 	        	if(info.data.source === 'gateway'){
 	        		this.iconImg = info.data.asset_gateway.icons ? info.data.asset_gateway.icons : '';
 			        this.moniker = info.data.asset_gateway.moniker;
@@ -384,9 +382,9 @@
 			        })
                 }
 
-            },
-            handleParam(pageNumber,pageSize,tokenType,symbol,gateway){
-	            let param;
+            },*/
+            handleParam(pageNumber,pageSize,tokenType,symbol){
+	            /*let param;
 	            if(this.source === 'gateway'){
 		            param = {
 			            gatewayAssetTxBySymbol:{
@@ -407,19 +405,26 @@
 				            symbol:symbol,
                         }
 		            }
-	            }
-	            return param
+	            }*/
+	            return {
+                    nativeAssetTxBySymbol:{
+                        pageNumber:pageNumber,
+                        pageSize:pageSize,
+                        tokenType:tokenType,
+                        symbol:symbol,
+                    }
+                }
 
             },
 			getIssueToken () {
                 Server.commonInterface(this.handleParam(
-	                this.issueTokenCurrentPageNum,this.pageSize,this.issueTokenType,this.symbol,this.gateway
+	                this.issueTokenCurrentPageNum,this.pageSize,this.issueTokenType,this.symbol
                 ) ,(issueTxs) => {
                 	try {
 		                if(issueTxs.data){
 			                this.issueTokenTotalPageNum = issueTxs.data.total;
 			                this.issueTokenList = issueTxs.data.txs.map(item => {
-			                	if(item.gateway){
+			                	/*if(item.gateway){
 					                return {
 						                Owner: item.owner,
                                         Gateway: item.gateway,
@@ -433,7 +438,7 @@
 						                Timestamp: Tools.format2UTC(item.timestamp),
 						                flShowLink: false,
 					                }
-                                }else {
+                                }else {*/
 					                return {
 						                Owner: item.owner,
 						                Symbol: item.symbol,
@@ -446,18 +451,18 @@
 						                Timestamp: Tools.format2UTC(item.timestamp),
 						                flShowLink: false,
 					                }
-                                }
+                                //}
 
 			                })
 		                }
 	                }catch (e) {
-                        console.err(e)
+                        console.error(e)
 	                }
                 })
             },
             getEditToken () {
 				Server.commonInterface( this.handleParam(
-					this.editTokenCurrentPageNum,this.pageSize,this.editTokenLType,this.symbol,this.gateway
+					this.editTokenCurrentPageNum,this.pageSize,this.editTokenLType,this.symbol
                 ),(editTxs) => {
 					try {
 						if(editTxs.data){
@@ -480,7 +485,7 @@
             },
             getMintToken () {
 				Server.commonInterface( this.handleParam(
-					this.mintTokenCurrentPageNum,this.pageSize,this.mintTokenType,this.symbol,this.gateway
+					this.mintTokenCurrentPageNum,this.pageSize,this.mintTokenType,this.symbol
                 ), (mintTxs) => {
 					try {
 						if(mintTxs.data){
@@ -505,7 +510,7 @@
             },
             getTransferToken () {
 				Server.commonInterface( this.handleParam(
-					this.transferTokenCurrentPageNum,this.pageSize,this.transferTokenType,this.symbol,this.gateway
+					this.transferTokenCurrentPageNum,this.pageSize,this.transferTokenType,this.symbol,
                 ), (transferTxs) => {
 				    try {
 					    if(transferTxs.data){
