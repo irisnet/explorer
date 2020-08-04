@@ -52,12 +52,12 @@
             </template>
             <template slot-scope="{ row }" slot="Symbol">
                 <div class="skip_route">
-                    <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Symbol}}</router-link>
+                    <router-link v-if="row.flShowLink" :to="`/asset/${row.Symbol}`" class="link_style">{{row.Symbol}}</router-link>
                 </div>
                 <span v-if="!row.flShowLink">{{row.Symbol}}</span>
             </template>
             <template slot-scope="{ row }" slot="Token">
-                <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Token}}</router-link>
+                <router-link v-if="row.flShowLink" :to="`/asset/${row.Symbol}`" class="link_style">{{row.Token}}</router-link>
                 <span v-if="!row.flShowLink">{{row.Token}}</span>
             </template>
         </m-table>

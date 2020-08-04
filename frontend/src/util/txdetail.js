@@ -104,14 +104,6 @@ export default class formatMsgsAndTags {
             case Constant.TxType.REFUNDHTLC :
                 return message = formatMsgsAndTags.txTypeRefundHTLC(dataTx, Constant.TxType.REFUNDHTLC);
                 break;
-            case Constant.TxType.ADDLIQUIDITY :
-                return message = formatMsgsAndTags.txTypeAddLiquidity(dataTx, Constant.TxType.ADDLIQUIDITY);
-                break;
-            case Constant.TxType.REMOVELIQUIDITY :
-                return message = formatMsgsAndTags.txTypeRemoveLiquidity(dataTx, Constant.TxType.REMOVELIQUIDITY);
-                break;
-            case Constant.TxType.SWAPORDER :
-                return message = formatMsgsAndTags.txTypeSwapOrder(dataTx, Constant.TxType.SWAPORDER);
             case Constant.TxType.DEFINE_SERVICE :
                 return formatMsgsAndTags.txTypeDefineService(dataTx);
             case Constant.TxType.BIND_SERVICE :
@@ -163,6 +155,14 @@ export default class formatMsgsAndTags {
                 return formatMsgsAndTags.txTypePauseFeed(dataTx);
             case Constant.TxType.EDIT_FEED :
                 return formatMsgsAndTags.txTypeEditFeed(dataTx);
+            case Constant.TxType.ADDLIQUIDITY :
+                return message = formatMsgsAndTags.txTypeAddLiquidity(dataTx, Constant.TxType.ADDLIQUIDITY);
+                break;
+            case Constant.TxType.REMOVELIQUIDITY :
+                return message = formatMsgsAndTags.txTypeRemoveLiquidity(dataTx, Constant.TxType.REMOVELIQUIDITY);
+                break;
+            case Constant.TxType.SWAPORDER :
+                return message = formatMsgsAndTags.txTypeSwapOrder(dataTx, Constant.TxType.SWAPORDER);
 
 
 
@@ -799,6 +799,82 @@ export default class formatMsgsAndTags {
             })
         }
         return msg;
+    }
+
+
+    static txTypeAddLiquidity(tx){
+        const msg = {
+            'Type :' : [],
+            'Sender :' : [],
+            'Exact Iris Am :' : [],
+            'Max Token :' : [],
+            'Min Liquidity :' : [],
+            'Deadline :' : [],
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Sender :'].push(m.msg.creator);
+            })
+        }
+        return msg;
+    }
+
+    static txTypeRemoveLiquidity(dataTx, txType){
+        let message = {};
+        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.MINTOKEN] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.WITHDRAWLIQUIDITY] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.MINIRISAMT] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.SENDER] = [];
+        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
+            dataTx.msgs.forEach(item =>{
+                if(item.type === txType){
+                    message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
+                    if(item.msg){
+                        message[Constant.TRANSACTIONMESSAGENAME.MINTOKEN].unshift(item.msg.min_token);
+                        message[Constant.TRANSACTIONMESSAGENAME.WITHDRAWLIQUIDITY].unshift(`${formatMsgsAndTags.formatAmount(item.msg.withdraw_liquidity.amount)} ${item.msg.withdraw_liquidity.denom.toUpperCase()}`);
+                        message[Constant.TRANSACTIONMESSAGENAME.MINIRISAMT].unshift(item.msg.min_iris_amt);
+                        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
+                        message[Constant.TRANSACTIONMESSAGENAME.SENDER].unshift(item.msg.sender);
+                    }
+                }
+            })
+        }
+        return message
+    }
+
+    static txTypeSwapOrder(dataTx, txType){
+        let message = {}, amountObj;
+        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.INPUTADDRESS] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.OUTPUTADDRESS] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.INPUT] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.OUTPUT] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.ISBUYORDER] = [];
+        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
+            dataTx.msgs.forEach(item =>{
+                if(item.type === txType){
+                    message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
+                    if(item.msg){
+                        message[Constant.TRANSACTIONMESSAGENAME.INPUTADDRESS].unshift(item.msg.input.address);
+                        message[Constant.TRANSACTIONMESSAGENAME.OUTPUTADDRESS].unshift(item.msg.output.address);
+                        message[Constant.TRANSACTIONMESSAGENAME.INPUT].unshift(`${item.msg.input.coin.amount} ${item.msg.input.coin.denom.toUpperCase()}`);
+                        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
+                        message[Constant.TRANSACTIONMESSAGENAME.ISBUYORDER].unshift(item.msg.is_buy_order);
+                        if(item.msg.output.coin.denom === Constant.Denom.IRISATTO){
+                            amountObj = Tools.formatAmountOfTxDetail(item.msg.output.coin);
+                            message[Constant.TRANSACTIONMESSAGENAME.OUTPUT].unshift(amountObj);
+                        } else {
+                            message[Constant.TRANSACTIONMESSAGENAME.OUTPUT].unshift(`${item.msg.input.coin.amount} ${item.msg.input.coin.denom.toUpperCase()}`);
+                        }
+                    }
+                }
+            })
+        }
+        return message
     }
 
 
@@ -1742,85 +1818,5 @@ export default class formatMsgsAndTags {
         return message
     }
 
-    static txTypeAddLiquidity(dataTx, txType){
-        let message = {};
-        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.MAXTOKEN] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.EXACTIRISAMT] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.MINLIQUIDITY] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.SENDER] = [];
-        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach(item =>{
-                if(item.type === txType){
-                    message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
-                    if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.MAXTOKEN].unshift(`${formatMsgsAndTags.formatAmount(item.msg.max_token.amount)} ${item.msg.max_token.denom.toUpperCase()}`);
-                        message[Constant.TRANSACTIONMESSAGENAME.EXACTIRISAMT].unshift(item.msg.exact_iris_amt);
-                        message[Constant.TRANSACTIONMESSAGENAME.MINLIQUIDITY].unshift(item.msg.min_liquidity);
-                        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
-                        message[Constant.TRANSACTIONMESSAGENAME.SENDER].unshift(item.msg.sender);
-                    }
-                }
-            })
-        }
-        return message
-    }
 
-    static txTypeRemoveLiquidity(dataTx, txType){
-        let message = {};
-        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.MINTOKEN] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.WITHDRAWLIQUIDITY] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.MINIRISAMT] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.SENDER] = [];
-        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach(item =>{
-                if(item.type === txType){
-                    message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
-                    if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.MINTOKEN].unshift(item.msg.min_token);
-                        message[Constant.TRANSACTIONMESSAGENAME.WITHDRAWLIQUIDITY].unshift(`${formatMsgsAndTags.formatAmount(item.msg.withdraw_liquidity.amount)} ${item.msg.withdraw_liquidity.denom.toUpperCase()}`);
-                        message[Constant.TRANSACTIONMESSAGENAME.MINIRISAMT].unshift(item.msg.min_iris_amt);
-                        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
-                        message[Constant.TRANSACTIONMESSAGENAME.SENDER].unshift(item.msg.sender);
-                    }
-                }
-            })
-        }
-        return message
-    }
-
-    static txTypeSwapOrder(dataTx, txType){
-        let message = {}, amountObj;
-        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.INPUTADDRESS] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.OUTPUTADDRESS] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.INPUT] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.OUTPUT] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.ISBUYORDER] = [];
-        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach(item =>{
-                if(item.type === txType){
-                    message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
-                    if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.INPUTADDRESS].unshift(item.msg.input.address);
-                        message[Constant.TRANSACTIONMESSAGENAME.OUTPUTADDRESS].unshift(item.msg.output.address);
-                        message[Constant.TRANSACTIONMESSAGENAME.INPUT].unshift(`${item.msg.input.coin.amount} ${item.msg.input.coin.denom.toUpperCase()}`);
-                        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
-                        message[Constant.TRANSACTIONMESSAGENAME.ISBUYORDER].unshift(item.msg.is_buy_order);
-                        if(item.msg.output.coin.denom === Constant.Denom.IRISATTO){
-                            amountObj = Tools.formatAmountOfTxDetail(item.msg.output.coin);
-                            message[Constant.TRANSACTIONMESSAGENAME.OUTPUT].unshift(amountObj);
-                        } else {
-                            message[Constant.TRANSACTIONMESSAGENAME.OUTPUT].unshift(`${item.msg.input.coin.amount} ${item.msg.input.coin.denom.toUpperCase()}`);
-                        }
-                    }
-                }
-            })
-        }
-        return message
-    }
 }

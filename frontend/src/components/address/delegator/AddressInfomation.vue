@@ -611,7 +611,6 @@
             },
             getAssetList(){
                 this.assetsItems = this.assetList.map( item => {
-                    console.error('-----',item)
                     if (!item) { return {}};
 	            	if(item && item.denom === this.$store.state.nativeToken){
 			            return {
@@ -646,7 +645,6 @@
 	            	    address: this.$route.params.param
                     }},(res) => {
 		            try {
-		                console.error('=====',res)
 		            	if(res && res.length > 0){
 				            let copyResult = JSON.parse(JSON.stringify(res));
 				            this.delegationPageNationArrayData = this.pageNation(copyResult);
@@ -724,7 +722,6 @@
 	            Server.commonInterface({rewardList:{
 	            	address: this.$route.params.param
                     }},(res) => {
-                    console.error('========',res)
 		            try {
 		            	if(res && res.delagations_rewards && res.delagations_rewards.length > 0) {
                             res.delagations_rewards.map( item => {
@@ -1032,7 +1029,6 @@
                 try {
                     const res = await getCallServiceWithAddress(this.$route.params.param, this.consumerTxPageNum, this.consumerTxPageSize, true);
                     if(res){
-                        console.log('ConsumerTx======:',res);
                         this.consumerTxCount = res.count;
                         this.consumerTxList = [];
                         for (let item of res.data){

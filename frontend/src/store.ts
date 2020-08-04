@@ -15,7 +15,7 @@ const store = new Vuex.Store({
     currentNoWithVetoValue:'',
     currentAbstainValue: '',
     currentNoValue: '',
-    currentSkinStyle:'default',
+    currentSkinStyle:'bifrost',
     flShowLoading: false,
     flShowQR:false,
     setQrImg:'',
