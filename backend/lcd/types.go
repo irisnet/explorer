@@ -14,7 +14,7 @@ const (
 	UrlTokenStatsSupply                         = "https://rpc.irisnet.org/token-stats/supply"
 	UrlTokenStatsCirculation                    = "https://rpc.irisnet.org/token-stats/circulation"
 	UrlLookupIconsByKeySuffix                   = "https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=%s"
-	CommunityTaxAddr                            = "iaa18rtw90hxz4jsgydcusakz6q245jh59kfma3e5h"
+	CommunityTaxAddr                            = "iaa1x98k5n7xj0h3udnf5dcdzw85tsfa75qm0kqak0"
 )
 
 type AccountVo struct {

@@ -34,7 +34,7 @@ func (s TaskControlService) runTask(taskName string, timeInterval int, callback 
 		}
 
 		// lock task
-		if err := s.lockTask(taskName, timeInterval); err != nil {
+		if err := s.lockTask(taskName, timeInterval); err != nil && err != mgo.ErrNotFound {
 			return fmt.Errorf("lockTask fail, taskName:%s, err:%s", taskName, err.Error())
 		} else {
 			// do task
@@ -44,7 +44,7 @@ func (s TaskControlService) runTask(taskName string, timeInterval int, callback 
 			}
 
 			// unlock task
-			if err := s.unlockTask(taskName); err != nil {
+			if err := s.unlockTask(taskName); err != nil && err != mgo.ErrNotFound {
 				return fmt.Errorf("unLockTask fail, taskName:%s, err:%s", taskName, err.Error())
 			}
 

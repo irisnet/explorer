@@ -31,16 +31,15 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 	)
 
 	var group sync.WaitGroup
-	group.Add(2)
+	group.Add(3)
 
-	//go func() {
-	//	defer group.Done()
-	//	var err error
-	//	banktokenstats, err = lcd.GetBankTokenStats()
-	//	if err != nil {
-	//		logger.Error("GetBankTokenStats have error", logger.String("err", err.Error()))
-	//	}
-	//}()
+	go func() {
+		defer group.Done()
+		pool := lcd.StakePool()
+		if pool.BondedTokens != "" {
+			tokenStatsVO.DelegatedTokens = LoadCoinVoFromLcdCoin(lcd.Coin{Amount: pool.BondedTokens})
+		}
+	}()
 	go func() {
 		defer group.Done()
 		var err error
