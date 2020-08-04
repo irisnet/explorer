@@ -109,7 +109,6 @@ func GetServiceContexts(reqcontextid string) (resp RequestContext) {
 		Consumer:           reqContext.Consumer.String(),
 		Input:              reqContext.Input,
 		ServiceFeeCap:      LoadCoins(reqContext.ServiceFeeCap),
-		State:              StateToStringMap[reqContext.State],
 		SuperMode:          reqContext.SuperMode,
 		ModuleName:         reqContext.ModuleName,
 		Timeout:            reqContext.Timeout,
@@ -122,5 +121,9 @@ func GetServiceContexts(reqcontextid string) (resp RequestContext) {
 		BatchResponseCount: reqContext.BatchResponseCount,
 		BatchState:         reqContext.BatchState,
 	}
+	if strval, ok := StateToStringMap[reqContext.State]; ok && reqContext.ServiceName != "" {
+		resp.State = strval
+	}
+
 	return
 }
