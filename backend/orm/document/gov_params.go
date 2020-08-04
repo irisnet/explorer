@@ -8,6 +8,7 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
+	"gopkg.in/mgo.v2"
 )
 
 const (
@@ -61,6 +62,18 @@ func (g GovParams) Name() string {
 
 func (g GovParams) PkKvPair() map[string]interface{} {
 	return bson.M{GovParamsFieldModule: g.Module, GovParamsFieldKey: g.Key}
+}
+
+func (g GovParams) EnsureIndexes() []mgo.Index {
+	indexes := []mgo.Index{
+		{
+			Key:        []string{GovParamsFieldModule, GovParamsFieldKey},
+			Unique:     true,
+			Background: true,
+		},
+	}
+
+	return indexes
 }
 
 func (_ GovParams) QueryAll() ([]GovParams, error) {

@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/types"
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2"
 )
 
 const (
@@ -94,6 +95,18 @@ func (m Proposal) Name() string {
 
 func (m Proposal) PkKvPair() map[string]interface{} {
 	return bson.M{Proposal_Field_ProposalId: m.ProposalId}
+}
+
+func (m Proposal) EnsureIndexes() []mgo.Index {
+	indexes := []mgo.Index{
+		{
+			Key:        []string{Proposal_Field_ProposalId},
+			Unique:     true,
+			Background: true,
+		},
+	}
+
+	return indexes
 }
 
 func (_ Proposal) QueryByPage(page, size int, total bool) (int, []Proposal, error) {

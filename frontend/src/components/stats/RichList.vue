@@ -51,7 +51,7 @@ export default {
             latestTime: "",
             richListTimer: null,
             pageTitle: pageTitleConfig.StatsIRISRichList,
-            contentDoc:'Top 100 Addresses by IRIS'
+            contentDoc:`Top 100 Addresses by ${this.$store.state.nativeToken}`
         };
     },
     mounted() {

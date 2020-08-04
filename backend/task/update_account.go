@@ -8,7 +8,6 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/types"
 	"math/big"
-	"math"
 	"strings"
 )
 
@@ -172,7 +171,7 @@ func getDelegationInfo(address string) (float64, error) {
 			}
 		}
 	}
-	token = new(big.Rat).Mul(token, new(big.Rat).SetFloat64(math.Pow10(18)))
+	token = utils.CovertValue(token, utils.CoinTypeAtto, utils.CoinTypeStake)
 	return utils.ParseStringToFloat(token.FloatString(18))
 }
 
@@ -182,8 +181,11 @@ func getUnbondingDelegationInfo(address string) (float64, error) {
 	token, _ := new(big.Rat).SetString("0")
 	if len(unbondingDelegations) > 0 {
 		for _, v := range unbondingDelegations {
-			coin := utils.ParseCoin(v.InitialBalance)
-			token = new(big.Rat).Add(token, new(big.Rat).SetFloat64(coin.Amount))
+			if v.InitialBalance != "" {
+				balances, _ := new(big.Rat).SetString(v.InitialBalance)
+				token = new(big.Rat).Add(token, balances)
+			}
+
 		}
 	}
 

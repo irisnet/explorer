@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
-import {NATIVE_TOKEN} from "@/config";
-
 const store = new Vuex.Store({
   state:{
     flShowSelectOption: false,
@@ -21,12 +19,23 @@ const store = new Vuex.Store({
     setQrImg:'',
     testSkinStyle:false,
     hideTestSkinStyle: true,
-    nativeToken: NATIVE_TOKEN,
+    scaleLength : 0,
+    nativeToken: sessionStorage.getItem('nativeToken') ? sessionStorage.getItem('nativeToken') : '',
+    displayToken: sessionStorage.getItem('displayToken') ? sessionStorage.getItem('displayToken') : '',
     showHeaderUnfoldBtn:sessionStorage.getItem('flShowHeaderUnfoldBtn') ? sessionStorage.getItem('flShowHeaderUnfoldBtn') : 'show',
     flShowSearchBar: sessionStorage.getItem('flShowSearchBar') ? sessionStorage.getItem('flShowSearchBar') : 'hide',
     flShowSearchIpt: sessionStorage.getItem('flShowSearchIpt') ? sessionStorage.getItem('flShowSearchIpt') : 'hide',
   },
   mutations:{
+    scaleLength(state,data){
+      state.scaleLength = data
+    },
+    nativeToken(state,data){
+      state.nativeToken = data
+    },
+    displayToken(state,data){
+      state.displayToken = data
+    },
     currentNoValue(state,data){
       state.currentNoValue = data
     },

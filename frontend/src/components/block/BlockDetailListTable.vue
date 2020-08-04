@@ -103,7 +103,7 @@
         </span>
       </template>
       <template v-slot:cell(From)="data">
-        <span v-if="(/^[1-9]\d*$/).test(data.item.From) && data.item.tokenId === 'IRIS'"
+        <span v-if="(/^[1-9]\d*$/).test(data.item.From) && data.item.tokenId === $store.state.nativeToken"
               class="skip_route">
           <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.From}} Validators</router-link>
         </span>

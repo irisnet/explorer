@@ -5,7 +5,6 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"strconv"
@@ -92,7 +91,7 @@ func (service *ProposalService) QueryDeposit(id int) vo.ProposalNewStyle {
 	data, err := document.Proposal{}.QueryProposalById(id)
 	if err != nil {
 		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ProposalNewStyle{}
 	}
 
 	proposal := vo.ProposalNewStyle{
@@ -107,7 +106,7 @@ func (service *ProposalService) QueryDeposit(id int) vo.ProposalNewStyle {
 	tx, err := document.CommonTx{}.QueryProposalInitAmountTxById(id)
 	if err != nil {
 		logger.Error("QueryProposalInitAmountTxById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ProposalNewStyle{}
 	}
 	proposal.InitialDeposit = vo.Coin{
 		Denom:  tx.Amount[0].Denom,
@@ -145,11 +144,11 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 	data, err := document.Proposal{}.QueryProposalById(id)
 	if err != nil {
 		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ProposalNewStyle{}
 	}
 
 	if data.Status == document.ProposalStatusDeposit {
-		panic(types.CodeNotFound)
+		return vo.ProposalNewStyle{}
 	}
 
 	var systemVotingPower float64
@@ -651,7 +650,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	data, err := document.Proposal{}.QueryProposalById(id)
 	if err != nil {
 		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ProposalInfoVo{}
 	}
 
 	coinsAsUtils := make(utils.Coins, 0, len(data.TotalDeposit))
@@ -755,7 +754,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	return
 }
 
-
 func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint64]vo.Coin, error) {
 
 	if len(idArr) == 0 {
@@ -808,7 +806,7 @@ func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int, istotal b
 	proposal, err := document.Proposal{}.QueryProposalById(int(proposalId))
 	if err != nil {
 		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return res
 	}
 
 	if len(proposal.Votes) == 0 {
@@ -863,7 +861,8 @@ func (s *ProposalService) GetDepositTxs(proposalId int64, page, size int, istota
 	num, txs, err := document.CommonTx{}.QueryProposalTxByIdWithSubmitOrDepositType(proposalId, page, size, istotal)
 
 	if err != nil {
-		panic(err)
+		logger.Error("Query ProposalTx ByIdWithSubmitOrDepositType failed", logger.String("err", err.Error()))
+		return res
 	}
 	items := s.buildTx(txs)
 	res.Total = num
@@ -897,15 +896,9 @@ func (s *ProposalService) buildTx(txs []document.CommonTx) []vo.Tx {
 			Type:      v.Type,
 			Timestamp: v.Time.UTC(),
 		}
-		valaddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.From)
-		validator, err := lcd.Validator(valaddr)
-		if err != nil {
-			logger.Error("lcd.Validator have error", logger.String("valaddr", valaddr), logger.String("err", err.Error()))
-		}
+		moniker, _ := s.BuildFTMoniker(v.From, v.To)
+		tx.Moniker = moniker
 
-		if moniker := validator.Description.Moniker; len(moniker) > 0 {
-			tx.Moniker = moniker
-		}
 
 		res = append(res, tx)
 	}

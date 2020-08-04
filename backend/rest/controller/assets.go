@@ -8,7 +8,6 @@ import (
 	"strings"
 )
 
-
 func RegisterAssets(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryNativeAsset,
@@ -84,7 +83,7 @@ func registerAssetTokens(r *mux.Router) error {
 // @Tags assets
 // @Accept  json
 // @Produce  json
-// @Param   symbol   path   string false    "symbol"
+// @Param   symbol   path   string true    "symbol"
 // @Success 200 {object} vo.AssetTokens	"success"
 // @Router /api/asset/tokens/{symbol} [get]
 func registerAssetTokenInfo(r *mux.Router) error {
@@ -99,6 +98,3 @@ func registerAssetTokenInfo(r *mux.Router) error {
 	})
 	return nil
 }
-
-
-

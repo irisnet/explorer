@@ -5,14 +5,20 @@ import (
 	"fmt"
 )
 
-func GetAssetTokens(address string) (result []AssetToken) {
+func GetAssetTokens() (result []AssetToken) {
 
-	tokens, err := client.Asset().QueryTokens(address)
+	tokens, err := client.Asset().QueryTokens()
 	if err != nil {
 		logger.Error("Query Asset Token error", logger.String("err", err.Error()))
 		return
 	}
+
+	baseToken, _ := QueryBaseDenom()
+
 	for _, val := range tokens {
+		if baseToken != "" && val.Value.Symbol == baseToken {
+			continue
+		}
 		result = append(result, AssetToken{
 			BaseToken: BaseToken{
 				Name:          val.Value.Name,
@@ -40,7 +46,6 @@ func GetAssetTokens(address string) (result []AssetToken) {
 //		result = append(result, AssetToken{BaseToken: BaseToken{
 //			Symbol:        val.Symbol,
 //			Scale:         int(val.Scale),
-//			MinUnitAlias:  val.MinUnit,
 //			InitialSupply: fmt.Sprint(val.InitialSupply),
 //			MaxSupply:     fmt.Sprint(val.MaxSupply),
 //			Mintable:      val.Mintable,

@@ -23,12 +23,12 @@ type AccountService struct {
 func (service *AccountService) Query(address string) (result vo.AccountVo) {
 	var group sync.WaitGroup
 	prefix, _, _ := utils.DecodeAndConvert(address)
-	if prefix == conf.Get().Hub.Prefix.ValAddr {
-		self, delegated := delegatorService.QueryDelegation(address)
-		result.Amount = utils.Coins{self}
-		result.Deposits = delegated
-
-	} else {
+	if prefix != conf.Get().Hub.Prefix.ValAddr {
+		//	self, delegated := delegatorService.QueryDelegation(address)
+		//	result.Amount = utils.Coins{self}
+		//	result.Deposits = delegated
+		//
+		//} else {
 		group.Add(1)
 		go func() {
 			defer group.Done()
@@ -37,10 +37,10 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 				//decimalMap := make(map[string]int, len(res.Coins))
 				var unit []string
 				var amount utils.Coins
-				for _, coinStr := range res.Coins {
-					coin := utils.ParseCoin(coinStr)
+				for _, coin := range res.Coins {
+					val, _ := utils.ParseStringToFloat(coin.Amount)
 					unit = append(unit, strings.Split(coin.Denom, types.AssetMinDenom)[0])
-					amount = append(amount, coin)
+					amount = append(amount, utils.Coin{Denom: coin.Denom, Amount: val})
 				}
 				decimalMap := getDecimalMapData(unit)
 				for i, val := range amount {
@@ -101,15 +101,15 @@ func getValidatorStatus(validator document.Validator) string {
 }
 
 func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
+	var accList []vo.AccountInfo
 
 	result, err := document.Account{}.GetAccountList()
 
 	if err != nil {
 		logger.Error("GetAccountList have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return accList
 	}
 
-	var accList []vo.AccountInfo
 	var totalAmt = float64(0)
 	//AccountAmtMap := make(map[string]float64,len(result))
 
@@ -146,12 +146,6 @@ func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 }
 
 func isProfiler(address string) bool {
-	//genesis := commonService.GetGenesis()
-	//for _, profiler := range genesis.Result.Genesis.AppState.Guardian.Profilers {
-	//	if profiler.Address == address {
-	//		return true
-	//	}
-	//}
 	if _, ok := types.ProfilerAddrList[address]; ok {
 		return true
 	}
@@ -232,11 +226,12 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 	result = make(vo.AccountUnbondingDelegationsRespond, 0, len(unbondingdelegations))
 
 	for _, val := range unbondingdelegations {
+		amount, _ := utils.ParseStringToFloat(val.Balance)
 		data := vo.AccountUnbondingDelegationsVo{
 			Address: val.ValidatorAddr,
 			EndTime: val.MinTime,
 			Height:  val.CreationHeight,
-			Amount:  utils.ParseCoin(val.Balance),
+			Amount:  utils.Coin{Amount: amount},
 		}
 		if validatorMap != nil {
 			if valdator, ok := validatorMap[val.ValidatorAddr]; ok {

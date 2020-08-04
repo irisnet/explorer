@@ -53,6 +53,6 @@ func TestUpdateAccount_getDelegationInfo(t *testing.T) {
 }
 
 func TestUpdateAccount_getUnbondingDelegationInfo(t *testing.T) {
-	ret, _ := getUnbondingDelegationInfo(account.Address)
+	ret, _ := getUnbondingDelegationInfo("iaa18e2e9fxxrr88k78gg7fhuuqgccfv8self9ye65")
 	t.Log(ret)
 }

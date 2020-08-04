@@ -10,6 +10,7 @@ func RegisterTokenStats(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryTokenStats,
 		registerQueryTokensAccountTotal,
+		registerQueryBaseDenom,
 	}
 
 	for _, fn := range funs {
@@ -54,6 +55,23 @@ func registerQueryTokensAccountTotal(r *mux.Router) error {
 		if err != nil {
 			return vo.NewResponse("-1", err.Error(), nil)
 		}
+		return vo.NewResponse(types.CodeSuccess.Code, types.CodeSuccess.Msg, result)
+	})
+
+	return nil
+}
+
+// @Summary unit info
+// @Description get base unit info
+// @Tags tokenstats
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} vo.UnitInfoResp  "success"
+// @Router /api/unit_info [get]
+func registerQueryBaseDenom(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryBaseDenom, "GET", func(request vo.IrisReq) interface{} {
+		tokenstats.SetTid(request.TraceId)
+		result := tokenstats.QueryUnitInfo()
 		return vo.NewResponse(types.CodeSuccess.Code, types.CodeSuccess.Msg, result)
 	})
 

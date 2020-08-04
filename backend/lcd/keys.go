@@ -10,6 +10,7 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
+	sdk "github.com/irisnet/irishub-sdk-go/types"
 	"strings"
 )
 
@@ -19,24 +20,18 @@ type (
 		Amount string `json:"amount"`
 	}
 
-	Value struct {
-		Coins      []*Coin   `json:"coins"`
-		Address    string    `json:"address"`
-		PublicKey  PublicKey `json:"public_key"`
-		AccountNum string    `json:"account_number"`
-		Sequence   string    `json:"sequence"`
-	}
-
-	PublicKey struct {
-		Type  string `json:"type"`
-		Value string `json:"value"`
-	}
-	Account01411 struct {
-		Type  string `json:"type"`
-		Value Value  `json:"value"`
-	}
+	Coins []Coin
 )
 
+func LoadCoins(coins sdk.Coins) (res []Coin) {
+	for _, val := range coins {
+		res = append(res, Coin{
+			Denom:  val.Denom,
+			Amount: val.Amount.String(),
+		})
+	}
+	return
+}
 
 func Account(address string) (result AccountVo, err error) {
 	acc, err := AccountInfo(address)
@@ -51,12 +46,8 @@ func Account(address string) (result AccountVo, err error) {
 	if err != nil {
 		return result, err
 	}
-	coinsStrArr := []string{}
-	for _, v := range ret {
-		coinsStrArr = append(coinsStrArr, v.Amount+v.Denom)
-	}
 	result.Address = address
-	result.Coins = coinsStrArr
+	result.Coins = ret
 	return result, nil
 }
 

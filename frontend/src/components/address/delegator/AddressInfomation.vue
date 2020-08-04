@@ -165,7 +165,7 @@
                     </el-table-column>
                     <el-table-column :min-width="ColumnMinWidth.address" :label="$t('ExplorerCN.addressDetail.provider')">
                         <template slot-scope="scope">
-                            <el-tooltip v-if="scope.row.txType==TX_TYPE.RESPOND_SERVICE" 
+                            <el-tooltip v-if="scope.row.txType==TX_TYPE.RESPOND_SERVICE"
                                         :content="scope.row.provider"
                                         placement="top">
                                 <router-link :class="scope.row.provider==headerAddress?'blackColor':''"  :to="`/address/${scope.row.provider}`">
@@ -183,7 +183,7 @@
                                 <div class="service_tx_muti_to_container"
                                      v-else>
                                     <router-link :to="`/tx?txHash=${scope.row.txHash}`">
-                                        {{ `${scope.row.provider.length} ${$t('ExplorerCN.unit.providers')}` }} 
+                                        {{ `${scope.row.provider.length} ${$t('ExplorerCN.unit.providers')}` }}
                                     </router-link>
                                 </div>
                             </div>
@@ -303,7 +303,7 @@
                             <div class="address_transaction_content_hash">
                                 <img v-if="scope.row.requestHash && scope.row.requestHash !='--'" class="status_icon"
                                             src="../../../assets/iService/success.png"/>
-                                <el-tooltip v-if="scope.row.requestHash && scope.row.requestHash != '--'" 
+                                <el-tooltip v-if="scope.row.requestHash && scope.row.requestHash != '--'"
                                             :content="scope.row.requestHash"
                                             placement="top">
                                     <router-link :to="`/tx?txHash=${scope.row.requestHash}`">{{formatTxHash(scope.row.requestHash)}}</router-link>
@@ -589,7 +589,7 @@
                         	let arrayIndexOneData;
                         	if(res.amount){
                                 res.amount.forEach( item => {
-                                    if(item && item.denom === 'iris-atto'){
+                                    if(item && item.denom === this.$store.state.displayToken){
                                         arrayIndexOneData = item
                                         res.amount.unshift(arrayIndexOneData);
                                     }
@@ -728,7 +728,7 @@
 				            	if(item.amount && item.amount.length === 0){
 						            item.amount.push({
 							            amount:0,
-                                        denom:'iris-atto'
+                                        denom:this.$store.state.displayToken
                                     })
                                 }
                             });
@@ -814,7 +814,7 @@
 									        let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
 									        let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
 									        item.amount[0].formatAmount =  new BigNumber(Tools.formatStringToFixedNumber(tokenStr,2)).toFormat();
-									        Amount = item.amount.map(listItem => `${listItem.formatAmount} IRIS`).join(',');
+									        Amount = item.amount.map(listItem => `${listItem.formatAmount} ${this.$store.state.nativeToken}`).join(',');
                                         }
 							        }
 						        }else {
@@ -924,7 +924,8 @@
 	        },
 	        formatFee(Fee){
 		        if(Fee.amount && Fee.denom){
-			        return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
+		            let FeeObject = Tools.formatAmount3(Fee,4)
+			        return `${FeeObject.amount} ${FeeObject.denom}`
 		        }
 	        },
             pageNation(dataArray){
@@ -1072,7 +1073,7 @@
                                         status:r.status,
                                     };
                                     this.consumerTxList.push(respondResult);
-                                });  
+                                });
                             }
                         }
                     }
@@ -1818,31 +1819,31 @@
                 margin: 0.48rem 0.1rem 0 0.1rem;
                 
                 .consumer_transaction_content_hash{
-                    
+                
                 }
                 .consumer_transaction_content_available{
                     
                     .consumer_transaction_content_available_icon{
-                        
+                    
                     }
                 }
                 .pagination_content{
-                    
+                
                 }
             }
             .provider_transaction_content{
                 margin: 0.48rem 0.1rem 0 0.1rem;
                 .respond_transaction_content_hash{
-                    
+                
                 }
                 .provider_transaction_content_available{
                    
                     .provider_transaction_content_available_icon{
-                        
+                    
                     }
                 }
                 .pagination_content{
-                   
+                
                 }
             }
 
@@ -1851,7 +1852,7 @@
                 .address_information_transaction_header_content{
                     
                     .address_information_transaction_title{
-                        
+                    
                     }
                     .address_information_list_filter_content{
                         .filter_content{
@@ -1859,16 +1860,16 @@
                                 .tx_type_mobile_content{
                                     
                                     .joint_mark{
-                                        
+                                    
                                     }
                                     .reset_btn{
                                         
                                         i{
-                                            
+                                        
                                         }
                                     }
                                     .search_btn{
-                                        
+                                    
                                     }
                                 }
                             }

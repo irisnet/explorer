@@ -61,7 +61,7 @@
 
 <script>
     import Tools from "../../util/Tools"
-	export default {
+    export default {
 		name: "MDepositCard",
         props:{
 			depositObj:{
@@ -169,7 +169,7 @@
 	        },
             setMinDepositToken(depositObj){
 	            if(depositObj.level.gov_param.min_deposit.amount === 0){
-		            this.minDepositToken = '0 IRIS'
+		            this.minDepositToken = `0 ${this.$store.state.notiveToken}`
 	            }else {
 		            this.minDepositToken = `${Tools.numberMoveDecimal(depositObj.level.gov_param.min_deposit.amount)}`;
 		            this.minDepositTokenDenom = `${Tools.formatDenom(depositObj.level.gov_param.min_deposit.denom)}`

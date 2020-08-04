@@ -18,6 +18,7 @@ type BlockService struct {
 }
 
 func (service *BlockService) GetValidatorSet(height int64, page, size int) vo.ValidatorSet {
+	var  data  vo.ValidatorSet
 	lcdValidators := lcd.ValidatorSet(height)
 	if page > 0 {
 		page = page - 1
@@ -25,14 +26,15 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) vo.Va
 
 	b := lcd.Block(height)
 	if b.Block.Header.Height == 0 {
-		panic(types.CodeNotFound)
+		logger.Error("get block height  failed in lcd ValidatorSet")
+		return data
 	}
 
 	validatorArr, err := document.Validator{}.GetValidatorList()
 
 	if err != nil {
 		logger.Error("get validator set err", logger.String("error", err.Error()), service.GetTraceLog())
-		panic(types.CodeNotFound)
+		return data
 	}
 
 	var proposal string
@@ -169,7 +171,7 @@ func (service *BlockService) QueryList(page, size int) vo.BlockForListRespond {
 
 	if err != nil {
 		logger.Error("GetBlockListByOffsetAndSize", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return nil
 	}
 
 	proposerAsHashAddr := make([]string, 0, len(blocks))
@@ -256,7 +258,7 @@ func (service *BlockService) QueryRecent() vo.BlockInfoVoRespond {
 
 	if err != nil {
 		logger.Error("GetRecentBlockList have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return nil
 	}
 	for _, block := range blockList {
 		result = append(result, vo.BlockInfoVo{

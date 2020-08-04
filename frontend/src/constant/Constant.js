@@ -1,6 +1,6 @@
+import store from "../store";
 const PREFIX = ">";
 const SUFFIX = "ago";
-
 const TxType = {};
 TxType.TRANSFER = 'Transfer';
 TxType.BURN = 'Burn';
@@ -100,8 +100,8 @@ ValidatorStatus.UNBONDING = 'Unbonding';
 ValidatorStatus.UNBONDED = 'Bonded';
 
 const Denom = {};
-Denom.IRISATTO = 'iris-atto';
-Denom.IRIS = 'iris';
+Denom.IRISATTO = store.state.displayToken;
+Denom.IRIS = store.state.nativeToken;
 const ENVCONFIG = {};
 ENVCONFIG.DEV = 'dev';
 ENVCONFIG.QA = 'qa';
@@ -127,7 +127,7 @@ CHAINID.GOZTESTNET = 'goz-testnet';
 
 const RADIXDENOM = {};
 
-RADIXDENOM.IRISATTO = 'iris-atto';
+RADIXDENOM.IRISATTO = store.displayToken;
 RADIXDENOM.IRISATTONUMBER = '1000000000000000000';
 RADIXDENOM.IRISMILLI = 'iris-milli';
 RADIXDENOM.IRISMILLINUMBER = '1000000000000000';
@@ -139,7 +139,7 @@ RADIXDENOM.IRISPICO = 'iris-pico';
 RADIXDENOM.IRISPICONUMBER = '1000000';
 RADIXDENOM.IRISFEMTO = 'iris-femto';
 RADIXDENOM.IRISFEMTONUMBER = '1000';
-RADIXDENOM.IRIS = 'iris';
+RADIXDENOM.IRIS = store.nativeToken;
 RADIXDENOM.IRISNUMBER = '1';
 
 const TRANSACTIONMESSAGENAME = {};
@@ -219,14 +219,14 @@ TRANSACTIONMESSAGENAME.DEADLINE = 'Deadline :';
 TRANSACTIONMESSAGENAME.ISBUYORDER = 'Is Buy Order :';
 
 TRANSACTIONMESSAGENAME.MAXTOKEN = 'Max Token :';
-TRANSACTIONMESSAGENAME.EXACTIRISAMT = 'Exact IRIS Amount :';
+TRANSACTIONMESSAGENAME.EXACTIRISAMT = `Exact ${store.nativeToken} Amount :`;
 TRANSACTIONMESSAGENAME.MINLIQUIDITY = 'MinLiquidity :';
 TRANSACTIONMESSAGENAME.SENDER = 'Sender :';
 
 
 TRANSACTIONMESSAGENAME.MINTOKEN = 'Min Token :';
 TRANSACTIONMESSAGENAME.WITHDRAWLIQUIDITY = 'Withdraw Liquidity :';
-TRANSACTIONMESSAGENAME.MINIRISAMT = 'Min IRIS Amount :';
+TRANSACTIONMESSAGENAME.MINIRISAMT = `Min ${store.nativeToken} Amount :`;
 
 
 const SUBMITPROPOSALTYPE = {};

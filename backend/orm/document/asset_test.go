@@ -18,7 +18,7 @@ func TestAsset_GetAllAssets(t *testing.T) {
 }
 
 func TestAssetToken_GetAssetTokenDetail(t *testing.T) {
-	allAsset, err := document.AssetToken{}.GetAssetTokenDetail("mondex.sun")
+	allAsset, err := document.AssetToken{}.GetAssetTokenDetail("skitty")
 	if err != nil {
 		t.Fatal(err)
 	}

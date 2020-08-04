@@ -43,7 +43,7 @@ func TestAssetService_QueryAssetTokens(t *testing.T) {
 }
 
 func TestAssetsService_QueryAssetTokenDetail(t *testing.T) {
-	tokenid := "shark.fly"
+	tokenid := "skitty"
 	res, _ := assetsService.QueryAssetTokenDetail(tokenid)
 
 	bytesmsg, _ := json.Marshal(res)

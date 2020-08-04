@@ -98,8 +98,8 @@
                             <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
                             <li class="header_submenu_item no_border_style" v-show="flShowGov"><router-link :to="`/txs/governance`">Gov Txs</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowGov">Vote Tx</li>-->
-                            <li class="header_submenu_item" v-show="flShowStats"><router-link :to="`/stats/irisrichlist`">IRIS Rich List</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-show="flShowStats"><router-link :to="`/stats/irisstats`">IRIS Stats</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowStats"><router-link :to="`/stats/irisrichlist`">{{$store.state.nativeToken}} Rich List</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-show="flShowStats"><router-link :to="`/stats/irisstats`">{{$store.state.nativeToken}} Stats</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowStats">Public Address</li>-->
                         </ul>
                     </div>
@@ -204,8 +204,8 @@
                         <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowStatsMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowStatsMenu">
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisrichlist`)">IRIS Rich List</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisstats`)">IRIS Stats</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisrichlist`)">{{$store.state.nativeToken}} Rich List</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisstats`)">{{$store.state.nativeToken}} Stats</li>
                     </ul>
                 </div>
 
@@ -683,6 +683,7 @@
                         if(res.cur_env === constant.ENVCONFIG.TESTNET || res.cur_env === constant.ENVCONFIG.MAINNET){
                             this.$store.commit('hideTestSkinStyle',false)
                         }
+              
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);

@@ -206,7 +206,7 @@ export default {
                 );
                 parameterItem.current = amountStr;
                 parameterItem.genesis =
-                    Tools.formatPrice(parameterItem.genesis_value) + " IRIS";
+                    Tools.formatPrice(parameterItem.genesis_value) + ` ${this.$store.state.nativeToken}`;
                 parameterItem.max = parameterItem.max || "+∞";
             } else if (dayDataArr.indexOf(parameterItem.key) > -1) {
                 let max =
