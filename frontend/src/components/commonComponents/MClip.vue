@@ -54,7 +54,9 @@ export default {
         computedTipPosition() {
             clearTimeout(this.resizeTimer);
             this.resizeTimer = setTimeout(() => {
-                let w = document.querySelector(".router_view").offsetWidth;
+                let router_view = document.querySelector(".router_view");
+                if (!router_view) {return;};
+                let w = router_view.offsetWidth;
                 let tip = this.$refs.tip.getBoundingClientRect();
                 let r = tip.right;
                 let tip_w = tip.width / 2;

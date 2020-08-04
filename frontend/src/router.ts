@@ -100,6 +100,18 @@ const router = new Router({
     {
       path: '/htlc/:txHash', component: () => import('@/components/htlc/HtlcInformation.vue'),
     },
+    {
+      path:'/services',
+      component: () => import('@/components/iService/ServiceList.vue')
+    },
+    {
+      path:'/service/respond/:serviceName/:provider',
+      component: () => import('@/components/iService/ServiceRespondRecord.vue')
+    },
+    {
+      path:'/service',
+      component: () => import('@/components/iService/ServiceInformation.vue')
+    },
 
     {
       path: "*",
