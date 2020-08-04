@@ -2,6 +2,8 @@ package lcd
 
 import (
 	"fmt"
+	"github.com/irisnet/explorer/backend/orm/document"
+	"errors"
 )
 
 const (
@@ -18,7 +20,7 @@ const (
 	GovModuleRand     = "rand"
 	GovModuleOrcale   = "oracle"
 	GovModuleCoinSwap = "coinswap"
-	GovModuleGov      = "gov"
+	GovModule         = "gov"
 	GovModuleNft      = "nft"
 	GovModuleCrisis   = "crisis"
 	GovModuleGuardian = "guardian"
@@ -36,26 +38,18 @@ const (
 	GovModuleDistrBonusProposerReward = "bonus_proposer_reward"
 
 	//slashing key
-	//GovModuleSlashingSlashFractionCensorship = "slash_fraction_censorship"
-	//GovModuleSlashingMaxEvidenceAge          = "max_evidence_age"
-	GovModuleSlashingSignedBlocksWindow = "signed_blocks_window"
-	//GovModuleSlashingDoubleSignJailDuration  = "double_sign_jail_duration"
-	GovModuleSlashingMinSignedPerWindow = "min_signed_per_window"
-	//GovModuleSlashingCensorshipJailDuration  = "censorship_jail_duration"
-	GovModuleSlashingSlashFractionDoubleSign = "slash_fraction_double_sign"
-	GovModuleSlashingSlashFractionDowntime   = "slash_fraction_downtime"
-	GovModuleSlashingDowntimJailDuration     = "downtime_jail_duration"
+	GovModuleSlashingSignedBlocksWindow    = "signed_blocks_window"
+	GovModuleSlashingMinSignedPerWindow    = "min_signed_per_window"
+	GovModuleSlashingSlashFractionDowntime = "slash_fraction_downtime"
 
-	//asset key
+	//token key
 	GovModuleAssetAssetTaxRate      = "token_tax_rate"
 	GovModuleAssetIssueTokenBaseFee = "issue_token_base_fee"
 	GovModuleAssetMintTokenFeeRatio = "mint_token_fee_ratio"
-	//GovModuleAssetCreateGatewayBaseFee = "create_gateway_base_fee"
-	//GovModuleAssetGatewayAssetFeeRatio = "gateway_asset_fee_ratio"
 )
 
-var GovModuleList = []string{GovModuleAuth, GovModuleStaking, GovModuleMint, GovModuleDistr, GovModuleSlashing, GovModuleAsset, GovModuleGov}
-//GovModuleIBC, GovModuleHtlc, GovModuleService, GovModuleCoinSwap, GovModuleCrisis, GovModuleNft, GovModuleOrcale, GovModuleGov}
+var GovModuleList = []string{GovModuleAuth, GovModuleStaking, GovModuleMint, GovModuleDistr, GovModuleSlashing, GovModuleAsset, GovModule}
+//GovModuleIBC, GovModuleHtlc, GovModuleService, GovModuleCoinSwap, GovModuleCrisis, GovModuleNft, GovModuleOrcale}
 
 type RangeDescription struct {
 	Range        string
@@ -67,6 +61,89 @@ type Voterinfo struct {
 	Voter      string `json:"voter"`
 	ProposalId uint64 `json:"proposal_id"`
 	Option     string `json:"option"`
+}
+
+var (
+	NormalThreshold     string
+	NormalMinDeposit    document.Coin
+	NormalParticipation string
+	NormalVeto          string
+)
+
+const (
+	//GovModule (iris app module)
+	//GovModule = "gov"
+	//gov module params key
+	NormalMinDepositKey = "min_deposit"
+	NormalThresholdKey  = "threshold"
+	NormalQuorumKey     = "quorum"
+	NormalVetoKey       = "veto"
+
+	Critical  = "Critical"
+	Important = "Important"
+	Normal    = "Normal"
+	// Critical：SoftwareUpgrade
+	// Important：ParamChange, CommunityPoolSpend
+	// Normal：TxTaxUsage
+	ProposalTypeSoftwareUpgrade    = "SoftwareUpgrade"
+	ProposalTypeParamChange        = "ParamChange"
+	ProposalTypeCommunityPoolSpend = "CommunityPoolSpend"
+	ProposalTypePlainText          = "Text"
+)
+
+func errorMsg(proposalType string) error {
+	return errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v ,but actual: %v",
+		ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypeParamChange, ProposalTypePlainText, proposalType))
+}
+
+func GetProposalLevelByType(proposalType string) (string, error) {
+	switch proposalType {
+	case ProposalTypeSoftwareUpgrade:
+		return Critical, nil
+	case ProposalTypeCommunityPoolSpend, ProposalTypeParamChange:
+		return Important, nil
+	case ProposalTypePlainText:
+		return Normal, nil
+	default:
+		return "", errorMsg(proposalType)
+	}
+}
+
+func GetProposalBurnPercentByResult(result string, isRejectVote bool) (float32, error) {
+	switch result {
+	case document.ProposalStatusPassed:
+		return 0.2, nil
+	case document.ProposalStatusRejected:
+		if isRejectVote {
+			return 1, nil
+		}
+		return 0.2, nil
+	default:
+		return 0, errors.New(fmt.Sprintf("expect proposal result status: %v %v ,but actual: %v",
+			document.ProposalStatusPassed, document.ProposalStatusRejected, result))
+	}
+}
+
+func GetMinDepositByProposalType(proposalType string) (document.Coin, error) {
+	switch proposalType {
+	case ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText, ProposalTypeParamChange:
+		return NormalMinDeposit, nil
+
+	default:
+		return document.Coin{}, errorMsg(proposalType)
+	}
+
+}
+
+func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string, string, string, error) {
+
+	switch proposalType {
+	case ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText, ProposalTypeParamChange:
+		return NormalThreshold, NormalVeto, NormalParticipation, nil
+
+	default:
+		return "", "", "", errorMsg(proposalType)
+	}
 }
 
 func GetAuthKeyWithRangeMap() map[string]RangeDescription {
@@ -106,9 +183,9 @@ func GetSlashingKeyWithRangeMap() map[string]RangeDescription {
 	//result[GovModuleSlashingDoubleSignJailDuration] = RangeDescription{Range: "0,1209600000000000", Description: "Jail duration of DoubleSign"}
 	result[GovModuleSlashingMinSignedPerWindow] = RangeDescription{Range: "0.5,0.9", Description: "Minimum voting ratio in the slash window"}
 	//result[GovModuleSlashingCensorshipJailDuration] = RangeDescription{Range: "0,1209600000000000", Description: "Jail duration of Censorship"}
-	result[GovModuleSlashingSlashFractionDoubleSign] = RangeDescription{Range: "0,0.1", Description: "Slash ratio of DoubleSign"}
+	//result[GovModuleSlashingSlashFractionDoubleSign] = RangeDescription{Range: "0,0.1", Description: "Slash ratio of DoubleSign"}
 	result[GovModuleSlashingSlashFractionDowntime] = RangeDescription{Range: "0,0.1", Description: "Slash ratio of  Downtime"}
-	result[GovModuleSlashingDowntimJailDuration] = RangeDescription{Range: "0,604800000000000", Description: "Jail duration of Downtime"}
+	//result[GovModuleSlashingDowntimJailDuration] = RangeDescription{Range: "0,604800000000000", Description: "Jail duration of Downtime"}
 	return result
 }
 
