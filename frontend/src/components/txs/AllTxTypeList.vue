@@ -220,6 +220,7 @@
                         if(res){
                             let txType = FormatTxType.formatTxType(res);
 	                        this.txTypeOption = this.txTypeOption.concat(txType);
+	                        console.error('=========',res)
                         }
 				    }catch (e) {
                         console.error(e)

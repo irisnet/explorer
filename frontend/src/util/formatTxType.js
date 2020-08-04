@@ -23,12 +23,23 @@ export default class FormatTxType {
 				label:'Gov',
 				children:[]
 			},
+            nftObj = {
+				value:'nft',
+				label:'NFT',
+				children:[]
+			},
+            oracleObj = {
+				value:'oracle',
+				label:'Oracle',
+				children:[]
+			},
 			othersObj = {
 				value:'others',
 				label:'Others',
 				children:[]
 			};
 		txTypeArray.forEach( item => {
+
 			switch (item) {
 				case "Transfer":
 					tansferObj.children.push({
@@ -124,6 +135,61 @@ export default class FormatTxType {
 					govObj.children.push({
 						value:'vote',
 						label:'Vote'
+					});
+					break;
+
+				case "IssueDenom":
+					nftObj.children.push({
+						value:'IssueDenom',
+						label:'IssueDenom'
+					});
+					break;
+				case "NFTEdit":
+					nftObj.children.push({
+						value:'NFTEdit',
+						label:'NFTEdit'
+					});
+					break;
+				case "NFTTransfer":
+					nftObj.children.push({
+						value:'NFTTransfer',
+						label:'NFTTransfer'
+					});
+					break;
+				case "NFTMint":
+					nftObj.children.push({
+						value:'NFTMint',
+						label:'NFTMint'
+					});
+					break;
+				case "NFTBurn":
+					nftObj.children.push({
+						value:'NFTBurn',
+						label:'NFTBurn'
+					});
+					break;
+				case "CreateFeed":
+                    oracleObj.children.push({
+						value:'CreateFeed',
+						label:'CreateFeed'
+					});
+					break;
+				case "StartFeed":
+                    oracleObj.children.push({
+						value:'StartFeed',
+						label:'StartFeed'
+					});
+					break;
+				case "PauseFeed":
+                    oracleObj.children.push({
+						value:'PauseFeed',
+						label:'PauseFeed'
+					});
+					break;
+				case "EditFeed":
+                    oracleObj.children.push({
+						value:'EditFeed',
+						label:'EditFeed'
 					});
 					break;
 				case "IssueToken":
@@ -233,10 +299,17 @@ export default class FormatTxType {
 						value:'addProfiler',
 						label:'AddProfiler'
 					});
+					break;
+				case "FundCommunityPool":
+					othersObj.children.push({
+						value:'FundCommunityPool',
+						label:'FundCommunityPool'
+					});
+
 			}
 			
 		});
-		allTxType.push(tansferObj,delegationObj,validationObj,govObj,othersObj);
+		allTxType.push(tansferObj,delegationObj,validationObj,govObj,nftObj, oracleObj,othersObj);
 		return allTxType
 	}
 	static getRefUrlTxType(txType){
@@ -259,6 +332,18 @@ export default class FormatTxType {
 			['gov','submitProposal'],
 			['gov','deposit'],
 			['gov','vote'],
+
+			['nft','IssueDenom'],
+			['nft','NFTEdit'],
+			['nft','NFTTransfer'],
+			['nft','NFTMint'],
+			['nft','NFTBurn'],
+			['oracle','CreateFeed'],
+			['oracle','StartFeed'],
+			['oracle','PauseFeed'],
+			['oracle','EditFeed'],
+
+
 			['others','issueToken'],
 			['others','editToken'],
 			['others','transferTokenOwner'],
@@ -274,6 +359,7 @@ export default class FormatTxType {
 			['others','addLiquidity'],
 			['others','removeLiquidity'],
 			['others','swapOrder'],
+			['others','FundCommunityPool'],
 		];
 		UrlTxType.forEach( item => {
 			if(Tools.onlyFirstWordUpperCase(item[item.length -1]) === txType){
