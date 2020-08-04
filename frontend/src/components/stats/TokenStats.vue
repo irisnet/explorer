@@ -118,6 +118,8 @@ export default {
                                         value: data.delegated_tokens ? Tools.formatAmount2(data.delegated_tokens,4) : '--'
                                     }
                                 ];
+                                console.error(data)
+                                console.error(obj)
                                 this.items = obj;
                             } else {
                                 this.itemsNoData = true;
