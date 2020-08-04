@@ -170,7 +170,7 @@
 	        },
             setMinDepositToken(depositObj){
 	            if(depositObj.level.gov_param.min_deposit.amount === 0){
-		            this.minDepositToken = '0 IRIS'
+		            this.minDepositToken = `0 ${this.$store.state.nativeToken}`
 	            }else {
 		            this.minDepositToken = `${new bigNumber(depositObj.level.gov_param.min_deposit.amount).toFormat()}`;
 		            this.minDepositTokenDenom = `${Tools.formatDenom(depositObj.level.gov_param.min_deposit.denom)}`

@@ -6,6 +6,7 @@ import moveDecimal  from "move-decimal-point"
 import Constant from "../constant/Constant"
 import bech32 from 'bech32';
 import moment from 'moment';
+import store from "../store";
 export default class Tools {
 	/**
 	 * 根据展示的需求拼接字符串展示成 > xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs
@@ -344,8 +345,8 @@ export default class Tools {
 		return decimals ? `${formattedInteger}.${decimals}` : `${formattedInteger}`;
 	}
 	static formatDenom(denom){
-		if(denom.toLowerCase() === "iris-atto" || denom.toLowerCase() === "iris"){
-			return "IRIS"
+		if(denom.toLowerCase() === store.state.displayToken || denom.toLowerCase() === store.state.nativeToken){
+			return store.state.nativeToken
 		}else {
 			return denom
 		}
@@ -437,9 +438,9 @@ export default class Tools {
 				transferAmount = formatListAmount.amountNumber === '--' ? '--' : Tools.formatStringToFixedNumber(new BigNumber(formatListAmount.amountNumber).toFormat(),2);
 				tokenId = formatListAmount.tokenName === '--' ? '--' : formatListAmount.tokenName;
 				if(item.fee.amount && item.fee.denom){
-					let feeAmount = item.fee.amount;
-					transferFee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)),6)}`;
-					Fee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)),6)} ${Tools.formatDenom(item.fee.denom).toUpperCase()}`;
+					let feeAmount = Tools.formatAmount3(item.fee,6);
+					transferFee = `${feeAmount.amount}`;
+					Fee = `${feeAmount.amount} ${feeAmount.denom}`;
 				}
 				commonHeaderObjList = {
 					'Tx_Hash' : item.hash,
@@ -595,10 +596,15 @@ export default class Tools {
 			}
 			amountRadixNumber = Tools.amountRadix(amountDenom);
 		}
-		if(amountDenom){
-			return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber)} ${Constant.RADIXDENOM.IRIS.toLocaleUpperCase()}`
+		if(amountRadixNumber > 0){
+			return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber)} ${Constant.Denom.IRIS.toLocaleUpperCase()}`
 		}else {
-			return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber) * -1))).toFormat(),fixedNumber)} SHARES`
+			if(amountDenom){
+				//TODO 多资产情况
+			
+			}else {
+				return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber) * -1))).toFormat(),fixedNumber)} SHARES`
+			}
 		}
 	}
 	/**
@@ -610,7 +616,12 @@ export default class Tools {
 	let diffValue = 1;
 	if(param){
 		//radix number length need to minus 1;
-		switch (param) {
+		if(param === store.state.nativeToken){
+			return  store.state.scaleLength
+		}else {
+			return  0
+		}
+		/*switch (param) {
 			case Constant.RADIXDENOM.IRISATTO:
 				return Constant.RADIXDENOM.IRISATTONUMBER.length - diffValue;
 				break;
@@ -634,7 +645,7 @@ export default class Tools {
 				break;
 			default:
 				return defaultValue;
-			}
+			}*/
 		}else {
 			return defaultValue
 		}
@@ -651,12 +662,12 @@ export default class Tools {
 			formattedNumber = number
 		}
 		return formattedNumber
-  }
+    }
 
-  // 转化uptime的方法
-  static FormatUptime(number) {
-    return `${(number * 100).toFixed(4)}%`
-  }
+	// 转化uptime的方法
+	static FormatUptime(number) {
+	return `${(number * 100).toFixed(4)}%`
+	}
 	/**
 	 * 格式化数字是字符串类型的百分比数字数字
 	 *
@@ -682,29 +693,29 @@ export default class Tools {
 				case Constant.TxType.TRANSFER :
 					amount = Tools.formatListByAmount(data.amount);
 					if(data.msgs){
-                        data.msgs.forEach( item => {
-                            if(item.msg){
-                            	fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.from_address,data.monikers));
-                                toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.to_address,data.monikers))
-                                // item.msg.inputs.forEach( item => {
-                                //     fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.address,data.monikers));
-                                // })
-                                // item.msg.outputs.forEach( item => {
-                                //     toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.address,data.monikers))
-                                // })
-                            }
-                        });
-                    }
+	                    data.msgs.forEach( item => {
+	                        if(item.msg){
+	                            fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.from_address,data.monikers));
+	                            toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.to_address,data.monikers))
+	                            // item.msg.inputs.forEach( item => {
+	                            //     fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.address,data.monikers));
+	                            // })
+	                            // item.msg.outputs.forEach( item => {
+	                            //     toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.address,data.monikers))
+	                            // })
+	                        }
+	                    });
+	                }
 				    break;
 				case Constant.TxType.BURN:
 					amount = Tools.formatListByAmount(data.amount);
 					if(data.msgs){
 					    data.msgs.forEach( item => {
 					        if(item.msg){
-                                fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.owner,data.monikers))
-                            }
-                        })
-                    }
+	                            fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.owner,data.monikers))
+	                        }
+	                    })
+	                }
 				    break;
 				case Constant.TxType.SETMEMOREGEXP:
 					amount = Tools.formatListByAmount(data.amount);
@@ -717,36 +728,36 @@ export default class Tools {
 					break;
 				case Constant.TxType.UNJAIL:
 					amount = Tools.formatListByAmount(data.amount);
-
+	
 					break;
 				case Constant.TxType.DELEGATE:
 					amount = Tools.formatListByAmount(data.amount);
 					if(data.msgs){
 					    data.msgs.forEach( item => {
 					        if(item.msg){
-                                fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.delegator_addr,data.monikers));
-                                toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_addr,data.monikers))
-                            }
-                        })
-                    }
+	                            fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.delegator_addr,data.monikers));
+	                            toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_addr,data.monikers))
+	                        }
+	                    })
+	                }
 					break;
 				case Constant.TxType.BEGINREDELEGATE:
 					amount = Tools.formatListByTagsBalance(data.tags);
 					if(data.status === 'success'){
 					    if(data.tags){
-                            fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['source-validator'],data.monikers));
-                            toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['destination-validator'],data.monikers))
-                        }
-                    }else {
+	                        fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['source-validator'],data.monikers));
+	                        toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['destination-validator'],data.monikers))
+	                    }
+	                }else {
 					    if(data.msgs){
-                            data.msgs.forEach( item => {
-                                 if(item.msg){
-                                     fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_src_addr,data.monikers));
-                                     toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_dst_addr,data.monikers))
-                                 }
-                            })
-                        }
-                    }
+	                        data.msgs.forEach( item => {
+	                             if(item.msg){
+	                                 fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_src_addr,data.monikers));
+	                                 toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_dst_addr,data.monikers))
+	                             }
+	                        })
+	                    }
+	                }
 					break;
 				case Constant.TxType.SETWITHDRAWADDRESS:
 					amount = Tools.formatListByAmount(data.amount);
@@ -755,93 +766,93 @@ export default class Tools {
 					amount = Tools.formatListByTagsBalance(data.tags);
 					if(data.status === 'success'){
 					    if(data.tags){
-                            fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['source-validator'],data.monikers));
-                            toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['delegator'],data.monikers))
-                        }
-                    }else {
+	                        fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['source-validator'],data.monikers));
+	                        toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['delegator'],data.monikers))
+	                    }
+	                }else {
 					    if(data.msgs){
 					        data.msgs.forEach( item => {
 					            if(item.msg){
-                                    fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_addr,data.monikers));
-                                    toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.delegator_addr,data.monikers))
-                                }
-                            })
-                        }
-                    }
+	                                fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_addr,data.monikers));
+	                                toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.delegator_addr,data.monikers))
+	                            }
+	                        })
+	                    }
+	                }
 					break;
 				case Constant.TxType.WITHDRAWDELEGATORREWARD:
 					amount = Tools.formatListByAmount(data.amount);
 					if(data.msgs){
-                        data.msgs.forEach( item => {
-                            if(item.msg){
-                                fromAddressAndMoniker.unshift( Tools.getFromAndToMoniker(item.msg.validator_addr,data.monikers))
-                                toAddressAndMoniker.unshift( Tools.getFromAndToMoniker(item.msg.delegator_addr,data.monikers))
-                            }
-                        })
-                    }
-
+	                    data.msgs.forEach( item => {
+	                        if(item.msg){
+	                            fromAddressAndMoniker.unshift( Tools.getFromAndToMoniker(item.msg.validator_addr,data.monikers))
+	                            toAddressAndMoniker.unshift( Tools.getFromAndToMoniker(item.msg.delegator_addr,data.monikers))
+	                        }
+	                    })
+	                }
+	
 					break;
 				case Constant.TxType.WITHDRAWDELEGATORREWARDSALL:
 					amount = Tools.formatListByAmount(data.amount);
-                    let fromAddressArray = [],toAddressArray = [];
-                    if(data.status === 'success'){
-                        if(data.tags){
-                            for(let item in data.tags){
-                                if(item.startsWith('withdraw-reward-from-validator')){
-                                    fromAddressArray.push(item.split('-')[item.split('-').length - 1])
-                                }
-                                if(item === 'delegator'){
-                                    toAddressArray.push(data.tags[item])
-                                }
-                            }
-                        }
-                    }else {
-                        if(data.msgs){
-                            data.msgs.forEach( item => {
-                                if(item.msg){
-                                    if(item.msg.validator_addr){
-                                        fromAddressArray.unshift(item.msg.validator_addr)
-                                    }
-                                    if(item.msg.delegator_addr){
-                                        toAddressArray.unshift(item.msg.delegator_addr)
-                                    }
-                                }
-                            })
-                        }
-                    }
-                    fromAddressArray.forEach( item => {
-                        fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item,data.monikers))
-                    })
-                    toAddressArray.forEach( item => {
-                        toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item,data.monikers))
-                    })
+	                let fromAddressArray = [],toAddressArray = [];
+	                if(data.status === 'success'){
+	                    if(data.tags){
+	                        for(let item in data.tags){
+	                            if(item.startsWith('withdraw-reward-from-validator')){
+	                                fromAddressArray.push(item.split('-')[item.split('-').length - 1])
+	                            }
+	                            if(item === 'delegator'){
+	                                toAddressArray.push(data.tags[item])
+	                            }
+	                        }
+	                    }
+	                }else {
+	                    if(data.msgs){
+	                        data.msgs.forEach( item => {
+	                            if(item.msg){
+	                                if(item.msg.validator_addr){
+	                                    fromAddressArray.unshift(item.msg.validator_addr)
+	                                }
+	                                if(item.msg.delegator_addr){
+	                                    toAddressArray.unshift(item.msg.delegator_addr)
+	                                }
+	                            }
+	                        })
+	                    }
+	                }
+	                fromAddressArray.forEach( item => {
+	                    fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item,data.monikers))
+	                })
+	                toAddressArray.forEach( item => {
+	                    toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item,data.monikers))
+	                })
 					break;
 				case Constant.TxType.WITHDRAWVALIDATORREWARDSALL:
 					amount = Tools.formatListByAmount(data.amount);
-                    let withDrawValidatorFromAddressArray = [],withDrawValidatorToAddressArray = [];
-                    if(data.tags){
-                        for(let item in data.tags){
-                            if(item.startsWith('withdraw-reward-from-validator')){
-                                withDrawValidatorFromAddressArray.push(item.split('-')[item.split('-').length - 1])
-                            }
-                            if(item === 'withdraw-address'){
-                                withDrawValidatorToAddressArray.push(data.tags[item])
-                            }
-                        }
-                    }
-                    withDrawValidatorFromAddressArray.forEach( item => {
-                        fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item,data.monikers))
-                    })
-                    withDrawValidatorToAddressArray.forEach( item => {
-                        toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item,data.monikers))
-                    })
+	                let withDrawValidatorFromAddressArray = [],withDrawValidatorToAddressArray = [];
+	                if(data.tags){
+	                    for(let item in data.tags){
+	                        if(item.startsWith('withdraw-reward-from-validator')){
+	                            withDrawValidatorFromAddressArray.push(item.split('-')[item.split('-').length - 1])
+	                        }
+	                        if(item === 'withdraw-address'){
+	                            withDrawValidatorToAddressArray.push(data.tags[item])
+	                        }
+	                    }
+	                }
+	                withDrawValidatorFromAddressArray.forEach( item => {
+	                    fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item,data.monikers))
+	                })
+	                withDrawValidatorToAddressArray.forEach( item => {
+	                    toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item,data.monikers))
+	                })
 					break;
 				case Constant.TxType.SUBMITPROPOSAL:
-                    fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.signer,data.monikers))
+	                fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.signer,data.monikers))
 					amount = Tools.formatListByAmount(data.amount);
 					break;
 				case Constant.TxType.DEPOSIT:
-                    fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.signer,data.monikers))
+	                fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.signer,data.monikers))
 					amount = Tools.formatListByAmount(data.amount);
 					break;
 				case Constant.TxType.VOTE:
@@ -871,75 +882,75 @@ export default class Tools {
 				case Constant.TxType.REQUESTRAND:
 					amount = Tools.formatListByAmount(data.amount);
 					break;
-                case Constant.TxType.CLAIMHTLC:
-                    if(data.status === 'success'){
-                        if(data.tags){
-                           fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags.sender,data.monikers))
-                            toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags.receiver,data.monikers))
-                        }
-                    }
-                    break;
-                case Constant.TxType.REFUNDHTLC:
-                    if(data.tags && data.tags.sender){
-                        toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags.sender,data.monikers))
-                    }
-                    break;
-                case Constant.TxType.CREATEHTLC:
-                    if(data.msgs){
-                        data.msgs.forEach( item => {
-                            if(item.msg){
-                                fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.sender,data.monikers))
-                                toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.to,data.monikers))
-                            }
-                        })
-                    }
-                    break;
-                case Constant.TxType.FundCommunityPool:
-                    amount = Tools.formatListByAmount(data.amount);
-                    break;
-                    //TODO(lvshenchao) this type of tx need to be configured
-                case Constant.TxType.WithdrawValidatorCommission:
-                    amount = Tools.formatListByAmount(data.amount);
-                    break;
-                    //TODO(lvshenchao) this type of tx need to be configured
-
-
-
+	            case Constant.TxType.CLAIMHTLC:
+	                if(data.status === 'success'){
+	                    if(data.tags){
+	                       fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags.sender,data.monikers))
+	                        toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags.receiver,data.monikers))
+	                    }
+	                }
+	                break;
+	            case Constant.TxType.REFUNDHTLC:
+	                if(data.tags && data.tags.sender){
+	                    toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags.sender,data.monikers))
+	                }
+	                break;
+	            case Constant.TxType.CREATEHTLC:
+	                if(data.msgs){
+	                    data.msgs.forEach( item => {
+	                        if(item.msg){
+	                            fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.sender,data.monikers))
+	                            toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.to,data.monikers))
+	                        }
+	                    })
+	                }
+	                break;
+	            case Constant.TxType.FundCommunityPool:
+	                amount = Tools.formatListByAmount(data.amount);
+	                break;
+	                //TODO(lvshenchao) this type of tx need to be configured
+	            case Constant.TxType.WithdrawValidatorCommission:
+	                amount = Tools.formatListByAmount(data.amount);
+	                break;
+	                //TODO(lvshenchao) this type of tx need to be configured
+	
+	
+	
 			}
 		}
 		return {
-            amount,
-            fromAddressAndMoniker,
-            toAddressAndMoniker
-        };
-
+	        amount,
+	        fromAddressAndMoniker,
+	        toAddressAndMoniker
+	    };
+	
 	}
-
+	
 	/**
 	 * 从amount字段中获取amount
 	* */
 	static formatListByAmount(amount){
 		let [amountNumber,tokenName] = ['--','--'];
 		if(amount instanceof Array && amount.length > 0) {
-            if(amount.length > 1 ){
-                amountNumber = `${amount.length} Tokens`;
-                tokenName = '--'
-            }else {
-                if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO || amount[0].amount == 0) {
+	        if(amount.length > 1 ){
+	            amountNumber = `${amount.length} Tokens`;
+	            tokenName = '--'
+	        }else {
+	            if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO || amount[0].amount == 0) {
 	                amountNumber = amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount[0].amount)), 2) : Number(amount[0].amount).toFixed(2);
-                    tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-                } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
-                    amountNumber = amount[0].amount;
-                    tokenName = amount[0].denom.toLocaleUpperCase();
-                } else {
-                    amountNumber = Tools.formatStringToFixedNumber(Tools.FormatScientificNotationToNumber(amount[0].amount), 2);
-                    if (amount[0].denom === Constant.Denom.IRISATTO) {
-                        tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-                    } else {
-                        tokenName = amount[0].denom ? amount[0].denom.toLocaleUpperCase() : '--';
-                    }
-                }
-            }
+	                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+	            } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
+	                amountNumber = amount[0].amount;
+	                tokenName = amount[0].denom.toLocaleUpperCase();
+	            } else {
+	                amountNumber = Tools.formatStringToFixedNumber(Tools.FormatScientificNotationToNumber(amount[0].amount), 2);
+	                if (amount[0].denom === Constant.Denom.IRISATTO) {
+	                    tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+	                } else {
+	                    tokenName = amount[0].denom ? amount[0].denom.toLocaleUpperCase() : '--';
+	                }
+	            }
+	        }
 		}else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
 			if(amount.denom === Constant.Denom.IRISATTO){
 				amountNumber = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount.amount)),2);
@@ -952,17 +963,17 @@ export default class Tools {
 				tokenName = ''
 			}
 		}else if(amount&& Object.keys(amount).includes('amount') && Object.keys(amount).includes('denom')){
-            if(amount.denom === Constant.Denom.IRISATTO){
-                amountNumber = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount.amount)),2);
-                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-            }else if(amount.denom !== Constant.Denom.IRISATTO){
-                amountNumber = amount.amount
-                tokenName = amount.denom.toLocaleUpperCase()
-            }else if(!amount.denom){
-                amountNumber = amount.amount
-                tokenName = ''
-            }
-        }
+	        if(amount.denom === Constant.Denom.IRISATTO){
+	            amountNumber = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount.amount)),2);
+	            tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+	        }else if(amount.denom !== Constant.Denom.IRISATTO){
+	            amountNumber = amount.amount
+	            tokenName = amount.denom.toLocaleUpperCase()
+	        }else if(!amount.denom){
+	            amountNumber = amount.amount
+	            tokenName = ''
+	        }
+	    }
 		// console.log(amountNumber,tokenName,"amount information")
 		return {amountNumber,tokenName}
 	}
@@ -975,130 +986,168 @@ export default class Tools {
 			let tokenValue = Tools.formatAccountCoinsAmount(tags.balance);
 			let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
 			if(flSplitNum){
-                amountNumber =  tokenStr
-            }else {
-                amountNumber =  Tools.formatStringToFixedNumber(tokenStr,2);
-            }
+	            amountNumber =  tokenStr
+	        }else {
+	            amountNumber =  Tools.formatStringToFixedNumber(tokenStr,2);
+	        }
 			tokenName = Constant.Denom.IRIS.toLocaleUpperCase()
 		}
 		return {amountNumber,tokenName}
-
+	
 	}
 	/**
-     * 格式化fee
-     * */
-    static formatFee(Fee){
-        if(Fee.amount && Fee.denom){
-            return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
-        }
-    }
-    /**
-     * 格式化交易详情页的amount
-     * */
-    static formatAmountOfTxDetail(amount){
-        let [amountNumber,tokenName,moreAmountsNumber] = ['--','--',[]];
-        if(amount instanceof Array && amount.length > 0) {
-            if(amount.length !== 1){
-                moreAmountsNumber = amount.map( (item) => {
-                    if(item.denom === Constant.Denom.IRISATTO){
-                        return {
-                            denom : Constant.Denom.IRIS.toLocaleUpperCase(),
-                            amount: String(Tools.numberMoveDecimal(item.amount))
-                        }
-                    }else {
-                        return {
-                            denom : item.denom.toLocaleUpperCase(),
-                            amount: Tools.FormatScientificNotationToNumber(item.amount)
-                        }
-                    }
-                })
-            }else {
-                if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO || amount[0].amount == 0) {
-                    amountNumber = amount[0].amount > 0 ? String(Tools.numberMoveDecimal(amount[0].amount)) : Number(amount[0].amount).toFixed(2);
-                    tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-                } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
-                    amountNumber = amount[0].amount;
-                    tokenName = amount[0].denom.toLocaleUpperCase();
-                } else {
-                    amountNumber = Tools.formatStringToFixedNumber(Tools.FormatScientificNotationToNumber(amount[0].amount), 2);
-                    if (amount[0].denom === Constant.Denom.IRISATTO) {
-                        tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-                    } else {
-                        tokenName = amount[0].denom ? amount[0].denom.toLocaleUpperCase() : '--';
-
-                    }
-                }
-            }
-        }else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
-            if(amount.denom === Constant.Denom.IRISATTO){
-                amountNumber =String(Tools.numberMoveDecimal(amount.amount));
-                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-            }else if(amount.denom !== Constant.Denom.IRISATTO){
-                amountNumber = amount.amount
-                tokenName = amount.denom.toLocaleUpperCase()
-            }else if(!amount.denom){
-                amountNumber = amount.amount
-                tokenName = ''
-            }
-        }else if(amount&& Object.keys(amount).includes('amount') && Object.keys(amount).includes('denom')){
-            if(amount.denom === Constant.Denom.IRISATTO){
-                amountNumber = String(Tools.numberMoveDecimal(amount.amount));
-                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-            }else if(amount.denom !== Constant.Denom.IRISATTO){
-                amountNumber = amount.amount
-                tokenName = amount.denom.toLocaleUpperCase()
-            }else if(!amount.denom){
-                amountNumber = amount.amount
-                tokenName = ''
-            }
-        }
-        // console.log(amountNumber,tokenName,"amount information")
-        return {amountNumber,tokenName,moreAmountsNumber}
-    }
-
-    static formatPercentage(number){
-        return new BigNumber(number).multipliedBy(100)
-    }
-        /**
-        * Form和To字段展示的问题
-        * */
-    static getFromAndToMoniker(address,monikers){
-        let resData =
-            {
-                address: address,
-                moniker: monikers[address] ? monikers[address] : ''
-            };
-
-        return resData
-    }
-
-    static getDisplayDate(timestamp, format = "YYYY-MM-DD HH:mm:ss"){
+	 * 格式化fee
+	 * */
+	static formatFee(Fee){
+	    if(Fee.amount && Fee.denom){
+	        return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
+	    }
+	}
+	/**
+	 * 格式化交易详情页的amount
+	 * */
+	static formatAmountOfTxDetail(amount){
+	    let [amountNumber,tokenName,moreAmountsNumber] = ['--','--',[]];
+	    if(amount instanceof Array && amount.length > 0) {
+	        if(amount.length !== 1){
+	            moreAmountsNumber = amount.map( (item) => {
+	                if(item.denom === Constant.Denom.IRISATTO){
+	                    return {
+	                        denom : Constant.Denom.IRIS.toLocaleUpperCase(),
+	                        amount: String(Tools.numberMoveDecimal(item.amount))
+	                    }
+	                }else {
+	                    return {
+	                        denom : item.denom.toLocaleUpperCase(),
+	                        amount: Tools.FormatScientificNotationToNumber(item.amount)
+	                    }
+	                }
+	            })
+	        }else {
+	            if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO || amount[0].amount == 0) {
+	                amountNumber = amount[0].amount > 0 ? String(Tools.numberMoveDecimal(amount[0].amount)) : Number(amount[0].amount).toFixed(2);
+	                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+	            } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
+	                amountNumber = amount[0].amount;
+	                tokenName = amount[0].denom.toLocaleUpperCase();
+	            } else {
+	                amountNumber = Tools.formatStringToFixedNumber(Tools.FormatScientificNotationToNumber(amount[0].amount), 2);
+	                if (amount[0].denom === Constant.Denom.IRISATTO) {
+	                    tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+	                } else {
+	                    tokenName = amount[0].denom ? amount[0].denom.toLocaleUpperCase() : '--';
+	
+	                }
+	            }
+	        }
+	    }else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
+	        if(amount.denom === Constant.Denom.IRISATTO){
+	            amountNumber =String(Tools.numberMoveDecimal(amount.amount));
+	            tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+	        }else if(amount.denom !== Constant.Denom.IRISATTO){
+	            amountNumber = amount.amount
+	            tokenName = amount.denom.toLocaleUpperCase()
+	        }else if(!amount.denom){
+	            amountNumber = amount.amount
+	            tokenName = ''
+	        }
+	    }else if(amount&& Object.keys(amount).includes('amount') && Object.keys(amount).includes('denom')){
+	        if(amount.denom === Constant.Denom.IRISATTO){
+	            amountNumber = String(Tools.numberMoveDecimal(amount.amount));
+	            tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+	        }else if(amount.denom !== Constant.Denom.IRISATTO){
+	            amountNumber = amount.amount
+	            tokenName = amount.denom.toLocaleUpperCase()
+	        }else if(!amount.denom){
+	            amountNumber = amount.amount
+	            tokenName = ''
+	        }
+	    }
+	    // console.log(amountNumber,tokenName,"amount information")
+	    return {amountNumber,tokenName,moreAmountsNumber}
+	}
+	
+	static formatPercentage(number){
+	    return new BigNumber(number).multipliedBy(100)
+	}
+	    /**
+	    * Form和To字段展示的问题
+	    * */
+	static getFromAndToMoniker(address,monikers){
+	    let resData =
+	        {
+	            address: address,
+	            moniker: monikers[address] ? monikers[address] : ''
+	        };
+	
+	    return resData
+	}
+	
+	static getDisplayDate(timestamp, format = "YYYY-MM-DD HH:mm:ss"){
 	    return moment(timestamp).utcOffset(+480).format(format);
-    }
-
-    static getFormatDate(date, format = "YYYY-MM-DD HH:mm:ss"){
+	}
+	
+	static getFormatDate(date, format = "YYYY-MM-DD HH:mm:ss"){
 	    return moment(date).utcOffset(+480).format(format);
-    }
-
-    static isBech32(prefix, str) {
-        if (!prefix || prefix.length == 0) {
-            return false
-        }
-
-        let preReg = new RegExp('^' + prefix + '1');
-        if (!preReg.test(str) ){
-            return false
-        }
-        let allReg = new RegExp(/^[0-9a-zA-Z]*$/i);
-        if (!allReg.test(str)){
-            return false
-        }
-
-        try {
-            bech32.decode(str);
-            return true
-        }catch (e) {
-            return false
-        }
-    }
+	}
+	
+	static isBech32(prefix, str) {
+	    if (!prefix || prefix.length == 0) {
+	        return false
+	    }
+	
+	    let preReg = new RegExp('^' + prefix + '1');
+	    if (!preReg.test(str) ){
+	        return false
+	    }
+	    let allReg = new RegExp(/^[0-9a-zA-Z]*$/i);
+	    if (!allReg.test(str)){
+	        return false
+	    }
+	
+	    try {
+	        bech32.decode(str);
+	        return true
+	    }catch (e) {
+	        return false
+	    }
+	}
+	static formatAmount3(param,fixedNumber){
+	    let amount,amountDenom, amountNumber,amountRadixNumber;
+	    if(param instanceof Array){
+		    amount = param[0].amount;
+		    amountDenom = param[0].denom;
+	    }else if(param instanceof Object){
+		    amount = param.amount;
+		    amountDenom = param.denom;
+	    }
+	    if(amount.toString().indexOf('e') !== -1 || amount.toString().indexOf('E') !== -1){
+		    if(amount.toString().indexOf('.') !== -1){
+			    amountNumber = new BigNumber(amount).toFixed().toString();
+		    }else {
+			    amountNumber = new BigNumber(amount).toFixed().toString() + ".";
+		    }
+		    amountRadixNumber = Tools.amountRadix(amountDenom);
+	    }else {
+		    if(amount.toString().indexOf('.') !== -1){
+			    amountNumber = amount.toString();
+		    }else {
+			    amountNumber = amount.toString() + ".";
+		    }
+		    amountRadixNumber = Tools.amountRadix(amountDenom);
+	    }
+	    
+	    if(amountDenom){
+		    return {
+		        amount: Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber),
+			    denom: amountDenom.toLocaleUpperCase()
+		    }
+		    
+	    }else {
+		    return {
+			    amount: Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber),
+			    denom: `SHARES`
+		    }
+	    }
+	}
 }

@@ -1,8 +1,7 @@
 import Tools from "../util/Tools";
 import moveDecimal  from "move-decimal-point";
 import BigNumber from 'bignumber.js';
-
-
+import store from "../store";
 function prototypeToString (value) {
     return Object.prototype.toString.call(value);
 }
@@ -64,7 +63,7 @@ function amountFromatFunc (value, denomArg, fixedValue, noTofixed,ratio) {
                         value.amount, fixedValue || afterPointLen
                     )} ${denomArg || 'SHARES'}`;
                 } else {
-                    if (`${value.denom}`.toLowerCase() === "iris-atto") {
+                    if (`${value.denom}`.toLowerCase() === store.state.displayToken) {
                         value.amount = Tools.numberMoveDecimal(value.amount);
                         afterPointLen = afterPointLength(value.amount);
                         amount = !noTofixed ? `${Tools.formatPriceToFixed(

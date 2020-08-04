@@ -563,8 +563,9 @@
                 })
             },
 	        formatFee(fee){
-		        if(fee){
-			        return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(fee.amount)),4)} ${Tools.formatDenom(fee.denom).toUpperCase()}`;
+		        if(fee& fee.denom){
+		            let feeObject = Tools.formatAmount3(fee,4)
+			        return `${feeObject.amount} ${feeObject.denom}`
 		        }
 	        },
 	        formatNumber(value){

@@ -174,7 +174,7 @@
 	                {
 		                title:'Fee',
 		                key:'TxFee',
-		                slot: 'TxFee(IRIS)',
+		                slot: `TxFee(${this.$store.state.nativeToken})`,
 	                },
 	                {
 		                title:'Status',
@@ -227,7 +227,7 @@
 					{
 						title:'Fee',
 						key:'TxFee',
-						slot: 'TxFee(IRIS)',
+						slot: `TxFee(${this.$store.state.nativeToken})`,
 						tooltipClassName: 'tooltip_left'
 					},
 					{
@@ -264,7 +264,7 @@
 					{
 						title:'Fee',
 						key:'TxFee',
-						slot: 'TxFee(IRIS)',
+						slot: `TxFee(${this.$store.state.nativeToken})`,
 						tooltipClassName: 'tooltip_left'
 					},
 					{
@@ -313,7 +313,7 @@
 					{
 						title:'Fee',
 						key:'TxFee',
-						slot: 'TxFee(IRIS)',
+						slot: `TxFee(${this.$store.state.nativeToken})`,
 						tooltipClassName: 'tooltip_left'
 					},
 					{
@@ -356,7 +356,7 @@
 					{
 						title:'Fee',
 						key:'TxFee',
-						slot: 'TxFee(IRIS)',
+						slot: `TxFee(${this.$store.state.nativeToken})`,
 						tooltipClassName: 'tooltip_left'
 					},
 					{
@@ -403,7 +403,7 @@
 					{
 						title:'Fee',
 						key:'TxFee',
-						slot: 'TxFee(IRIS)',
+						slot: `TxFee(${this.$store.state.nativeToken})`,
 						tooltipClassName: 'tooltip_left'
 					},
 					{

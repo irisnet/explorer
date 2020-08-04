@@ -54,8 +54,9 @@
                   slot: 'Address',
                 },
                 {
-                  title: 'Amount (IRIS)',
+                  title: `Amount (${this.$store.state.nativeToken})`,
                   key: 'Balance',
+                  
                   className: 'text_right'
                 },
                 {
