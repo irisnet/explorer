@@ -11,6 +11,7 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
+	"gopkg.in/mgo.v2"
 )
 
 const (
@@ -169,7 +170,19 @@ func (v Validator) Name() string {
 }
 
 func (v Validator) PkKvPair() map[string]interface{} {
-	return bson.M{"operator_address": v.OperatorAddress}
+	return bson.M{ValidatorFieldOperatorAddress: v.OperatorAddress}
+}
+
+func (v Validator) EnsureIndexes() []mgo.Index {
+	indexes := []mgo.Index{
+		{
+			Key:        []string{ValidatorFieldOperatorAddress},
+			Unique:     true,
+			Background: true,
+		},
+	}
+
+	return indexes
 }
 
 func (_ Validator) GetAllValidator() ([]Validator, error) {

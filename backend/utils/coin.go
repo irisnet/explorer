@@ -8,17 +8,17 @@ import (
 
 	"github.com/irisnet/explorer/backend/logger"
 	"math"
+	"math/big"
 )
 
 const (
 	CoinTypeStake = "stake"
-	//	CoinTypeIris  = "iris"
-	//	CoinTypeAtto  = "iris-atto"
-	//	CoinTypeFemto = "iris-femto"
-	//	CoinTypePico  = "iris-pico"
-	//	CoinTypeNano  = "iris-nano"
-	//	CoinTypeMicro = "iris-micro"
-	//	CoinTypeMilli = "iris-milli"
+	CoinTypeAtto  = "stake-atto"
+	//CoinTypeFemto = "stake-femto"
+	//CoinTypePico  = "stake-pico"
+	//CoinTypeNano  = "stake-nano"
+	//CoinTypeMicro = "stake-micro"
+	//CoinTypeMilli = "stake-milli"
 )
 
 var (
@@ -30,15 +30,15 @@ var (
 	reCoin = regexp.MustCompile(fmt.Sprintf(`^(%s)%s(%s)$`, reAmt, reSpc, reDnm))
 )
 
-//func init() {
-//	coinsMap[CoinTypeIris] = float64(1)
-//	coinsMap[CoinTypeMilli] = float64(1000)
-//	coinsMap[CoinTypeMicro] = float64(1000000)
-//	coinsMap[CoinTypeNano] = float64(1000000000)
-//	coinsMap[CoinTypePico] = float64(1000000000000)
-//	coinsMap[CoinTypeFemto] = float64(1000000000000000)
-//	coinsMap[CoinTypeAtto] = float64(1000000000000000000)
-//}
+func init() {
+	coinsMap[CoinTypeStake] = float64(1)
+	//coinsMap[CoinTypeMilli] = float64(1000)
+	//coinsMap[CoinTypeMicro] = float64(1000000)
+	//coinsMap[CoinTypeNano] = float64(1000000000)
+	//coinsMap[CoinTypePico] = float64(1000000000000)
+	//coinsMap[CoinTypeFemto] = float64(1000000000000000)
+	coinsMap[CoinTypeAtto] = float64(1000000000000000000)
+}
 
 func ParseCoin(coinStr string) (coin Coin) {
 	coinStr = strings.TrimSpace(coinStr)
@@ -94,6 +94,13 @@ func CovertCoin(srcCoin Coin, denom string) (destCoin Coin) {
 	destCoin.Amount = dstAmt
 	destCoin.Denom = denom
 	return
+}
+
+func CovertValue(token *big.Rat, srcdenom, dstdenom string) (*big.Rat) {
+	srcPreci := coinsMap[srcdenom]
+	dstPreci := coinsMap[dstdenom]
+	token = new(big.Rat).Mul(token, new(big.Rat).SetFloat64(dstPreci/srcPreci))
+	return token
 }
 
 func CovertAssetUnit(supplynum string, decimal int) string {

@@ -6,6 +6,7 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
+	"encoding/json"
 )
 
 type UpdateGovParams struct{}
@@ -27,10 +28,24 @@ func (task UpdateGovParams) Start() {
 func (task UpdateGovParams) DoTask(fn func(string) chan bool) error {
 	stop := fn(task.Name())
 	defer HeartQuit(stop)
-	curModuleKv := lcd.GetAllGovModuleParam()
+	//curModuleKv := lcd.GetAllGovModuleParam()
 
-	err := document.GovParams{}.UpdateCurrentModuleParamValue(curModuleKv)
+	params, err := lcd.GetGovModuleParam("")
 	if err != nil {
+		return err
+	}
+	curModuleKv := make(map[string]interface{}, len(params))
+
+	for _, one := range params {
+		data := map[string]interface{}{}
+		if err := json.Unmarshal([]byte(one.Value), &data); err == nil {
+			for k, v := range data {
+				curModuleKv[k] = v
+			}
+		}
+
+	}
+	if err := (document.GovParams{}).UpdateCurrentModuleParamValue(curModuleKv); err != nil {
 		return err
 	}
 

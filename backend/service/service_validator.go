@@ -30,7 +30,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 			if err != nil {
 				logger.Error("GetValidatorListByPage have error", logger.String("error", err.Error()))
 			}
-			panic(types.CodeNotFound)
+			return nil
 		}
 
 		var totalVotingPower = getTotalVotingPower(validatorList)
@@ -338,20 +338,12 @@ func (service *ValidatorService) GetDalegationbyPageSize(lcdDelegations []lcd.De
 func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, size int) vo.RedelegationPage {
 
 	lcdReDelegations := lcd.GetRedelegationsByValidatorAddr(valAddr)
-	blacklist := service.QueryBlackList()
 
 	items := make([]vo.Redelegation, 0, size)
 
 	for k, v := range lcdReDelegations {
 		if k >= page*size && k < (page+1)*size {
-
-			tomoniker := ""
-			if validator, err := document.GetValidatorByAddr(v.ValidatorDstAddr); err == nil {
-				tomoniker = validator.Description.Moniker
-			}
-			if blockone, ok := blacklist[v.ValidatorDstAddr]; ok {
-				tomoniker = blockone.Moniker
-			}
+			tomoniker, _ := service.BuildFTMoniker(v.ValidatorDstAddr, "")
 			tmp := vo.Redelegation{
 				Address:   v.DelegatorAddr,
 				Amount:    v.Balance,
@@ -563,7 +555,7 @@ func (service *ValidatorService) QueryCandidatesTopN() vo.ValDetailVo {
 
 	if err != nil {
 		logger.Error("GetCandidatesTopN have error", logger.String("error", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ValDetailVo{}
 	}
 
 	var validators []vo.Validator
@@ -587,7 +579,7 @@ func (service *ValidatorService) QueryValidator(address string) vo.CandidatesInf
 	validator, err := lcd.Validator(address)
 	if err != nil {
 		logger.Error("lcd.Validator have error", logger.String("error", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.CandidatesInfoVo{}
 	}
 
 	var moniker = validator.Description.Moniker
@@ -690,7 +682,7 @@ func (service *ValidatorService) QueryCandidateStatus(address string) (resp vo.V
 
 	if err != nil {
 		logger.Error("query candidate status", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		return vo.ValStatus{}
 	}
 
 	resp = vo.ValStatus{

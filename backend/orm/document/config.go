@@ -5,6 +5,7 @@ import (
 
 	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2"
 )
 
 const (
@@ -55,4 +56,17 @@ func (_ Config) GetConfig() ([]Config, error) {
 		SetResult(&configs)
 	err := query.Exec()
 	return configs, err
+}
+
+
+func (a Config) EnsureIndexes() []mgo.Index {
+	indexes := []mgo.Index{
+		{
+			Key:        []string{"-network_name"},
+			Unique:     true,
+			Background: true,
+		},
+	}
+
+	return indexes
 }

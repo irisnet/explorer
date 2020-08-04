@@ -26,7 +26,7 @@ type AssetToken struct {
 	AssetName string `bson:"name" json:"name"`
 	Scale     int    `bson:"scale" json:"scale"`
 	//CanonicalSymbol string        `bson:"canonical_symbol" json:"canonical_symbol"`
-	MinUnitAlias  string `bson:"min_unit_alias" json:"min_unit_alias"`
+	MinUnit       string `bson:"min_unit" json:"min_unit"`
 	InitialSupply string `bson:"initial_supply" json:"initial_supply"`
 	MaxSupply     string `bson:"max_supply" json:"max_supply"`
 	//TotalSupply   string `bson:"total_supply" json:"total_supply"`

@@ -13,7 +13,7 @@ var (
 	commonService    = &CommonService{}
 	proposalService  = &ProposalService{}
 	txService        = &TxService{}
-	delegatorService = &DelegatorService{}
+	//delegatorService = &DelegatorService{}
 	govParamsService = &GovParamsService{}
 	validatorService = &ValidatorService{}
 	assetsService    = &AssetsService{}

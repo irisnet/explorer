@@ -2,125 +2,13 @@ package lcd
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/weichang-bianjie/irishub-sdk-go/types"
+	"github.com/irisnet/irishub-sdk-go/types"
 	"strings"
 	"github.com/tendermint/tendermint/crypto"
 )
-
-var (
-	//CriticalThreshold     string
-	//CriticalMinDeposit    document.Coin
-	//CriticalParticipation string
-	//CriticalVeto          string
-	//CriticalPenalty       string
-	//
-	//ImportantThreshold     string
-	//ImportantMinDeposit    document.Coin
-	//ImportantParticipation string
-	//ImportantVeto          string
-	//ImportantPenalty       string
-
-	NormalThreshold     string
-	NormalMinDeposit    document.Coin
-	NormalParticipation string
-	NormalVeto          string
-	//NormalPenalty       string
-)
-
-const (
-	//GovModule (iris app module)
-	GovModule = "gov"
-	//gov module params key
-	//CriticalThresholdKey     = "critical_threshold"
-	//CriticalMinDepositKey    = "critical_min_deposit"
-	//CriticalParticipationKey = "critical_participation"
-	//CriticalVetoKey          = "critical_veto"
-	//CriticalPenaltyKey       = "critical_penalty"
-	//
-	//ImportantThresholdKey     = "important_threshold"
-	//ImportantParticipationKey = "important_participation"
-	//ImportantMinDepositKey    = "important_min_deposit"
-	//ImportantVetoKey          = "important_veto"
-	//ImportantPenaltyKey       = "important_penalty"
-
-	NormalMinDepositKey = "min_deposit"
-	NormalThresholdKey  = "threshold"
-	NormalQuorumKey     = "quorum"
-	NormalVetoKey       = "veto"
-	//NormalPenaltyKey       = "normal_penalty"
-
-	Critical  = "Critical"
-	Important = "Important"
-	Normal    = "Normal"
-	// Critical：SoftwareUpgrade, SystemHalt
-	// Important：ParameterChange
-	// Normal：TxTaxUsage
-	ProposalTypeSoftwareUpgrade = "SoftwareUpgrade"
-	//ProposalTypeSystemHalt        = "SystemHalt"
-	//ProposalTypeParameter         = "Parameter"
-	//ProposalTypeTokenAddition     = "TokenAddition"
-	//ProposalTypeTxTaxUsage        = "TxTaxUsage"
-	ProposalTypeCommunityPoolSpend = "CommunityPoolSpend"
-	ProposalTypePlainText          = "Text"
-)
-
-func GetProposalLevelByType(proposalType string) (string, error) {
-	switch proposalType {
-	case ProposalTypeSoftwareUpgrade:
-		return Critical, nil
-	case ProposalTypeCommunityPoolSpend:
-		return Important, nil
-	case ProposalTypePlainText:
-		return Normal, nil
-	default:
-		return "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v  ,but actual: %v",
-			ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText, proposalType))
-	}
-}
-
-func GetProposalBurnPercentByResult(result string, isRejectVote bool) (float32, error) {
-	switch result {
-	case document.ProposalStatusPassed:
-		return 0.2, nil
-	case document.ProposalStatusRejected:
-		if isRejectVote {
-			return 1, nil
-		}
-		return 0.2, nil
-	default:
-		return 0, errors.New(fmt.Sprintf("expect proposal result status: %v %v ,but actual: %v",
-			document.ProposalStatusPassed, document.ProposalStatusRejected, result))
-	}
-}
-
-func GetMinDepositByProposalType(proposalType string) (document.Coin, error) {
-	switch proposalType {
-	case ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText:
-		return NormalMinDeposit, nil
-
-	default:
-		return document.Coin{}, errors.New(fmt.Sprintf("expect proposal type:  %v %v %v ,but actual: %v",
-			ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText, proposalType))
-	}
-
-}
-
-func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string, string, string, error) {
-
-	switch proposalType {
-	case ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText:
-		return NormalThreshold, NormalVeto, NormalParticipation, nil
-
-	default:
-		return "", "", "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v ,but actual: %v",
-			ProposalTypeSoftwareUpgrade, ProposalTypeCommunityPoolSpend, ProposalTypePlainText, proposalType))
-	}
-}
 
 
 

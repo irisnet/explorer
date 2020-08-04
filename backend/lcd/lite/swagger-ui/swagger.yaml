@@ -328,13 +328,11 @@ definitions:
     type: object
   vo.AssetTokens:
     properties:
-      decimal:
-        type: integer
       initial_supply:
         type: string
       max_supply:
         type: string
-      min_unit_alias:
+      min_unit:
         type: string
       mintable:
         type: boolean
@@ -342,21 +340,19 @@ definitions:
         type: string
       owner:
         type: string
+      scale:
+        type: integer
       symbol:
-        type: string
-      total_supply:
         type: string
     type: object
   vo.AssetTokensRespond:
     items:
       properties:
-        decimal:
-          type: integer
         initial_supply:
           type: string
         max_supply:
           type: string
-        min_unit_alias:
+        min_unit:
           type: string
         mintable:
           type: boolean
@@ -364,9 +360,9 @@ definitions:
           type: string
         owner:
           type: string
+        scale:
+          type: integer
         symbol:
-          type: string
-        total_supply:
           type: string
       type: object
     type: array
@@ -728,15 +724,6 @@ definitions:
       type:
         type: string
     type: object
-  vo.ExStaticMonthDataRespond:
-    properties:
-      data:
-        type: object
-      total:
-        type: integer
-      type:
-        type: string
-    type: object
   vo.FinalVotes:
     properties:
       abstain:
@@ -1060,6 +1047,91 @@ definitions:
         $ref: '#/definitions/vo.SimpleProposalVo'
         type: object
     type: object
+  vo.ServiceBinding:
+    properties:
+      available:
+        type: boolean
+      deposit:
+        items:
+          $ref: '#/definitions/vo.Coin'
+        type: array
+      disabled_time:
+        type: string
+      owner:
+        type: string
+      pricing:
+        type: string
+      provider:
+        type: string
+      qos:
+        type: integer
+      service_name:
+        type: string
+    type: object
+  vo.ServiceBindingRespond:
+    items:
+      properties:
+        available:
+          type: boolean
+        deposit:
+          items:
+            $ref: '#/definitions/vo.Coin'
+          type: array
+        disabled_time:
+          type: string
+        owner:
+          type: string
+        pricing:
+          type: string
+        provider:
+          type: string
+        qos:
+          type: integer
+        service_name:
+          type: string
+      type: object
+    type: array
+  vo.ServiceRequestRespond:
+    properties:
+      batch_counter:
+        type: integer
+      batch_request_count:
+        type: integer
+      batch_response_count:
+        type: integer
+      batch_state:
+        type: integer
+      consumer:
+        type: string
+      input:
+        type: string
+      module_name:
+        type: string
+      providers:
+        items:
+          type: string
+        type: array
+      repeated:
+        type: boolean
+      repeated_frequency:
+        type: integer
+      repeated_total:
+        type: integer
+      response_threshold:
+        type: integer
+      service_fee_cap:
+        items:
+          $ref: '#/definitions/vo.Coin'
+        type: array
+      service_name:
+        type: string
+      state:
+        type: integer
+      super_mode:
+        type: boolean
+      timeout:
+        type: integer
+    type: object
   vo.SimpleBlockVo:
     properties:
       hash:
@@ -1221,6 +1293,17 @@ definitions:
         type: array
       total:
         type: integer
+    type: object
+  vo.UnitInfoResp:
+    properties:
+      base_denom:
+        type: string
+      nt_scale:
+        type: integer
+      nt_unit_display:
+        type: string
+      nt_unit_min:
+        type: string
     type: object
   vo.ValDetailVo:
     properties:
@@ -1594,6 +1677,7 @@ paths:
       - description: symbol
         in: path
         name: symbol
+        required: true
         type: string
       produces:
       - application/json
@@ -1787,54 +1871,6 @@ paths:
       summary: list
       tags:
       - bondedtokens
-  /api/caculate/monthdata:
-    get:
-      consumes:
-      - application/json
-      description: get caculate validators or delegators monthdata
-      parameters:
-      - description: role type
-        enum:
-        - delegator
-        - validator
-        in: query
-        name: type
-        required: true
-        type: string
-      - default: 1
-        description: page num
-        in: query
-        name: page
-        required: true
-        type: integer
-      - default: 5
-        description: page size
-        in: query
-        name: size
-        required: true
-        type: integer
-      - description: caculateTime (eg 2006.01.02)
-        in: query
-        name: caculateTime
-        type: string
-      - description: total
-        enum:
-        - true
-        - false
-        in: query
-        name: total
-        type: boolean
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            $ref: '#/definitions/vo.ExStaticMonthDataRespond'
-            type: object
-      summary: list
-      tags:
-      - caculate
   /api/config:
     get:
       consumes:
@@ -2238,6 +2274,54 @@ paths:
       summary: search text
       tags:
       - common
+  /api/service/bindings/{servicename}:
+    get:
+      consumes:
+      - application/json
+      description: get service by servicename
+      parameters:
+      - description: servicename
+        in: path
+        name: servicename
+        required: true
+        type: string
+      - description: provider
+        in: query
+        name: provider
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ServiceBindingRespond'
+            type: object
+      summary: bindings
+      tags:
+      - service
+  /api/service/contexts/{contextid}:
+    get:
+      consumes:
+      - application/json
+      description: get service contexts by contextid
+      parameters:
+      - description: contextid
+        in: path
+        name: contextid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ServiceRequestRespond'
+            type: object
+      summary: requests
+      tags:
+      - service
   /api/stake/candidate/{address}:
     get:
       consumes:
@@ -3032,6 +3116,22 @@ paths:
       summary: txsByDay
       tags:
       - txs
+  /api/unit_info:
+    get:
+      consumes:
+      - application/json
+      description: get base unit info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.UnitInfoResp'
+            type: object
+      summary: unit info
+      tags:
+      - tokenstats
   /api/version:
     get:
       consumes:

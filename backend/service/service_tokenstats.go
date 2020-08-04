@@ -16,41 +16,47 @@ type TokenStatsService struct {
 	BaseService
 }
 
+func (service *TokenStatsService) QueryUnitInfo() (vo.UnitInfoResp) {
+	serconf := conf.Get().Server
+	basedenom, err := lcd.QueryBaseDenom()
+	if err != nil {
+		logger.Error("Query BaseDenom have error", logger.String("err", err.Error()))
+	}
+	resp := vo.UnitInfoResp{
+		NtScale:       serconf.NtScale,
+		NtUnitMin:     serconf.NtUnitMin,
+		NtUnitDisplay: serconf.NtUnitDisplay,
+		BaseDenom:     basedenom,
+	}
+	return resp
+}
+
 func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 
 	var (
-		tokenStatsVO     vo.TokenStatsVo
-		supply           lcd.Coin
-		circulation      lcd.Coin
-		banktokenstats   lcd.TokenStats
+		tokenStatsVO vo.TokenStatsVo
+		supply       lcd.Coin
+		//circulation      lcd.Coin
+		//banktokenstats   lcd.TokenStats
 		foundationBonded string
 	)
 
 	var group sync.WaitGroup
-	group.Add(4)
+	group.Add(3)
 
-	//go func() {
-	//	defer group.Done()
-	//	var err error
-	//	banktokenstats, err = lcd.GetBankTokenStats()
-	//	if err != nil {
-	//		logger.Error("GetBankTokenStats have error", logger.String("err", err.Error()))
-	//	}
-	//}()
 	go func() {
 		defer group.Done()
-		var err error
-		supply, err = lcd.GetTokenStatsSupply()
-		if err != nil {
-			logger.Error("GetTokenStatsSupply have error", logger.String("err", err.Error()))
+		pool := lcd.StakePool()
+		if pool.BondedTokens != "" {
+			tokenStatsVO.DelegatedTokens = LoadCoinVoFromLcdCoin(lcd.Coin{Amount: pool.BondedTokens})
 		}
 	}()
 	go func() {
 		defer group.Done()
 		var err error
-		circulation, err = lcd.GetTokenStatsCirculation()
+		supply, err = lcd.GetTotalSupply()
 		if err != nil {
-			logger.Error("GetTokenStatsCirculation have error", logger.String("err", err.Error()))
+			logger.Error("GetTokenStatsSupply have error", logger.String("err", err.Error()))
 		}
 	}()
 	go func() {
@@ -68,22 +74,14 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 	}()
 	group.Wait()
 
-	//initsupply := lcd.GetTokenInitSupply()
-	burnedtokens := lcd.GetTokens(banktokenstats.BurnedTokens)
-	bondedtokens := lcd.GetTokens(banktokenstats.BondedTokens)
-
-	tokenStatsVO.TotalsupplyTokens = LoadCoinVoFromLcdCoin(&supply)
-	tokenStatsVO.CirculationTokens = LoadCoinVoFromLcdCoin(&circulation)
-	//tokenStatsVO.InitsupplyTokens = LoadCoinVoFromLcdCoin(&initsupply)
-	tokenStatsVO.DelegatedTokens = LoadCoinVoFromLcdCoin(&bondedtokens)
-	tokenStatsVO.BurnedTokens = LoadCoinVoFromLcdCoin(&burnedtokens)
+	tokenStatsVO.TotalsupplyTokens = LoadCoinVoFromLcdCoin(supply)
 	if conf.Get().Hub.Prefix.AccAddr == types.MainnetAccPrefix {
 		if balance, err := lcd.GetCommunityTax(); err == nil {
-			tokenStatsVO.CommunityTax = LoadCoinVoFromLcdCoin(&balance)
+			tokenStatsVO.CommunityTax = LoadCoinVoFromLcdCoin(balance)
 		}
 	}
 
-	tokenStatsVO.FoundationBonded = LoadCoinVoFromLcdCoin(&lcd.Coin{
+	tokenStatsVO.FoundationBonded = LoadCoinVoFromLcdCoin(lcd.Coin{
 		Denom:  types.StakeUint,
 		Amount: foundationBonded,
 	})
@@ -91,7 +89,7 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 	return tokenStatsVO, nil
 }
 
-func LoadCoinVoFromLcdCoin(coin *lcd.Coin) *vo.CoinVo {
+func LoadCoinVoFromLcdCoin(coin lcd.Coin) *vo.CoinVo {
 	return &vo.CoinVo{
 		Denom:  coin.Denom,
 		Amount: coin.Amount,

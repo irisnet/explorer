@@ -17,5 +17,11 @@ var (
 
 	Docs = []Doc{
 		TaskControlModel,
+		new(Config),
+		new(GovParams),
+		new(AssetToken),
+		new(BlackList),
+		new(Proposal),
+		new(Validator),
 	}
 )

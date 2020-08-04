@@ -71,7 +71,7 @@ func TestCountByType(t *testing.T) {
 
 func TestGetTxlistByDuration(t *testing.T) {
 
-	txList, err := CommonTx{}.GetTxlistByDuration(time.Now().Add(time.Hour*-240000).String(), time.Now().String())
+	txList, err := CommonTx{}.GetTxlistByDuration(time.Now().Add(time.Hour * -240000).String(), time.Now().String())
 	if err != nil {
 		t.Error(err)
 	}
@@ -95,7 +95,7 @@ func TestGetTxCountByDuration(t *testing.T) {
 }
 
 func TestCommonTx_QueryTxAsset(t *testing.T) {
-	total, ret, err := CommonTx{}.QueryTxAsset("native", "MintToken", "h002", "", 0, 10, true)
+	total, ret, err := CommonTx{}.QueryTxAsset("MintToken", "skitty", 0, 10, true)
 	if err != nil {
 		t.Fatal(err.Error())
 	}

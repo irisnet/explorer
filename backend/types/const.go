@@ -48,15 +48,16 @@ const (
 	UrlRegisterQuerySysDate = "/sysdate"
 	UrlRegisterQueryConfig  = "/config"
 
-	//caculate
-	UrlRegisterQueryCaculateMonthData = "/caculate/monthdata"
-
 	//faucet
 	UrlRegisterQueryFaucet = "/faucet/account"
 	UrlRegisterApply       = "/faucet/apply/{address}"
 
 	UrlFaucetAccountService = "%s/account"
 	UrlFaucetApplyService   = "%s/apply"
+
+	//Service
+	UrlRegisterQueryServiceBindings = "/service/bindings/{servicename}"
+	UrlRegisterQueryServiceRequest  = "/service/contexts/{contextid}"
 
 	//Stake
 	UrlRegisterGetValidators                         = "/stake/validators"
@@ -85,15 +86,16 @@ const (
 	UrlRegisterQueryTxType       = "/tx_types/{type}"
 	//tokenstats
 	UrlRegisterQueryTokenStats    = "/tokenstats"
+	UrlRegisterQueryBaseDenom     = "/unit_info"
 	UrlRegisterTokensAccountTotal = "/tokenstats/account_total"
 	//bondedtokens
 	UrlRegisterBondedTokensValidators = "/bondedtokens/validators"
 	//assetTokens
 	UrlRegisterAssetTokens = "/asset/tokens"
 	//assetToken Detail
-	UrlRegisterAssetTokenInfo = "/asset/tokens/{token_id}"
+	UrlRegisterAssetTokenInfo = "/asset/tokens/{symbol}"
 	//assetGateway
-	UrlRegisterAssetGatewayInfo = "/asset/gateways/{moniker}"
+	//UrlRegisterAssetGatewayInfo = "/asset/gateways/{moniker}"
 	//version
 	UrlRegisterQueryApiVersion = "/version"
 
@@ -186,20 +188,20 @@ var (
 	TxTypeNFTBurn     = "NFTBurn"
 	TxTypeIssueDenom  = "IssueDenom"
 
-	TxTypeDefineService          = "DefineService"          // type for MsgDefineService
-	TxTypeBindService            = "BindService"            // type for MsgBindService
-	TxTypeUpdateServiceBinding   = "UpdateServiceBinding"   // type for MsgUpdateServiceBinding
-	TxTypeSetWithdrawFeesAddress = "SetWithdrawFeesAddress" // type for SetWithdrawFeesAddress
-	TxTypeDisableServiceBinding  = "DisableServiceBinding"  // type for MsgDisableServiceBinding
-	TxTypeEnableServiceBinding   = "EnableServiceBinding"   // type for MsgEnableServiceBinding
-	TxTypeRefundServiceDeposit   = "RefundServiceDeposit"   // type for MsgRefundServiceDeposit
-	TxTypeCallService            = "CallService"            // type for MsgCallService
-	TxTypeRespondService         = "RespondService"         // type for MsgRespondService
-	TxTypePauseRequestContext    = "PauseRequestContext"    // type for MsgPauseRequestContext
-	TxTypeStartRequestContext    = "StartRequestContex"     // type for MsgStartRequestContext
-	TxTypeKillRequestContext     = "KillRequestContex"      // type for MsgKillRequestContext
-	TxTypeUpdateRequestContext   = "UpdateRequestContext"   // type for MsgUpdateRequestContext
-	TxTypeWithdrawEarnedFees     = "WithdrawEarnedFees"     // type for MsgWithdrawEarnedFees
+	TxTypeDefineService             = "DefineService"          // type for MsgDefineService
+	TxTypeBindService               = "BindService"            // type for MsgBindService
+	TxTypeUpdateServiceBinding      = "UpdateServiceBinding"   // type for MsgUpdateServiceBinding
+	TxTypeServiceSetWithdrawAddress = "service/SetWithdrawAddress" // type for SetWithdrawAddress
+	TxTypeDisableServiceBinding     = "DisableServiceBinding"  // type for MsgDisableServiceBinding
+	TxTypeEnableServiceBinding      = "EnableServiceBinding"   // type for MsgEnableServiceBinding
+	TxTypeRefundServiceDeposit      = "RefundServiceDeposit"   // type for MsgRefundServiceDeposit
+	TxTypeCallService               = "CallService"            // type for MsgCallService
+	TxTypeRespondService            = "RespondService"         // type for MsgRespondService
+	TxTypePauseRequestContext    = "PauseRequestContext"       // type for MsgPauseRequestContext
+	TxTypeStartRequestContext    = "StartRequestContext"       // type for MsgStartRequestContext
+	TxTypeKillRequestContext     = "KillRequestContext"        // type for MsgKillRequestContext
+	TxTypeUpdateRequestContext   = "UpdateRequestContext"      // type for MsgUpdateRequestContext
+	TxTypeWithdrawEarnedFees     = "WithdrawEarnedFees"        // type for MsgWithdrawEarnedFees
 
 	TxTypeCreateFeed = "CreateFeed"
 	TxTypeEditFeed   = "EditFeed"
@@ -228,6 +230,7 @@ var (
 	GuardianList    = []string{TxTypeAddProfiler, TxTypeAddTrustee, TxTypeDeleteProfiler, TxTypeDeleteTrustee}
 	HTLCList        = []string{TxTypeClaimHTLC, TxTypeCreateHTLC, TxTypeRefundHTLC}
 	CoinswapList    = []string{TxTypeAddLiquidity, TxTypeRemoveLiquidity, TxTypeSwapOrder}
+	SlashingList    = []string{TxTypeVerifyInvariant}
 
 	//ForwardList = []string{TxTypeBeginRedelegate}
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
@@ -238,7 +241,7 @@ var (
 	ServiceList = []string{TxTypeDefineService, TxTypeBindService, TxTypeCallService, TxTypeRespondService,
 		TxTypeDisableServiceBinding, TxTypeEnableServiceBinding, TxTypeUpdateServiceBinding,
 		TxTypeStartRequestContext, TxTypeKillRequestContext, TxTypePauseRequestContext, TxTypeUpdateRequestContext,
-		TxTypeSetWithdrawFeesAddress, TxTypeRefundServiceDeposit, TxTypeWithdrawEarnedFees}
+		TxTypeServiceSetWithdrawAddress, TxTypeRefundServiceDeposit, TxTypeWithdrawEarnedFees}
 
 	ProfilerAddrList = map[string]string{
 		"iaa1v6c3sa76s3grss3xu64tvn9nd556jlcw6azc85": "Genesis Profiler 1",

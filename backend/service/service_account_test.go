@@ -17,14 +17,14 @@ import (
 
 func TestQuery(t *testing.T) {
 
-	addrStr := "faa174qyl02cupyqq77cqqtdl0frda6dl3rpjcrgnp"
+	addrStr := "iaa1x98k5n7xj0h3udnf5dcdzw85tsfa75qm0kqak0"
 
 	res := new(AccountService).Query(addrStr)
 	t.Logf("account by addr(%v):  %v \n", addrStr, res)
 	bytesmsg, _ := json.Marshal(res)
 	t.Log(string(bytesmsg))
 
-	valAddStr := "fva186qhtc62cf6ejlt3erw6zk28mgw8ne7grhmyfn"
+	valAddStr := "iva1x98k5n7xj0h3udnf5dcdzw85tsfa75qm682jtg"
 
 	res = new(AccountService).Query(valAddStr)
 	t.Logf("account by addr(%v):  %v \n", valAddStr, res)
