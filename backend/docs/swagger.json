@@ -4074,7 +4074,7 @@
                     "type": "string"
                 },
                 "state": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "super_mode": {
                     "type": "boolean"

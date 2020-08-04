@@ -188,20 +188,20 @@ var (
 	TxTypeNFTBurn     = "NFTBurn"
 	TxTypeIssueDenom  = "IssueDenom"
 
-	TxTypeDefineService             = "DefineService"          // type for MsgDefineService
-	TxTypeBindService               = "BindService"            // type for MsgBindService
-	TxTypeUpdateServiceBinding      = "UpdateServiceBinding"   // type for MsgUpdateServiceBinding
+	TxTypeDefineService             = "DefineService"              // type for MsgDefineService
+	TxTypeBindService               = "BindService"                // type for MsgBindService
+	TxTypeUpdateServiceBinding      = "UpdateServiceBinding"       // type for MsgUpdateServiceBinding
 	TxTypeServiceSetWithdrawAddress = "service/SetWithdrawAddress" // type for SetWithdrawAddress
-	TxTypeDisableServiceBinding     = "DisableServiceBinding"  // type for MsgDisableServiceBinding
-	TxTypeEnableServiceBinding      = "EnableServiceBinding"   // type for MsgEnableServiceBinding
-	TxTypeRefundServiceDeposit      = "RefundServiceDeposit"   // type for MsgRefundServiceDeposit
-	TxTypeCallService               = "CallService"            // type for MsgCallService
-	TxTypeRespondService            = "RespondService"         // type for MsgRespondService
-	TxTypePauseRequestContext    = "PauseRequestContext"       // type for MsgPauseRequestContext
-	TxTypeStartRequestContext    = "StartRequestContext"       // type for MsgStartRequestContext
-	TxTypeKillRequestContext     = "KillRequestContext"        // type for MsgKillRequestContext
-	TxTypeUpdateRequestContext   = "UpdateRequestContext"      // type for MsgUpdateRequestContext
-	TxTypeWithdrawEarnedFees     = "WithdrawEarnedFees"        // type for MsgWithdrawEarnedFees
+	TxTypeDisableServiceBinding     = "DisableServiceBinding"      // type for MsgDisableServiceBinding
+	TxTypeEnableServiceBinding      = "EnableServiceBinding"       // type for MsgEnableServiceBinding
+	TxTypeRefundServiceDeposit      = "RefundServiceDeposit"       // type for MsgRefundServiceDeposit
+	TxTypeCallService               = "CallService"                // type for MsgCallService
+	TxTypeRespondService            = "RespondService"             // type for MsgRespondService
+	TxTypePauseRequestContext       = "PauseRequestContext"        // type for MsgPauseRequestContext
+	TxTypeStartRequestContext       = "StartRequestContext"        // type for MsgStartRequestContext
+	TxTypeKillRequestContext        = "KillRequestContext"         // type for MsgKillRequestContext
+	TxTypeUpdateRequestContext      = "UpdateRequestContext"       // type for MsgUpdateRequestContext
+	TxTypeWithdrawEarnedFees        = "WithdrawEarnedFees"         // type for MsgWithdrawEarnedFees
 
 	TxTypeCreateFeed = "CreateFeed"
 	TxTypeEditFeed   = "EditFeed"
@@ -394,6 +394,17 @@ func IsOrcaleType(typ string) bool {
 	}
 	return false
 }
+func IsSlashingType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range SlashingList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
 
 type TxType int
 
@@ -411,6 +422,7 @@ const (
 	Nft
 	Service
 	Orcale
+	Slashing
 )
 
 func Convert(typ string) TxType {
@@ -438,6 +450,8 @@ func Convert(typ string) TxType {
 		return Orcale
 	} else if IsServiceType(typ) {
 		return Service
+	} else if IsSlashingType(typ) {
+		return Slashing
 	}
 	logger.Error("Convert UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)

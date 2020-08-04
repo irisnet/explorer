@@ -1124,7 +1124,7 @@ definitions:
       service_name:
         type: string
       state:
-        type: integer
+        type: string
       super_mode:
         type: boolean
       timeout:
