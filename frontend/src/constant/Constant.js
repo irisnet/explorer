@@ -42,13 +42,13 @@ TxType.STAKES = 'Stakes';
 TxType.GOVERNANCE = 'Governance';
 TxType.DECLARATIONS = 'Declarations';
 
-TxType.send = 'Send';
-TxType.create_record = 'CreateRecord';
-TxType.burn_nft = 'BurnNft';
-TxType.transfer_nft = 'TransferNft';
-TxType.edit_nft = 'EditNft';
-TxType.issue_denom = 'IssueDenom';
-TxType.mint_nft = 'MintNft';
+TxType.SEND = 'Send';
+TxType.CREATE_RECORD = 'CreateRecord';
+TxType.BURN_NFT = 'BurnNft';
+TxType.TRANSFER_NFT = 'TransferNft';
+TxType.EDIT_NFT = 'EditNft';
+TxType.ISSUE_DENOM = 'IssueDenom';
+TxType.MINT_NFT = 'MintNft';
 TxType.FundCommunityPool = 'FundCommunityPool';
 TxType.WithdrawValidatorCommission = 'WithdrawValidatorCommission';
 

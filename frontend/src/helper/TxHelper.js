@@ -12,7 +12,7 @@ export class TxHelper {
         if(!msgs || !msgs.msg) return res;
         const {type, msg} = msgs;
         switch (type){
-            case TX_TYPE.send:
+            case TX_TYPE.SEND:
                 res.from = msg.fromaddress;
                 res.to = msg.toaddress;
                 break;
@@ -64,23 +64,23 @@ export class TxHelper {
             case TX_TYPE.UPDATE_REQUEST_CONTEXT:
                 res.from = msg.consumer;
                 break;
-            case TX_TYPE.create_record:
+            case TX_TYPE.CREATE_RECORD:
                 res.from = msg.creator;
                 break;
-            case TX_TYPE.burn_nft:
+            case TX_TYPE.BURN_NFT:
                 res.from = msg.sender;
                 break;
-            case TX_TYPE.transfer_nft:
+            case TX_TYPE.TRANSFER_NFT:
                 res.from = msg.sender;
                 res.to = msg.recipient;
                 break;
-            case TX_TYPE.edit_nft:
+            case TX_TYPE.EDIT_NFT:
                 res.from = msg.sender;
                 break;
-            case TX_TYPE.issue_denom:
+            case TX_TYPE.ISSUE_DENOM:
                 res.from = msg.sender;
                 break;
-            case TX_TYPE.mint_nft:
+            case TX_TYPE.MINT_NFT:
                 res.from = msg.sender;
                 res.to = msg.recipient;
                 break;
