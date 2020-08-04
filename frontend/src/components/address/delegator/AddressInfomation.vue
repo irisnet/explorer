@@ -226,7 +226,7 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <!-- <el-table-column :min-width="ColumnMinWidth.price" :label="$t('ExplorerCN.addressDetail.pricing')">
+                    <el-table-column :min-width="ColumnMinWidth.price" :label="$t('ExplorerCN.addressDetail.pricing')">
                         <template slot-scope="scope">
                             <span>{{scope.row.pricing}}</span>
                         </template>
@@ -235,7 +235,7 @@
                         <template slot-scope="scope">
                             <span>{{scope.row.deposit}}</span>
                         </template>
-                    </el-table-column> -->
+                    </el-table-column>
                     <el-table-column :min-width="ColumnMinWidth.qos" :label="$t('ExplorerCN.addressDetail.qos')">
                         <template slot-scope="scope">
                             <span>{{`${scope.row.qos} ${$t('ExplorerCN.unit.blocks')}`}}</span>
@@ -1052,8 +1052,9 @@
                                 });
                             });
                             let context = await getServiceContextsByServiceName(result.requestContextId || '');
-                            if (context && context.result && context.result.value) {
-                                result.state = context.result.value.state;
+                            debugger;
+                            if (context) {
+                                result.state = context.state;
                             }
                             this.consumerTxList.push(result);
                             if (item.respond && item.respond.length) {
@@ -1132,7 +1133,7 @@
                                 result.deposit = `${item.msgs[0].msg.deposit[0].amount} ${item.msgs[0].msg.deposit[0].denom}`;
                             }
                             let bindings = await getServiceBindingByServiceName(result.serviceName);
-                            (bindings.result || []).forEach((bind)=>{
+                            (bindings || []).forEach((bind)=>{
                                 if(result.provider === bind.provider && result.owner == bind.owner){
                                     result.isAvailable = bind.available;
                                     result.pricing = JSON.parse(bind.pricing || '{}').price;

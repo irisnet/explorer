@@ -62,7 +62,7 @@
 
                     </template>
                     </el-table-column>
-                    <!-- <el-table-column :min-width="ColumnMinWidth.price" :label="$t('ExplorerCN.service.price')" prop="price"></el-table-column> -->
+                    <el-table-column :min-width="ColumnMinWidth.price" :label="$t('ExplorerCN.service.price')" prop="price"></el-table-column>
 					<el-table-column :min-width="ColumnMinWidth.qos" :label="$t('ExplorerCN.service.minBlock')" prop="qos"></el-table-column>
 					<el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerCN.service.time')" prop="bindTime"></el-table-column>
 				</el-table>
