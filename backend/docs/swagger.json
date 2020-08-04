@@ -283,30 +283,6 @@
                 }
             }
         },
-        "/api/basedenom": {
-            "get": {
-                "description": "get base denom",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tokenstats"
-                ],
-                "summary": "basedenom",
-                "responses": {
-                    "200": {
-                        "description": "success",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/vo.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/api/block/blockinfo/{height}": {
             "get": {
                 "description": "get block info",
@@ -2348,6 +2324,30 @@
                 }
             }
         },
+        "/api/unit_info": {
+            "get": {
+                "description": "get base unit info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tokenstats"
+                ],
+                "summary": "unit info",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/vo.UnitInfoResp"
+                        }
+                    }
+                }
+            }
+        },
         "/api/version": {
             "get": {
                 "description": "version",
@@ -4326,6 +4326,23 @@
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "vo.UnitInfoResp": {
+            "type": "object",
+            "properties": {
+                "base_denom": {
+                    "type": "string"
+                },
+                "nt_scale": {
+                    "type": "integer"
+                },
+                "nt_unit_display": {
+                    "type": "string"
+                },
+                "nt_unit_min": {
+                    "type": "string"
                 }
             }
         },

@@ -66,7 +66,7 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 		} else {
 			dst.Symbol = msgData.Symbol
 			dst.Name = msgData.Name
-			dst.Decimal = msgData.Scale
+			dst.Scale = msgData.Scale
 			dst.InitialSupply = msgData.InitialSupply
 			dst.MaxSupply = msgData.MaxSupply
 			dst.Mintable = msgData.Mintable

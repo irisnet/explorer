@@ -1294,6 +1294,17 @@ definitions:
       total:
         type: integer
     type: object
+  vo.UnitInfoResp:
+    properties:
+      base_denom:
+        type: string
+      nt_scale:
+        type: integer
+      nt_unit_display:
+        type: string
+      nt_unit_min:
+        type: string
+    type: object
   vo.ValDetailVo:
     properties:
       count:
@@ -1721,22 +1732,6 @@ paths:
       summary: native
       tags:
       - assets
-  /api/basedenom:
-    get:
-      consumes:
-      - application/json
-      description: get base denom
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            $ref: '#/definitions/vo.Response'
-            type: object
-      summary: basedenom
-      tags:
-      - tokenstats
   /api/block/blockinfo/{height}:
     get:
       consumes:
@@ -3121,6 +3116,22 @@ paths:
       summary: txsByDay
       tags:
       - txs
+  /api/unit_info:
+    get:
+      consumes:
+      - application/json
+      description: get base unit info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.UnitInfoResp'
+            type: object
+      summary: unit info
+      tags:
+      - tokenstats
   /api/version:
     get:
       consumes:

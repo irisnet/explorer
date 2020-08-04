@@ -61,20 +61,17 @@ func registerQueryTokensAccountTotal(r *mux.Router) error {
 	return nil
 }
 
-// @Summary basedenom
-// @Description get base denom
+// @Summary unit info
+// @Description get base unit info
 // @Tags tokenstats
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} vo.Response  "success"
-// @Router /api/basedenom [get]
+// @Success 200 {object} vo.UnitInfoResp  "success"
+// @Router /api/unit_info [get]
 func registerQueryBaseDenom(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryBaseDenom, "GET", func(request vo.IrisReq) interface{} {
 		tokenstats.SetTid(request.TraceId)
-		result, err := tokenstats.QueryBaseDenom()
-		if err != nil {
-			return vo.NewResponse("-1", err.Error(), nil)
-		}
+		result := tokenstats.QueryUnitInfo()
 		return vo.NewResponse(types.CodeSuccess.Code, types.CodeSuccess.Msg, result)
 	})
 

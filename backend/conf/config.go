@@ -27,7 +27,9 @@ const (
 	KeyMaxDrawCnt    = "MAX_DRAW_CNT"
 	KeyShowFaucet    = "SHOW_FAUCET"
 	KeyCurEnv        = "CUR_ENV"
-	KeyInitialSupply = "INITIAL_SUPPLY"
+	KeyNtUnitDisplay = "NT_UNIT_DISPLAY"
+	KeyNtUnitMin     = "NT_UNIT_MIN"
+	KeyNtScale       = "NT_SCALE"
 
 	KeyPrefixAccAddr  = "PrefixAccAddr"
 	KeyPrefixAccPub   = "PrefixAccPub"
@@ -36,7 +38,6 @@ const (
 	KeyPrefixConsAddr = "PrefixConsAddr"
 	KeyPrefixConsPub  = "PrefixConsPub"
 
-	KeyCronTimeAssetGateways       = "CronTimeAssetGateways"
 	KeyCronTimeAssetTokens         = "CronTimeAssetTokens"
 	KeyCronTimeGovParams           = "CronTimeGovParams"
 	KeyCronTimeTxNumByDay          = "CronTimeTxNumByDay"
@@ -48,8 +49,7 @@ const (
 	KeyCronTimeProposalVoters      = "CronTimeProposalVoters"
 	KeyCronTimeValidatorStaticInfo = "CronTimeValidatorStaticInfo"
 
-
-	KeyFoundationDelegatorAddr   = "FoundationDelegatorAddr"
+	KeyFoundationDelegatorAddr = "FoundationDelegatorAddr"
 
 	EnvironmentDevelop = "dev"
 	EnvironmentLocal   = "local"
@@ -64,13 +64,11 @@ const (
 var (
 	config        Config
 	defaultConfig = map[string]map[string]string{}
-	//IniSupply     string
 )
 
 func init() {
 	logger.Info("==================================load config start==================================")
 	loadDefault()
-	//IniSupply = getEnv(KeyInitialSupply, DefaultEnvironment)
 	addrs := strings.Split(getEnv(KeyDbAddr, DefaultEnvironment), ",")
 	db := dbConf{
 		Addrs:     addrs,
@@ -83,14 +81,16 @@ func init() {
 
 	rand.Seed(time.Now().Unix())
 	server := serverConf{
-		InstanceNo:                   fmt.Sprintf("%d-%d", time.Now().Unix(), rand.Int63n(100)),
-		ServerPort:                   getEnvInt(KeyServerPort, DefaultEnvironment),
-		FaucetUrl:                    getEnv(KeyAddrFaucet, DefaultEnvironment),
-		ApiVersion:                   getEnv(KeyApiVersion, DefaultEnvironment),
-		MaxDrawCnt:                   getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
-		ShowFaucet:                   getEnv(KeyShowFaucet, DefaultEnvironment),
+		InstanceNo:                  fmt.Sprintf("%d-%d", time.Now().Unix(), rand.Int63n(100)),
+		ServerPort:                  getEnvInt(KeyServerPort, DefaultEnvironment),
+		FaucetUrl:                   getEnv(KeyAddrFaucet, DefaultEnvironment),
+		ApiVersion:                  getEnv(KeyApiVersion, DefaultEnvironment),
+		MaxDrawCnt:                  getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
+		ShowFaucet:                  getEnv(KeyShowFaucet, DefaultEnvironment),
 		CurEnv:                      getEnv(KeyCurEnv, DefaultEnvironment),
-		CronTimeAssetGateways:       getEnvInt(KeyCronTimeAssetGateways, DefaultEnvironment),
+		NtScale:                     getEnvInt(KeyNtScale, DefaultEnvironment),
+		NtUnitDisplay:               getEnv(KeyNtUnitDisplay, DefaultEnvironment),
+		NtUnitMin:                   getEnv(KeyNtUnitMin, DefaultEnvironment),
 		CronTimeAssetTokens:         getEnvInt(KeyCronTimeAssetTokens, DefaultEnvironment),
 		CronTimeGovParams:           getEnvInt(KeyCronTimeGovParams, DefaultEnvironment),
 		CronTimeTxNumByDay:          getEnvInt(KeyCronTimeTxNumByDay, DefaultEnvironment),
@@ -101,8 +101,7 @@ func init() {
 		CronTimeValidatorIcons:      getEnvInt(KeyCronTimeValidatorIcons, DefaultEnvironment),
 		CronTimeProposalVoters:      getEnvInt(KeyCronTimeProposalVoters, DefaultEnvironment),
 		CronTimeValidatorStaticInfo: getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
-		FoundationDelegatorAddr:      getEnv(KeyFoundationDelegatorAddr, DefaultEnvironment),
-
+		FoundationDelegatorAddr:     getEnv(KeyFoundationDelegatorAddr, DefaultEnvironment),
 	}
 
 	logger.Info(fmt.Sprintf("serverInstanceNo: %s", server.InstanceNo))
@@ -128,29 +127,29 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbAddr:         "localhost:27018",
-		KeyDATABASE:       "bifrost-sync",
-		KeyDbUser:         "iris",
-		KeyDbPwd:          "irispassword",
-		KeyDbPoolLimit:    "4096",
-		KeyServerPort:     "8081",
-		KeyAddrHubLcd:     "http://irisnet-lcd.dev.bianjie",
-		KeyAddrHubNode:    "http://localhost:36657",
-		KeyAddrFaucet:     "http://192.168.150.7:30200",
-		KeyChainId:        "test",
-		KeyApiVersion:     "v0.6.5",
-		KeyMaxDrawCnt:     "10",
-		KeyPrefixAccAddr:  "iaa",
-		KeyPrefixAccPub:   "iap",
-		KeyPrefixValAddr:  "iva",
-		KeyPrefixValPub:   "ivp",
-		KeyPrefixConsAddr: "ica",
-		KeyPrefixConsPub:  "icp",
-		KeyShowFaucet:     "1",
-		KeyCurEnv:         "dev",
-		KeyInitialSupply:  InitialSupply,
-
-		KeyCronTimeAssetGateways:       "60",
+		KeyDbAddr:                      "localhost:27018",
+		KeyDATABASE:                    "bifrost-sync",
+		KeyDbUser:                      "iris",
+		KeyDbPwd:                       "irispassword",
+		KeyDbPoolLimit:                 "4096",
+		KeyServerPort:                  "8081",
+		KeyAddrHubLcd:                  "http://irisnet-lcd.dev.bianjie",
+		KeyAddrHubNode:                 "http://localhost:36657",
+		KeyAddrFaucet:                  "http://192.168.150.7:30200",
+		KeyChainId:                     "test",
+		KeyApiVersion:                  "v0.6.5",
+		KeyMaxDrawCnt:                  "10",
+		KeyPrefixAccAddr:               "iaa",
+		KeyPrefixAccPub:                "iap",
+		KeyPrefixValAddr:               "iva",
+		KeyPrefixValPub:                "ivp",
+		KeyPrefixConsAddr:              "ica",
+		KeyPrefixConsPub:               "icp",
+		KeyShowFaucet:                  "1",
+		KeyCurEnv:                      "dev",
+		KeyNtUnitMin:                   "stake",
+		KeyNtUnitDisplay:               "stake",
+		KeyNtScale:                     "0",
 		KeyCronTimeAssetTokens:         "60",
 		KeyCronTimeGovParams:           "3600",
 		KeyCronTimeTxNumByDay:          "86400",
@@ -161,7 +160,7 @@ func loadDefault() {
 		KeyCronTimeProposalVoters:      "60",
 		KeyCronTimeValidatorIcons:      "43200",
 		KeyCronTimeValidatorStaticInfo: "300",
-		KeyFoundationDelegatorAddr:   "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts",
+		KeyFoundationDelegatorAddr:     "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts",
 	}
 }
 
@@ -184,25 +183,27 @@ type dbConf struct {
 }
 
 type serverConf struct {
-	InstanceNo                   string
-	ServerPort                   int
-	FaucetUrl                    string
-	ApiVersion                   string
-	MaxDrawCnt                   int
-	ShowFaucet                   string
-	CurEnv                       string
-	CronTimeAssetGateways        int
-	CronTimeAssetTokens          int
-	CronTimeGovParams            int
-	CronTimeTxNumByDay           int
-	CronTimeControlTask          int
-	CronTimeHeartBeat            int
-	CronTimeValidators           int
-	CronTimeAccountRewards       int
-	CronTimeValidatorStaticInfo  int
-	CronTimeValidatorIcons       int
-	CronTimeProposalVoters       int
-	FoundationDelegatorAddr      string
+	InstanceNo                  string
+	ServerPort                  int
+	FaucetUrl                   string
+	ApiVersion                  string
+	MaxDrawCnt                  int
+	ShowFaucet                  string
+	CurEnv                      string
+	NtUnitDisplay               string
+	NtUnitMin                   string
+	NtScale                     int
+	CronTimeAssetTokens         int
+	CronTimeGovParams           int
+	CronTimeTxNumByDay          int
+	CronTimeControlTask         int
+	CronTimeHeartBeat           int
+	CronTimeValidators          int
+	CronTimeAccountRewards      int
+	CronTimeValidatorStaticInfo int
+	CronTimeValidatorIcons      int
+	CronTimeProposalVoters      int
+	FoundationDelegatorAddr     string
 }
 
 type hubConf struct {

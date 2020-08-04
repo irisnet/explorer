@@ -26,7 +26,7 @@ func TestTokenStatsService_QueryTokenStats(t *testing.T) {
 }
 
 func TestTokenStatsService_QueryBaseDenom(t *testing.T) {
-	res, err := (&TokenStatsService{}).QueryBaseDenom()
+	res, err := (&TokenStatsService{}).QueryUnitInfo()
 	if err != nil {
 		t.Fatal(res)
 	}

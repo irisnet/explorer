@@ -16,8 +16,19 @@ type TokenStatsService struct {
 	BaseService
 }
 
-func (service *TokenStatsService) QueryBaseDenom() (string, error) {
-	return lcd.QueryBaseDenom()
+func (service *TokenStatsService) QueryUnitInfo() (vo.UnitInfoResp) {
+	serconf := conf.Get().Server
+	basedenom, err := lcd.QueryBaseDenom()
+	if err != nil {
+		logger.Error("Query BaseDenom have error", logger.String("err", err.Error()))
+	}
+	resp := vo.UnitInfoResp{
+		NtScale:       serconf.NtScale,
+		NtUnitMin:     serconf.NtUnitMin,
+		NtUnitDisplay: serconf.NtUnitDisplay,
+		BaseDenom:     basedenom,
+	}
+	return resp
 }
 
 func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {

@@ -48,9 +48,6 @@ const (
 	UrlRegisterQuerySysDate = "/sysdate"
 	UrlRegisterQueryConfig  = "/config"
 
-	//caculate
-	UrlRegisterQueryCaculateMonthData = "/caculate/monthdata"
-
 	//faucet
 	UrlRegisterQueryFaucet = "/faucet/account"
 	UrlRegisterApply       = "/faucet/apply/{address}"

@@ -19,3 +19,10 @@ type TokenStatsSegment struct {
 	TotalAmount *CoinVo `json:"total_amount"`
 	Percent     float64 `json:"percent"`
 }
+
+type UnitInfoResp struct {
+	NtScale       int    `json:"nt_scale"`
+	NtUnitMin     string `json:"nt_unit_min"`
+	NtUnitDisplay string `json:"nt_unit_display"`
+	BaseDenom     string `json:"base_denom"`
+}

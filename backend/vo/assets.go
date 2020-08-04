@@ -17,7 +17,7 @@ type AssetsVo struct {
 	Mintable      bool      `json:"mintable,string"`
 	SymbolMin     string    `json:"symbol_min"`
 	Name          string    `json:"name"`
-	Decimal       uint32    `json:"scale"`
+	Scale         uint32    `json:"scale"`
 	MintTo        string    `json:"mint_to"`
 	Amount        int64     `json:"amount"`
 	SrcOwner      string    `json:"src_owner"`
