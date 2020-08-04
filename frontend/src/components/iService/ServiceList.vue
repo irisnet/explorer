@@ -209,7 +209,7 @@
 
 			.service_list_title{
                 text-align: left;
-                margin: 0.82rem 0 0.15rem 0;
+                margin: 1rem 0 0.15rem 0.28rem;
                 width: 100%;
                 box-sizing: border-box;
                 font-size: 0.18rem;
@@ -219,7 +219,7 @@
             .service_list_search_wrap{
                 display: flex;
                 width: 100%;
-                margin: 0.3rem 0 0.2rem 0;
+                margin: 0.25rem 0 0.25rem 0.28rem;
                 .search_input{
                     max-width: 3.5rem;
                     .el-input__inner{
