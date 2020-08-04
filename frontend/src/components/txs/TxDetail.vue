@@ -95,6 +95,14 @@
                                     <router-link v-if="key === 'Provider :' && value !== '-'"
                                                  :to="addressRoute(value)">{{value}}
                                     </router-link>
+                                    <router-link v-if="key === 'Providers :' && value !== '-'"
+                                                 :to="addressRoute(value)">{{value}}
+                                    </router-link>
+
+                                    <router-link v-if="key === 'Consumer :' && value !== '-'"
+                                                 :to="addressRoute(value)">{{value}}
+                                    </router-link>
+
                                     <router-link v-if="key === 'Withdraw Address :' && value !== '-'"
                                                  :to="addressRoute(value)">{{value}}
                                     </router-link>
@@ -286,6 +294,8 @@
                 return (key !== 'From :'
                     && key !== 'To :'
                     && key !== 'Provider :'
+                    && key !== 'Providers :'
+                    && key !== 'Consumer :'
                     && key !== 'Withdraw Address :'
                     && key !== 'Author :'
                     && key !== 'Owner :'
@@ -317,8 +327,10 @@
                 return (key === 'From :'
                     || key === 'To :'
                     || key === 'Author :'
+                    || key === 'Consumer :'
                     || key === 'Withdraw Address :'
                     || key === 'Provider :'
+                    || key === 'Providers :'
                     || key === 'Owner :'
                     || key === 'Operator Address :'
                     || key === 'Owner Address :'
@@ -360,7 +372,7 @@
                 Server.commonInterface({txDetail : {txHash : this.$route.query.txHash}}, (res) =>{
                     try {
                         if(res){
-                            console.error('------', res)
+
                             let fromInformation, toInformation;
                             fromInformation = Tools.formatListAmount(res).fromAddressAndMoniker;
                             toInformation = Tools.formatListAmount(res).toAddressAndMoniker;
@@ -384,8 +396,8 @@
                             this.memoValue = res.memo ? res.memo : '--';
                             this.fromMoniker = fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].moniker : '';
                             this.toMoniker = toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].moniker : '';
+                            console.error('------',res)
                             this.messageList = formatMessage.switchTxType(res);
-                            console.error('------', this.messageList)
                             if(this.messageList && this.messageList.tooltip){
                                 this.flShowRateToolTip = true
                             }

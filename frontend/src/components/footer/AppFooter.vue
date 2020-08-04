@@ -215,15 +215,20 @@
                 color: rgba(255,255,255,0.5);
                 .footer_copyright_wrap {
                     flex: 1;
+                    line-height: 0.26rem;
                 }
                 .footer_chain_id_content{
                     flex: 1;
                     padding-left: 0.2rem;
+                    line-height: 0.26rem;
                 }
                 .footer_version_node_tendermint_content{
                     flex: 1;
                     display: flex;
                     white-space: nowrap;
+                    p{
+                        line-height: 0.26rem;
+                    }
                     .line{
                         padding: 0 0.2rem;
                     }
@@ -277,6 +282,7 @@
                 .footer_chain_id_content{
                     margin: 0.1rem 0;
                     padding-left: 0;
+                    line-height: 0.26rem;
                 }
                 .footer_version_node_tendermint_content{
                     display: flex;

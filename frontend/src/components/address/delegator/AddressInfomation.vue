@@ -611,9 +611,9 @@
             },
             getAssetList(){
                 this.assetsItems = this.assetList.map( item => {
+                    console.error('-----',item)
                     if (!item) { return {}};
-                    console.log('----',item)
-	            	if(item && item.denom === 'iris-atto'){
+	            	if(item && item.denom === this.$store.state.nativeToken){
 			            return {
 				            token: Tools.formatDenom(item.denom),
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,
@@ -646,6 +646,7 @@
 	            	    address: this.$route.params.param
                     }},(res) => {
 		            try {
+		                console.error('=====',res)
 		            	if(res && res.length > 0){
 				            let copyResult = JSON.parse(JSON.stringify(res));
 				            this.delegationPageNationArrayData = this.pageNation(copyResult);
@@ -670,6 +671,7 @@
                                 this.totalDelegator = res.reduce( (total,item) => {
                                     return Number(item.amount.amount) + Number(total)
 					            },0)
+                                console.error('=1==1=1==1=1=',this.totalDelegator)
                             }
                             this.totalDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
                         }else {
@@ -722,6 +724,7 @@
 	            Server.commonInterface({rewardList:{
 	            	address: this.$route.params.param
                     }},(res) => {
+                    console.error('========',res)
 		            try {
 		            	if(res && res.delagations_rewards && res.delagations_rewards.length > 0) {
                             res.delagations_rewards.map( item => {
@@ -734,7 +737,7 @@
                             });
                             let copyResult = JSON.parse(JSON.stringify(res));
 				            this.totalValidatorRewards = res.commission_rewards ? Tools.formatAmount2(res.commission_rewards,this.fixedNumber) : 0;
-		            		this.allRewardsValue = res.total_rewards ? Tools.formatAmount2(res.total_rewards,this.fixedNumber) : 0;
+		            		this.allRewardsValue = res.total_rewards ? Tools.formatAmount2(res.total_rewards,this.fixedNumber,0) : 0;
 				            this.rewardsDelegationPageNationArrayData = this.pageNation(copyResult.delagations_rewards);
 				            if(res.delagations_rewards.length > this.pageSize){
 					            this.flRewardsDelegationNextPage = true
