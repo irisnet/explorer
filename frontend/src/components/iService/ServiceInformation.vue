@@ -94,12 +94,12 @@
 
                             </template>
                         </el-table-column>
-                        <!-- <el-table-column :min-width="ColumnMinWidth.price"
+                        <el-table-column :min-width="ColumnMinWidth.price"
                                          :label="$t('ExplorerCN.serviceDetail.serviceBindings.pricing')"
                                          prop="price"></el-table-column>
                         <el-table-column :min-width="ColumnMinWidth.deposit"
                                          :label="$t('ExplorerCN.serviceDetail.serviceBindings.deposit')"
-                                         prop="deposit"></el-table-column> -->
+                                         prop="deposit"></el-table-column>
                         <el-table-column :min-width="ColumnMinWidth.qos" :label="$t('ExplorerCN.serviceDetail.serviceBindings.qos')"
                                          prop="qos"></el-table-column>
                         <el-table-column :min-width="ColumnMinWidth.time"
