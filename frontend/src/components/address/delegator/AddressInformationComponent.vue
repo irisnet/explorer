@@ -118,7 +118,7 @@
 		watch:{
 			data(){
 				this.assetInformation = this.data;
-                //console.error(this.data)
+                console.log('===============',this.data)
 				this.formatAssetInformation(this.assetInformation)
 			}
 		},

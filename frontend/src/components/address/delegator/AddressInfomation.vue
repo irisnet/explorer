@@ -378,6 +378,7 @@
             getAssetList(){
                 this.assetsItems = this.assetList.map( item => {
 	            	if(item && item.denom === this.$store.state.nativeToken){
+                        console.error('-----',item)
 			            return {
 				            token: Tools.formatDenom(item.denom),
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,
