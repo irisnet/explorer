@@ -86,7 +86,6 @@ const (
 	UrlRegisterQueryTxType       = "/tx_types/{type}"
 	//tokenstats
 	UrlRegisterQueryTokenStats    = "/tokenstats"
-	UrlRegisterQueryBaseDenom     = "/unit_info"
 	UrlRegisterTokensAccountTotal = "/tokenstats/account_total"
 	//bondedtokens
 	UrlRegisterBondedTokensValidators = "/bondedtokens/validators"
@@ -112,15 +111,11 @@ const (
 
 	TimeLayout             = "2006-01-02T15:04:05"
 	TimeLayout1            = "2006-01-02 15:04:05 +0000 UTC"
-	DelegatorRewardTag     = "DelegatorReward"
-	ValidatorRewardTag     = "ValidatorReward"
-	ValidatorCommissionTag = "ValidatorCommission"
 	Change                 = "powerChange"
 	Slash                  = "slash"
 	Recover                = "recover"
 
-	TxTag_WithDrawRewardFromValidator = "withdraw-reward-from-validator-"
-	//TxTag_WithDrawAddress             = "withdraw-address"
+
 
 	StakeUint     = "stake"
 	AssetMinDenom = "-min"
@@ -225,12 +220,12 @@ var (
 
 	BankList        = []string{TxTypeTransfer, TxTypeMultiSend}
 	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}
-	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeMsgFundCommunityPool, TxTypeMsgWithdrawValidatorCommission}
-	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
-	GuardianList    = []string{TxTypeAddProfiler, TxTypeAddTrustee, TxTypeDeleteProfiler, TxTypeDeleteTrustee}
-	HTLCList        = []string{TxTypeClaimHTLC, TxTypeCreateHTLC, TxTypeRefundHTLC}
-	CoinswapList    = []string{TxTypeAddLiquidity, TxTypeRemoveLiquidity, TxTypeSwapOrder}
-	SlashingList    = []string{TxTypeVerifyInvariant}
+	StakeList      = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeMsgFundCommunityPool, TxTypeMsgWithdrawValidatorCommission}
+	GovernanceList = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
+	GuardianList   = []string{TxTypeAddProfiler, TxTypeAddTrustee, TxTypeDeleteProfiler, TxTypeDeleteTrustee}
+	HTLCList       = []string{TxTypeClaimHTLC, TxTypeCreateHTLC, TxTypeRefundHTLC}
+	CoinswapList   = []string{TxTypeAddLiquidity, TxTypeRemoveLiquidity, TxTypeSwapOrder}
+	CrisisList     = []string{TxTypeVerifyInvariant}
 
 	//ForwardList = []string{TxTypeBeginRedelegate}
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
@@ -394,11 +389,11 @@ func IsOrcaleType(typ string) bool {
 	}
 	return false
 }
-func IsSlashingType(typ string) bool {
+func IsCrisisType(typ string) bool {
 	if len(typ) == 0 {
 		return false
 	}
-	for _, t := range SlashingList {
+	for _, t := range CrisisList {
 		if t == typ {
 			return true
 		}
@@ -422,7 +417,7 @@ const (
 	Nft
 	Service
 	Orcale
-	Slashing
+	Crisis
 )
 
 func Convert(typ string) TxType {
@@ -450,8 +445,8 @@ func Convert(typ string) TxType {
 		return Orcale
 	} else if IsServiceType(typ) {
 		return Service
-	} else if IsSlashingType(typ) {
-		return Slashing
+	} else if IsCrisisType(typ) {
+		return Crisis
 	}
 	logger.Error("Convert UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)

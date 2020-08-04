@@ -716,6 +716,12 @@ definitions:
         type: array
       cur_env:
         type: string
+      nt_scale:
+        type: integer
+      nt_unit_display:
+        type: string
+      nt_unit_min:
+        type: string
     type: object
   vo.Event:
     properties:
@@ -1293,17 +1299,6 @@ definitions:
         type: array
       total:
         type: integer
-    type: object
-  vo.UnitInfoResp:
-    properties:
-      base_denom:
-        type: string
-      nt_scale:
-        type: integer
-      nt_unit_display:
-        type: string
-      nt_unit_min:
-        type: string
     type: object
   vo.ValDetailVo:
     properties:
@@ -3116,22 +3111,6 @@ paths:
       summary: txsByDay
       tags:
       - txs
-  /api/unit_info:
-    get:
-      consumes:
-      - application/json
-      description: get base unit info
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            $ref: '#/definitions/vo.UnitInfoResp'
-            type: object
-      summary: unit info
-      tags:
-      - tokenstats
   /api/version:
     get:
       consumes:
