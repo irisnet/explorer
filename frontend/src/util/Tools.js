@@ -5,7 +5,8 @@ import BigNumber from 'bignumber.js';
 import moveDecimal  from "move-decimal-point"
 import Constant from "../constant/Constant"
 import bech32 from 'bech32';
-export default class Tools{
+import moment from 'moment';
+export default class Tools {
 	/**
 	 * 根据展示的需求拼接字符串展示成 > xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs
 	 * param prefix string;
@@ -370,6 +371,7 @@ export default class Tools{
 	}
 
 	static firstWordUpperCase (str){
+		if (!str) {return ''};
 		return str.toLowerCase().replace(/(\s|^)[a-z]/g, function(char){
 			return char.toUpperCase();
 		});
@@ -660,6 +662,7 @@ export default class Tools{
 	 *
 	 */
 	static formatPercent(percent){
+		if (!percent) { return '';}
 		percent = percent.toString();
 		let formatNumberValue = (Tools.formatContinuousNumberZero(percent) * 100).toString(),number;
 		if(formatNumberValue.indexOf('.') !== -1){
@@ -681,14 +684,14 @@ export default class Tools{
 					if(data.msgs){
                         data.msgs.forEach( item => {
                             if(item.msg){
-                                /*item.msg.inputs.forEach( item => {
-
-                                })*/
-                                fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.from_address,data.monikers));
-                                toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.to_address,data.monikers))
-                                /*item.msg.outputs.forEach( item => {
-
-                                })*/
+                            	fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.from_address,data.monikers));
+                                toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.to_address,data.monikers))
+                                // item.msg.inputs.forEach( item => {
+                                //     fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.address,data.monikers));
+                                // })
+                                // item.msg.outputs.forEach( item => {
+                                //     toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.address,data.monikers))
+                                // })
                             }
                         });
                     }
@@ -1052,21 +1055,30 @@ export default class Tools{
         // console.log(amountNumber,tokenName,"amount information")
         return {amountNumber,tokenName,moreAmountsNumber}
     }
-        static formatPercentage(number){
-            return new BigNumber(number).multipliedBy(100)
-        }
-            /**
-            * Form和To字段展示的问题
-            * */
-        static getFromAndToMoniker(address,monikers){
-            let resData =
-                {
-                    address: address,
-                    moniker: monikers[address] ? monikers[address] : ''
-                };
 
-            return resData
-        }
+    static formatPercentage(number){
+        return new BigNumber(number).multipliedBy(100)
+    }
+        /**
+        * Form和To字段展示的问题
+        * */
+    static getFromAndToMoniker(address,monikers){
+        let resData =
+            {
+                address: address,
+                moniker: monikers[address] ? monikers[address] : ''
+            };
+
+        return resData
+    }
+
+    static getDisplayDate(timestamp, format = "YYYY-MM-DD HH:mm:ss"){
+	    return moment(timestamp).utcOffset(+480).format(format);
+    }
+
+    static getFormatDate(date, format = "YYYY-MM-DD HH:mm:ss"){
+	    return moment(date).utcOffset(+480).format(format);
+    }
 
     static isBech32(prefix, str) {
         if (!prefix || prefix.length == 0) {
@@ -1089,5 +1101,4 @@ export default class Tools{
             return false
         }
     }
-
 }
