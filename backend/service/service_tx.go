@@ -196,7 +196,7 @@ func (service *TxService) QueryTxDetail(hash string) interface{} {
 	txVOs := service.buildTxs(txList)
 
 	items := service.getValidatorMonikerByAddress(txVOs)
-    //add events in tx detail api
+	//add events in tx detail api
 	if serviceTx, ok := items[0].(vo.ServiceTx); ok {
 		serviceTx.Events = serviceTx.BaseTx.Events
 		return serviceTx
@@ -274,6 +274,7 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 		res = append(res, types.OrcaleList...)
 		res = append(res, types.NftList...)
 		res = append(res, types.ServiceList...)
+		res = append(res, types.SlashingList...)
 		return res
 	}
 	switch txType {
@@ -301,6 +302,8 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 		return types.NftList
 	case "service":
 		return types.ServiceList
+	case "slashing":
+		return types.SlashingList
 	}
 	return nil
 }

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2/bson"
+	"fmt"
 )
 
 func TestQueryTxList(t *testing.T) {
@@ -97,4 +98,11 @@ func TestTxService_QueryBaseList(t *testing.T) {
 		{"to": "iaa1x98k5n7xj0h3udnf5dcdzw85tsfa75qm0kqak0"}}}, 1, 10, true)
 	bytestr, _ := json.Marshal(res)
 	t.Logf(" %v \n", string(bytestr))
+}
+
+func TestTxService_QueryTxType(t *testing.T) {
+	res := new(TxService).QueryTxType("all")
+	for _, val := range res {
+		fmt.Println(val)
+	}
 }
