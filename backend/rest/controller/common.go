@@ -78,15 +78,16 @@ func registerQuerySysDate(r *mux.Router) error {
 // @Router /api/config [get]
 func registerQueryEnvConfig(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryConfig, "GET", func(request vo.IrisReq) interface{} {
+		serconf := conf.Get().Server
 		getconfig := func(dconfigs []document.Config) (ret []vo.ConfigVo) {
 			for _, val := range dconfigs {
 				item := vo.ConfigVo{
-					NetworkName: val.NetworkName,
-					Env:         val.Env,
-					Host:        val.Host,
-					ChainId:     val.ChainId,
-					ShowFaucet:  val.ShowFaucet,
-					UmengId:     val.UmengId,
+					NetworkName:   val.NetworkName,
+					Env:           val.Env,
+					Host:          val.Host,
+					ChainId:       val.ChainId,
+					ShowFaucet:    val.ShowFaucet,
+					UmengId:       val.UmengId,
 				}
 				if nodeinfo, err := lcd.NodeInfo(); err == nil {
 					item.TendermintVersion = nodeinfo.Version
@@ -102,6 +103,9 @@ func registerQueryEnvConfig(r *mux.Router) error {
 			CurEnv:  conf.Get().Server.CurEnv,
 			ChainId: conf.Get().Hub.ChainId,
 			Configs: getconfig(common.GetConfig()),
+			NtScale:       serconf.NtScale,
+			NtUnitMin:     serconf.NtUnitMin,
+			NtUnitDisplay: serconf.NtUnitDisplay,
 		}
 		return envConf
 	})

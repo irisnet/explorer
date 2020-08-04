@@ -207,6 +207,13 @@ type NftTx struct {
 	Monikers map[string]string `json:"monikers"`
 }
 
+type CrisisTx struct {
+	BaseTx
+	Events   []Event           `json:"events"`
+	Msgs     []MsgItem         `json:"msgs"`
+	Monikers map[string]string `json:"monikers"`
+}
+
 func (tx RecentTx) String() string {
 	return fmt.Sprintf(`
 		Fee    :%v

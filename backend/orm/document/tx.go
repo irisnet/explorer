@@ -502,34 +502,34 @@ func (_ CommonTx) QueryTxAsset(tokenType, symbol string, page, size int, total b
 	return num, txs, err
 }
 
-func (_ CommonTx) QueryTxTransferGatewayOwner(moniker string, page, size int, total bool) (int, []CommonTx, error) {
-	txs := []CommonTx{}
-	selector := bson.M{
-		Tx_Field_Hash:      1,
-		Tx_Field_Height:    1,
-		Tx_Field_From:      1,
-		Tx_Field_To:        1,
-		Tx_Field_Amount:    1,
-		Tx_Field_Type:      1,
-		Tx_Field_Status:    1,
-		Tx_Field_ActualFee: 1,
-		Tx_Field_Tags:      1,
-		Tx_Field_Msgs:      1,
-		Tx_Field_Time:      1,
-	}
-
-	condition := bson.M{
-		//Tx_Field_Type: Tx_Asset_TxType_TransferGatewayOwner,
-	}
-	condition = FilterUnknownTxs(condition)
-	if moniker != "" {
-		condition[Tx_Field_Msgs_Moniker] = moniker
-	}
-
-	sort := fmt.Sprintf("-%v", Tx_Field_Height)
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
-	return num, txs, err
-}
+//func (_ CommonTx) QueryTxTransferGatewayOwner(moniker string, page, size int, total bool) (int, []CommonTx, error) {
+//	txs := []CommonTx{}
+//	selector := bson.M{
+//		Tx_Field_Hash:      1,
+//		Tx_Field_Height:    1,
+//		Tx_Field_From:      1,
+//		Tx_Field_To:        1,
+//		Tx_Field_Amount:    1,
+//		Tx_Field_Type:      1,
+//		Tx_Field_Status:    1,
+//		Tx_Field_ActualFee: 1,
+//		Tx_Field_Tags:      1,
+//		Tx_Field_Msgs:      1,
+//		Tx_Field_Time:      1,
+//	}
+//
+//	condition := bson.M{
+//		//Tx_Field_Type: Tx_Asset_TxType_TransferGatewayOwner,
+//	}
+//	condition = FilterUnknownTxs(condition)
+//	if moniker != "" {
+//		condition[Tx_Field_Msgs_Moniker] = moniker
+//	}
+//
+//	sort := fmt.Sprintf("-%v", Tx_Field_Height)
+//	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
+//	return num, txs, err
+//}
 
 func FilterUnknownTxs(query bson.M) bson.M {
 

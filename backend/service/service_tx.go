@@ -274,7 +274,7 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 		res = append(res, types.OrcaleList...)
 		res = append(res, types.NftList...)
 		res = append(res, types.ServiceList...)
-		res = append(res, types.SlashingList...)
+		res = append(res, types.CrisisList...)
 		return res
 	}
 	switch txType {
@@ -303,7 +303,7 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 	case "service":
 		return types.ServiceList
 	case "slashing":
-		return types.SlashingList
+		return types.CrisisList
 	}
 	return nil
 }
@@ -857,6 +857,12 @@ func (service *TxService) buildTx(tx vo.CommonTx, blackListP *map[string]documen
 		}
 	case types.Nft:
 		return vo.NftTx{
+			BaseTx:   buildBaseTx(tx),
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
+		}
+	case types.Crisis:
+		return vo.CrisisTx{
 			BaseTx:   buildBaseTx(tx),
 			Msgs:     tx.Msgs,
 			Monikers: monikersMap,
