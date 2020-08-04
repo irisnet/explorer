@@ -569,7 +569,7 @@ export default class formatMsgsAndTags {
     static txTypeIssueDenom(tx){
         const msg = {
             'Type :' : [],
-            'Sender :' : [],
+            'From :' : [],
             'Denom :' : [],
             'Schema :' : [],
 
@@ -577,7 +577,7 @@ export default class formatMsgsAndTags {
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m) =>{
-                msg['Sender :'].push(m.msg.sender);
+                msg['From :'].push(m.msg.sender);
                 msg['Denom :'].push(m.msg.denom);
                 msg['Schema :'].push(m.msg.schema);
             })
@@ -586,24 +586,23 @@ export default class formatMsgsAndTags {
     }
 
     static txTypeEditNft(tx){
-        console.log('=====')
         const msg = {
             'Type :' : [],
-            'Sender :' : [],
-            'NFT ID :' : [],
+            'From :' : [],
             'Denom :' : [],
-            'Token Uri :' : [],
-            'Token Data :' : [],
+            'NFT Id :' : [],
+            'NFT Uri :' : [],
+            'NFT Data :' : [],
 
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m) =>{
-                msg['Sender :'].push(m.msg.sender);
-                msg['NFT ID :'].push(m.msg.id);
+                msg['From :'].push(m.msg.sender);
+                msg['NFT Id :'].push(m.msg.id);
                 msg['Denom :'].push(m.msg.denom);
-                msg['Token Uri :'].push(m.msg.token_uri);
-                msg['Token Data :'].push(m.msg.token_data);
+                msg['NFT Uri :'].push(m.msg.token_uri);
+                msg['NFT Data :'].push(m.msg.token_data);
             })
         }
         return msg;
@@ -612,23 +611,23 @@ export default class formatMsgsAndTags {
     static txTypeTransferNft(tx){
         const msg = {
             'Type :' : [],
-            'Sender :' : [],
+            'From :' : [],
             'Recipient :' : [],
-            'NFT ID :' : [],
             'Denom :' : [],
-            'Token Uri :' : [],
-            'Token Data :' : [],
+            'NFT Id :' : [],
+            'NFT Uri :' : [],
+            'NFT Data :' : [],
 
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m) =>{
-                msg['Sender :'].push(m.msg.sender);
+                msg['From :'].push(m.msg.sender);
                 msg['Recipient :'].push(m.msg.recipient);
-                msg['NFT ID :'].push(m.msg.id);
+                msg['NFT Id :'].push(m.msg.id);
                 msg['Denom :'].push(m.msg.denom);
-                msg['Token Uri :'].push(m.msg.token_uri);
-                msg['Token Data :'].push(m.msg.token_data);
+                msg['NFT Uri :'].push(m.msg.token_uri);
+                msg['NFT Data :'].push(m.msg.token_data);
             })
         }
         return msg;
@@ -639,23 +638,23 @@ export default class formatMsgsAndTags {
     static txTypeMintNft(tx){
         const msg = {
             'Type :' : [],
-            'Sender :' : [],
+            'From :' : [],
             'Recipient :' : [],
-            'NFT ID :' : [],
             'Denom :' : [],
-            'Token Uri :' : [],
-            'Token Data :' : [],
+            'NFT Id :' : [],
+            'NFT Uri :' : [],
+            'NFT Data :' : [],
 
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m) =>{
-                msg['Sender :'].push(m.msg.sender);
+                msg['From :'].push(m.msg.sender);
                 msg['Recipient :'].push(m.msg.recipient);
-                msg['NFT ID :'].push(m.msg.id);
+                msg['NFT Id :'].push(m.msg.id);
                 msg['Denom :'].push(m.msg.denom);
-                msg['Token Uri :'].push(m.msg.token_uri);
-                msg['Token Data :'].push(m.msg.token_data);
+                msg['NFT Uri :'].push(m.msg.token_uri);
+                msg['NFT Data :'].push(m.msg.token_data);
             })
         }
         return msg;
@@ -664,15 +663,16 @@ export default class formatMsgsAndTags {
     static txTypeBurnNft(tx){
         const msg = {
             'Type :' : [],
-            'Sender :' : [],
-            'NFT ID :' : [],
+            'From :' : [],
             'Denom :' : [],
+            'NFT Id :' : [],
+
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m) =>{
-                msg['Sender :'].push(m.msg.sender);
-                msg['NFT ID :'].push(m.msg.id);
+                msg['From :'].push(m.msg.sender);
+                msg['NFT Id :'].push(m.msg.id);
                 msg['Denom :'].push(m.msg.denom);
             })
         }
@@ -682,19 +682,19 @@ export default class formatMsgsAndTags {
     static txTypeCreateFeed(tx){
         const msg = {
             'Type :' : [],
-            'Feed Name :' : [],
-            'Latest History :' : [],
-            'Description :' : [],
-            'Creator :' : [],
             'Service Name :' : [],
+            'Feed Name :' : [],
+            'Description :' : [],
+            'Latest History :' : [],
+            'Creator :' : [],
             'Providers :' : [],
             'Input :' : [],
-            'Timeout :' : [],
             'Service Fee Cap :' : [],
-            'Repeated Frequency :' : [],
             'Aggregate Func :' : [],
             'Value Json Path :' : [],
+            'Repeated Frequency :' : [],
             'Response Threshold :' : [],
+            'Timeout :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
@@ -764,14 +764,14 @@ export default class formatMsgsAndTags {
         const msg = {
             'Type :' : [],
             'Feed Name :' : [],
-            'Latest History :' : [],
             'Description :' : [],
+            'Latest History :' : [],
             'Creator :' : [],
             'Providers :' : [],
-            'Timeout :' : [],
             'Service Fee Cap :' : [],
             'Repeated Frequency :' : [],
             'Response Threshold :' : [],
+            'Timeout :' : [],
         };
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){

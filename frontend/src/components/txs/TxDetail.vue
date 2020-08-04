@@ -98,6 +98,10 @@
                                     <router-link v-if="key === 'Providers :' && value !== '-'"
                                                  :to="addressRoute(value)">{{value}}
                                     </router-link>
+                                    <router-link v-if="key === 'Recipient :' && value !== '-'"
+                                                 :to="addressRoute(value)">{{value}}
+                                    </router-link>
+
 
                                     <router-link v-if="key === 'Consumer :' && value !== '-'"
                                                  :to="addressRoute(value)">{{value}}
@@ -294,6 +298,7 @@
                 return (key !== 'From :'
                     && key !== 'To :'
                     && key !== 'Provider :'
+                    && key !== 'Recipient :'
                     && key !== 'Providers :'
                     && key !== 'Consumer :'
                     && key !== 'Withdraw Address :'
@@ -328,6 +333,7 @@
                     || key === 'To :'
                     || key === 'Author :'
                     || key === 'Consumer :'
+                    || key === 'Recipient :'
                     || key === 'Withdraw Address :'
                     || key === 'Provider :'
                     || key === 'Providers :'
