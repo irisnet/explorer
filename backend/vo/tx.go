@@ -207,7 +207,7 @@ type NftTx struct {
 	Monikers map[string]string `json:"monikers"`
 }
 
-type SlashingTx struct {
+type CrisisTx struct {
 	BaseTx
 	Events   []Event           `json:"events"`
 	Msgs     []MsgItem         `json:"msgs"`

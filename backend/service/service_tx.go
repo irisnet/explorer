@@ -862,7 +862,7 @@ func (service *TxService) buildTx(tx vo.CommonTx, blackListP *map[string]documen
 			Monikers: monikersMap,
 		}
 	case types.Crisis:
-		return vo.SlashingTx{
+		return vo.CrisisTx{
 			BaseTx:   buildBaseTx(tx),
 			Msgs:     tx.Msgs,
 			Monikers: monikersMap,
