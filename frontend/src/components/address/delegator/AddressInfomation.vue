@@ -728,7 +728,7 @@
 				            	if(item.amount && item.amount.length === 0){
 						            item.amount.push({
 							            amount:0,
-                                        denom:this.$store.state.displayToken
+                                        denom:this.$store.state.displayToken.toLocaleUpperCase()
                                     })
                                 }
                             });
