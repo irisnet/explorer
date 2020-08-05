@@ -402,7 +402,7 @@
                             this.memoValue = res.memo ? res.memo : '--';
                             this.fromMoniker = fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].moniker : '';
                             this.toMoniker = toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].moniker : '';
-                            this.messageList = formatMessage.switchTxType(res);
+                            this.messageList = formatMessage.switchTxType(res, this);
                             if(this.messageList && this.messageList.tooltip){
                                 this.flShowRateToolTip = true
                             }
