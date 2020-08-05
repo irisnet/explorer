@@ -751,6 +751,7 @@
                         }
                     })
                 }
+                console.error('=======',currentEnv)
                 if(this.$store.state.testSkinStyle){
                     networkName = this.$store.state.currentSkinStyle;
                 }

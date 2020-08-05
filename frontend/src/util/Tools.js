@@ -434,6 +434,8 @@ export default class Tools {
 				formatListAmount = Tools.formatListAmount(item).amount;
                 fromInformation = Tools.formatListAmount(item).fromAddressAndMoniker;
                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
+                console.error('--=-=-=',item)
+                console.error('---------',toInformation)
 				Amount = formatListAmount.amountNumber === '--' || formatListAmount.tokenName === '--' ? '--' : `${Tools.formatStringToFixedNumber(new BigNumber(formatListAmount.amountNumber).toFormat(),2)} ${formatListAmount.tokenName}`;
 				transferAmount = formatListAmount.amountNumber === '--' ? '--' : Tools.formatStringToFixedNumber(new BigNumber(formatListAmount.amountNumber).toFormat(),2);
 				tokenId = formatListAmount.tokenName === '--' ? '--' : formatListAmount.tokenName;
