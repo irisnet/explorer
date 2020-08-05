@@ -170,13 +170,13 @@ export default class Tools {
 	static formatToken (token) {
 		let coin = {};
 		let amount = '';
-		if(token.amount && token.amount !== '' && token.amount !== 0 && token.denom === Constant.Denom.IRISATTO){
+		if(token.amount && token.amount !== '' && token.amount !== 0 && token.denom === store.state.nativeToken){
 			amount  = Tools.convertScientificNotation2Number(Tools.formatNumber(token.amount));
-		}else if(token.denom === Constant.Denom.IRIS){
+		}else if(token.denom === store.state.displayToken){
 			amount  = token.amount;
 		}
 		coin.amount = amount;
-		coin.denom = Constant.Denom.IRIS.toUpperCase();
+		coin.denom = store.state.displayToken.toUpperCase();
 		return coin
 	}
 	/**
@@ -434,8 +434,8 @@ export default class Tools {
 				formatListAmount = Tools.formatListAmount(item).amount;
                 fromInformation = Tools.formatListAmount(item).fromAddressAndMoniker;
                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
-				Amount = formatListAmount.amountNumber === '--' || formatListAmount.tokenName === '--' ? '--' : `${Tools.formatStringToFixedNumber(new BigNumber(formatListAmount.amountNumber).toFormat(),2)} ${formatListAmount.tokenName}`;
-				transferAmount = formatListAmount.amountNumber === '--' ? '--' : Tools.formatStringToFixedNumber(new BigNumber(formatListAmount.amountNumber).toFormat(),2);
+				Amount = formatListAmount.amountNumber === '--' || formatListAmount.tokenName === '--' ? '--' : `${Tools.formatStringToFixedNumber(formatListAmount.amountNumber,2)} ${formatListAmount.tokenName}`;
+				transferAmount = formatListAmount.amountNumber === '--' ? '--' : Tools.formatStringToFixedNumber(formatListAmount.amountNumber,2);
 				tokenId = formatListAmount.tokenName === '--' ? '--' : formatListAmount.tokenName;
 				if(item.fee.amount && item.fee.denom){
 					let feeAmount = Tools.formatAmount3(item.fee,6);
@@ -596,12 +596,15 @@ export default class Tools {
 			}
 			amountRadixNumber = Tools.amountRadix(amountDenom);
 		}
-		if(amountRadixNumber > 0){
-			return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber)} ${Constant.Denom.IRIS.toLocaleUpperCase()}`
+		if(amountRadixNumber > 0 ){
+			return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber)} ${store.state.displayToken.toLocaleUpperCase()}`
 		}else {
-			if(amountDenom){
-				//TODO 多资产情况
-			
+			if(amountDenom && amountDenom === store.state.nativeToken){
+				return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber) * -1))).toFormat(),fixedNumber)} ${store.state.nativeToken.toLocaleUpperCase()}`
+			}else if(amountDenom && amountDenom !== store.state.nativeToken){
+				return `${Tools.formatStringToFixedNumber(new BigNumber(amountNumber).toFormat(),fixedNumber)} ${amountDenom.toLocaleUpperCase()}`
+			}else if(amountDenom === '' && amountNumber=== '0.'){
+				return '--'
 			}else {
 				return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber) * -1))).toFormat(),fixedNumber)} SHARES`
 			}
@@ -647,7 +650,7 @@ export default class Tools {
 				return defaultValue;
 			}*/
 		}else {
-			return defaultValue
+			return 0
 		}
 	}
 	/**
@@ -936,26 +939,26 @@ export default class Tools {
 	            amountNumber = `${amount.length} Tokens`;
 	            tokenName = '--'
 	        }else {
-	            if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO || amount[0].amount == 0) {
-	                amountNumber = amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount[0].amount)), 2) : Number(amount[0].amount).toFixed(2);
-	                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-	            } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
+	            if (amount[0].denom && amount[0].amount && amount[0].denom === store.state.nativeToken || amount[0].amount == 0) {
+	                amountNumber = amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.formatAmount3(amount[0]).amount), 2) : Number(amount[0].amount).toFixed(2);
+	                tokenName = store.state.displayToken.toLocaleUpperCase();
+	            } else if (amount[0].denom && amount[0].amount && amount[0].denom !== store.state.nativeToken) {
 	                amountNumber = amount[0].amount;
 	                tokenName = amount[0].denom.toLocaleUpperCase();
 	            } else {
 	                amountNumber = Tools.formatStringToFixedNumber(Tools.FormatScientificNotationToNumber(amount[0].amount), 2);
-	                if (amount[0].denom === Constant.Denom.IRISATTO) {
-	                    tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+	                if (amount[0].denom === store.state.nativeToken) {
+	                    tokenName = store.state.displayToken.toLocaleUpperCase();
 	                } else {
 	                    tokenName = amount[0].denom ? amount[0].denom.toLocaleUpperCase() : '--';
 	                }
 	            }
 	        }
 		}else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
-			if(amount.denom === Constant.Denom.IRISATTO){
-				amountNumber = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount.amount)),2);
-				tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-			}else if(amount.denom !== Constant.Denom.IRISATTO){
+			if(amount.denom === store.state.nativeToken){
+				amountNumber = Tools.formatStringToFixedNumber(String(Tools.formatAmount3(amount.amount).amount),2);
+				tokenName = store.state.displayToken.toLocaleUpperCase();
+			}else if(amount.denom !== store.state.nativeToken){
 				amountNumber = amount.amount
 				tokenName = amount.denom.toLocaleUpperCase()
 			}else if(!amount.denom){
@@ -963,10 +966,10 @@ export default class Tools {
 				tokenName = ''
 			}
 		}else if(amount&& Object.keys(amount).includes('amount') && Object.keys(amount).includes('denom')){
-	        if(amount.denom === Constant.Denom.IRISATTO){
-	            amountNumber = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount.amount)),2);
-	            tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-	        }else if(amount.denom !== Constant.Denom.IRISATTO){
+	        if(amount.denom === store.state.nativeToken){
+	            amountNumber = Tools.formatStringToFixedNumber(String(Tools.formatAmount3(amount).amount),2);
+	            tokenName = store.state.displayToken.toLocaleUpperCase();
+	        }else if(amount.denom !== store.state.nativeToken){
 	            amountNumber = amount.amount
 	            tokenName = amount.denom.toLocaleUpperCase()
 	        }else if(!amount.denom){
@@ -990,7 +993,7 @@ export default class Tools {
 	        }else {
 	            amountNumber =  Tools.formatStringToFixedNumber(tokenStr,2);
 	        }
-			tokenName = Constant.Denom.IRIS.toLocaleUpperCase()
+			tokenName = store.state.displayToken.toLocaleUpperCase()
 		}
 		return {amountNumber,tokenName}
 	
@@ -1011,9 +1014,9 @@ export default class Tools {
 	    if(amount instanceof Array && amount.length > 0) {
 	        if(amount.length !== 1){
 	            moreAmountsNumber = amount.map( (item) => {
-	                if(item.denom === Constant.Denom.IRISATTO){
+	                if(item.denom === store.state.nativeToken){
 	                    return {
-	                        denom : Constant.Denom.IRIS.toLocaleUpperCase(),
+	                        denom : store.state.displayToken.toLocaleUpperCase(),
 	                        amount: String(Tools.numberMoveDecimal(item.amount))
 	                    }
 	                }else {
@@ -1024,16 +1027,16 @@ export default class Tools {
 	                }
 	            })
 	        }else {
-	            if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO || amount[0].amount == 0) {
+	            if (amount[0].denom && amount[0].amount && amount[0].denom === store.state.nativeToken || amount[0].amount == 0) {
 	                amountNumber = amount[0].amount > 0 ? String(Tools.numberMoveDecimal(amount[0].amount)) : Number(amount[0].amount).toFixed(2);
-	                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-	            } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
+	                tokenName = store.state.displayToken.toLocaleUpperCase();
+	            } else if (amount[0].denom && amount[0].amount && amount[0].denom !== store.state.nativeToken) {
 	                amountNumber = amount[0].amount;
 	                tokenName = amount[0].denom.toLocaleUpperCase();
 	            } else {
 	                amountNumber = Tools.formatStringToFixedNumber(Tools.FormatScientificNotationToNumber(amount[0].amount), 2);
-	                if (amount[0].denom === Constant.Denom.IRISATTO) {
-	                    tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+	                if (amount[0].denom === store.state.nativeToken) {
+	                    tokenName = store.state.displayToken.toLocaleUpperCase();
 	                } else {
 	                    tokenName = amount[0].denom ? amount[0].denom.toLocaleUpperCase() : '--';
 	
@@ -1041,10 +1044,10 @@ export default class Tools {
 	            }
 	        }
 	    }else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
-	        if(amount.denom === Constant.Denom.IRISATTO){
+	        if(amount.denom === store.state.nativeToken){
 	            amountNumber =String(Tools.numberMoveDecimal(amount.amount));
-	            tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-	        }else if(amount.denom !== Constant.Denom.IRISATTO){
+	            tokenName = store.state.displayToken.toLocaleUpperCase();
+	        }else if(amount.denom !== store.state.nativeToken){
 	            amountNumber = amount.amount
 	            tokenName = amount.denom.toLocaleUpperCase()
 	        }else if(!amount.denom){
@@ -1052,10 +1055,10 @@ export default class Tools {
 	            tokenName = ''
 	        }
 	    }else if(amount&& Object.keys(amount).includes('amount') && Object.keys(amount).includes('denom')){
-	        if(amount.denom === Constant.Denom.IRISATTO){
+	        if(amount.denom === store.state.nativeToken){
 	            amountNumber = String(Tools.numberMoveDecimal(amount.amount));
-	            tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-	        }else if(amount.denom !== Constant.Denom.IRISATTO){
+	            tokenName = store.state.displayToken.toLocaleUpperCase();
+	        }else if(amount.denom !== store.state.nativeToken){
 	            amountNumber = amount.amount
 	            tokenName = amount.denom.toLocaleUpperCase()
 	        }else if(!amount.denom){
@@ -1136,18 +1139,31 @@ export default class Tools {
 		    }
 		    amountRadixNumber = Tools.amountRadix(amountDenom);
 	    }
-	    
-	    if(amountDenom){
-		    return {
-		        amount: Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber),
-			    denom: amountDenom.toLocaleUpperCase()
-		    }
-		    
-	    }else {
-		    return {
-			    amount: Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber),
-			    denom: `SHARES`
-		    }
-	    }
+		
+		if(amountRadixNumber > 0 ){
+			return {
+				amount: Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber),
+				denom: amountDenom.toLocaleUpperCase()
+			}
+		}else {
+			if(amountDenom && amountDenom === store.state.nativeToken){
+				return {
+					amount: Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber) * -1))).toFormat(),fixedNumber),
+					denom: store.state.nativeToken.toLocaleUpperCase()
+				}
+			}else if(amountDenom && amountDenom !== store.state.nativeToken){
+				return {
+					amount: Tools.formatStringToFixedNumber(new BigNumber(amountNumber).toFormat(),fixedNumber),
+					denom: amountDenom.toLocaleUpperCase()
+				}
+			}else if(amountDenom === '' && amountNumber=== '0.'){
+				return '--'
+			}else {
+				return {
+					amount: Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber) * -1))).toFormat(),fixedNumber),
+					denom: 'SHARES'
+				}
+			}
+		}
 	}
 }

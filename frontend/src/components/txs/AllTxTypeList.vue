@@ -262,8 +262,10 @@
 	        },
             formatFee(Fee){
 	            if(Fee.amount && Fee.denom){
-		            return Tools.formatAmount2(Fee,4);
-	            }
+		            return Tools.formatAmount2(Fee,4)
+	            }else {
+	                return  '--'
+                }
             },
             getParamsByUrlHash(){
                 let txType,

@@ -13,7 +13,7 @@
                 <div class="native_asset_nav_footer_content">
                     <m-pagination
                             :total="issueTokenTotalPageNum"
-                            :page-size="pageSize"
+                   a         :page-size="pageSize"
                             :page="issueTokenCurrentPageNum"
                             :page-change="issueTokenPageChange"
                     ></m-pagination>
@@ -295,6 +295,8 @@
 	        	if(fee && fee.denom){
 	        	    let feeObject = Tools.formatAmount3(fee,4)
 	        		return `${feeObject.amount} ${feeObject.denom.toLocaleLowerCase()}`
+                }else {
+	        	    return  '--'
                 }
             }
         }
