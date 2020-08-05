@@ -378,7 +378,6 @@
                 Server.commonInterface({txDetail : {txHash : this.$route.query.txHash}}, (res) =>{
                     try {
                         if(res){
-                            console.error('======',res)
                             let fromInformation, toInformation;
                             fromInformation = Tools.formatListAmount(res).fromAddressAndMoniker;
                             toInformation = Tools.formatListAmount(res).toAddressAndMoniker;
