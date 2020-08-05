@@ -100,8 +100,8 @@ ValidatorStatus.UNBONDING = 'Unbonding';
 ValidatorStatus.UNBONDED = 'Bonded';
 
 const Denom = {};
-Denom.IRISATTO = store.state.displayToken;
-Denom.IRIS = store.state.nativeToken;
+Denom.IRISATTO = store.state.nativeToken;
+Denom.IRIS = store.state.displayToken;
 const ENVCONFIG = {};
 ENVCONFIG.DEV = 'dev';
 ENVCONFIG.QA = 'qa';

@@ -39,7 +39,7 @@
                                 :class="activeIService ? 'nav_item_active' : ''"
                                 v-if="showIService"
                                 @mouseenter="showTwoMenu('iService')" @mouseleave="hideTwoMenu('iService')">
-                                <router-link :to="`/services`">service</router-link> <div class="active_block"></div></li>
+                                <router-link :to="`/services`">Service</router-link> <div class="active_block"></div></li>
                         </ul>
                     </div>
 
@@ -98,8 +98,8 @@
                             <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
                             <li class="header_submenu_item no_border_style" v-show="flShowGov"><router-link :to="`/txs/governance`">Gov Txs</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowGov">Vote Tx</li>-->
-                            <li class="header_submenu_item" v-show="flShowStats"><router-link :to="`/stats/irisrichlist`">{{$store.state.nativeToken}} Rich List</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-show="flShowStats"><router-link :to="`/stats/irisstats`">{{$store.state.nativeToken}} Stats</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowStats"><router-link :to="`/stats/irisrichlist`">{{formatFirstWorldUpperCase($store.state.displayToken)}} Rich List</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-show="flShowStats"><router-link :to="`/stats/irisstats`">{{formatFirstWorldUpperCase($store.state.displayToken)}} Stats</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowStats">Public Address</li>-->
                         </ul>
                     </div>
@@ -204,8 +204,8 @@
                         <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowStatsMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowStatsMenu">
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisrichlist`)">{{$store.state.nativeToken}} Rich List</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisstats`)">{{$store.state.nativeToken}} Stats</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisrichlist`)">{{formatFirstWorldUpperCase($store.state.nativeToken)}} Rich List</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisstats`)">{{formatFirstWorldUpperCase($store.state.nativeToken)}} Stats</li>
                     </ul>
                 </div>
 
@@ -376,6 +376,9 @@
             }
         },
 		methods: {
+		    formatFirstWorldUpperCase(str){
+		        return Tools.firstWordUpperCase(str)
+            },
 			flShowBlockchain(v){
 				switch (v) {
 					case 'blockChain' :
