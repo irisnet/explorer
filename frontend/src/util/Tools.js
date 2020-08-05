@@ -1003,7 +1003,9 @@ export default class Tools {
 	 * */
 	static formatFee(Fee){
 	    if(Fee.amount && Fee.denom){
-	        return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
+		    return Tools.formatAmount2(Fee,4)
+	    }else {
+		    return  '--'
 	    }
 	}
 	/**
@@ -1017,7 +1019,7 @@ export default class Tools {
 	                if(item.denom === store.state.nativeToken){
 	                    return {
 	                        denom : store.state.displayToken.toLocaleUpperCase(),
-	                        amount: String(Tools.numberMoveDecimal(item.amount))
+	                        amount: String(Tools.formatAmount3(item).amount)
 	                    }
 	                }else {
 	                    return {
@@ -1028,7 +1030,7 @@ export default class Tools {
 	            })
 	        }else {
 	            if (amount[0].denom && amount[0].amount && amount[0].denom === store.state.nativeToken || amount[0].amount == 0) {
-	                amountNumber = amount[0].amount > 0 ? String(Tools.numberMoveDecimal(amount[0].amount)) : Number(amount[0].amount).toFixed(2);
+	                amountNumber = amount[0].amount > 0 ? String(Tools.formatAmount3(amount[0]).amount) : Number(amount[0].amount).toFixed(2);
 	                tokenName = store.state.displayToken.toLocaleUpperCase();
 	            } else if (amount[0].denom && amount[0].amount && amount[0].denom !== store.state.nativeToken) {
 	                amountNumber = amount[0].amount;
@@ -1045,7 +1047,7 @@ export default class Tools {
 	        }
 	    }else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
 	        if(amount.denom === store.state.nativeToken){
-	            amountNumber =String(Tools.numberMoveDecimal(amount.amount));
+	            amountNumber =String(Tools.formatAmount3(amount).amount);
 	            tokenName = store.state.displayToken.toLocaleUpperCase();
 	        }else if(amount.denom !== store.state.nativeToken){
 	            amountNumber = amount.amount
@@ -1056,7 +1058,7 @@ export default class Tools {
 	        }
 	    }else if(amount&& Object.keys(amount).includes('amount') && Object.keys(amount).includes('denom')){
 	        if(amount.denom === store.state.nativeToken){
-	            amountNumber = String(Tools.numberMoveDecimal(amount.amount));
+	            amountNumber = String(Tools.formatAmount3(amount).amount);
 	            tokenName = store.state.displayToken.toLocaleUpperCase();
 	        }else if(amount.denom !== store.state.nativeToken){
 	            amountNumber = amount.amount
