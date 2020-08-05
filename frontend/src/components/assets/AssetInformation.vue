@@ -563,10 +563,12 @@
                 })
             },
 	        formatFee(fee){
-		        if(fee& fee.denom){
+		        if(fee && fee.denom){
 		            let feeObject = Tools.formatAmount3(fee,4)
 			        return `${feeObject.amount} ${feeObject.denom}`
-		        }
+		        }else {
+		            return  '--'
+                }
 	        },
 	        formatNumber(value){
 		        let million = 1000000;
