@@ -1,4 +1,5 @@
 import store from "../../store";
+import Tools from "../../util/Tools";
 
 export default {
 	BlockchainBlocks:'Block List',
@@ -16,7 +17,7 @@ export default {
 	GovProposals:'Proposal List',
 	GovProposalsProposalDetails:'Proposal Details',
 	GovGovTxs:'Gov Txs List',
-	StatsIRISRichList:`${store.state.nativeToken} Rich List`,
+	StatsIRISRichList:`${Tools.firstWordUpperCase(store.state.displayToken)} Rich List`,
 	StatsIRISRichListAddress:'Address',
-	StatsIRISStats:`${store.state.displayToken} Stats Analyse`,
+	StatsIRISStats:`${Tools.firstWordUpperCase(store.state.displayToken)} Stats Analyse`,
 }

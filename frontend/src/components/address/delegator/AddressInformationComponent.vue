@@ -134,7 +134,7 @@
 			async formatAssetInformation(assetInformation){
 			    try{
         
-				    this.tokenName = this.$store.state.displayToken;
+				    this.tokenName = this.$store.state.displayToken.toLocaleUpperCase();
                     assetInformation.forEach( item => {
                         if(item && item.token === this.tokenName){
 
