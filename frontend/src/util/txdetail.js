@@ -890,7 +890,6 @@ export default class formatMsgsAndTags {
                 }
                 msg['Output Address :'].push(m.msg.output.address);
                 if(m.msg.output.coin){
-                    console.error('---',nativeDenom)
                     let amount = m.msg.output.coin.amount, denom = m.msg.output.coin.denom.toUpperCase();
                     if(m.msg.output.coin.denom === nativeDenom){
                         amount = formatMsgsAndTags.formatAmount(m.msg.output.coin.amount)

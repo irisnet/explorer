@@ -1082,8 +1082,8 @@ export default class Tools {
 	    return resData
 	}
 	
-	static getDisplayDate(timestamp, format = "YYYY-MM-DD HH:mm:ss"){
-	    return moment(timestamp).utcOffset(+480).format(format);
+	static getDisplayDate(timestamp, format = "YYYY/MM/DD HH:mm:ss"){
+	    return `${moment(timestamp).format(format)}+UTC`;
 	}
 	
 	static getFormatDate(date, format = "YYYY-MM-DD HH:mm:ss"){
