@@ -698,14 +698,8 @@ export default class Tools {
 					if(data.msgs){
 	                    data.msgs.forEach( item => {
 	                        if(item.msg){
-	                            fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.from_address,data.monikers));
-	                            toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.to_address,data.monikers))
-	                            // item.msg.inputs.forEach( item => {
-	                            //     fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.address,data.monikers));
-	                            // })
-	                            // item.msg.outputs.forEach( item => {
-	                            //     toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.address,data.monikers))
-	                            // })
+	                            fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.from_address,data.monikers));
+	                            toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.to_address,data.monikers))
 	                        }
 	                    });
 	                }
