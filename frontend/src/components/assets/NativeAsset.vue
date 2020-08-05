@@ -295,6 +295,8 @@
 	        	if(fee && fee.denom){
 	        	    let feeObject = Tools.formatAmount3(fee,4)
 	        		return `${feeObject.amount} ${feeObject.denom.toLocaleLowerCase()}`
+                }else {
+	        	    return  '--'
                 }
             }
         }

@@ -319,9 +319,12 @@
                 }
             },
 	        formatFee(Fee){
-		        if(Fee.amount && Fee.denom){
-			        return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
-		        }
+                if(Fee.amount && Fee.denom){
+                    let FeeObject = Tools.formatAmount3(Fee,4)
+                    return `${FeeObject.amount} ${FeeObject.denom}`
+                }else {
+                    return '--'
+                }
 	        },
             handleValidatorSetList(validatorList){
                 if(validatorList && validatorList.items && validatorList.items.length !== 0){

@@ -856,12 +856,12 @@ export default {
       if (data.amount && data.amount.length !== 0) {
         amountValue = data.amount
           .map(item => {
-            if (item.denom === Constant.Denom.IRISATTO) {
+            if (item.denom === this.$store.state.nativeToken) {
               return (item.amount = `${Tools.formatPriceToFixed(
                 Tools.numberMoveDecimal(item.amount)
               )} ${Tools.formatDenom(item.denom).toLocaleUpperCase()}`);
             } else if (
-              item.denom !== Constant.Denom.IRISATTO &&
+              item.denom !== this.$store.state.nativeToken &&
               item.denom !== ""
             ) {
               return (item.amount = `${Tools.FormatScientificNotationToNumber(

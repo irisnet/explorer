@@ -63,7 +63,7 @@ function amountFromatFunc (value, denomArg, fixedValue, noTofixed,ratio) {
                         value.amount, fixedValue || afterPointLen
                     )} ${denomArg || 'SHARES'}`;
                 } else {
-                    if (`${value.denom}`.toLowerCase() === store.state.displayToken) {
+                    if (`${value.denom}`.toLowerCase() === store.state.nativeToken) {
                         value.amount = Tools.numberMoveDecimal(value.amount);
                         afterPointLen = afterPointLength(value.amount);
                         amount = !noTofixed ? `${Tools.formatPriceToFixed(
