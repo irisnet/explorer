@@ -106,7 +106,7 @@
 						backgroundColor: '#222',
 						borderColor: '#777',
 						borderWidth: 1,
-						formatter: function (obj) {
+						formatter: (obj)=> {
 							let value = obj.value;
 							return `<div>
 										<p>${value[2]}</p>

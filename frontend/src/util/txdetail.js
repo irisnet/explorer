@@ -820,8 +820,8 @@ export default class formatMsgsAndTags {
             tx.msgs.forEach((m) =>{
                 msg['Sender :'].push(m.msg.sender);
                 const amt = Tools.numberMoveDecimal(m.msg.exact_iris_amt);
-                const denom = ctx.$store.state.nativeToken;
-                msg['Exact Iris Amt :'].push(`${formatMsgsAndTags.formatAmount(amt)} ${denom}`);
+                const denom = ctx.$store.state.displayToken;
+                msg['Exact Iris Amt :'].push(`${formatMsgsAndTags.formatAmount(amt)} ${denom.toUpperCase()}`);
                 if(m.msg.max_token.denom && m.msg.max_token.amount){
                     msg['Max Token :'].push(`${m.msg.max_token.amount} ${m.msg.max_token.denom}`);
                 }
@@ -847,12 +847,16 @@ export default class formatMsgsAndTags {
                 msg['Sender :'].push(m.msg.sender);
                 if(m.msg.withdraw_liquidity.denom && m.msg.withdraw_liquidity.amount){
 
-                    msg['Withdraw Liquidity :'].push(`${m.msg.withdraw_liquidity.amount} ${m.msg.withdraw_liquidity.denom}`);
+                    msg['Withdraw Liquidity :'].push(`${m.msg.withdraw_liquidity.amount}`);
                 }
                 const amt = Tools.numberMoveDecimal(m.msg.min_iris_amt);
-                const denom = ctx.$store.state.nativeToken;
-                msg['Min Iris Amt :'].push(`${formatMsgsAndTags.formatAmount(amt)} ${denom}`);
-                msg['Min Token :'].push(m.msg.min_token);
+                const denom = ctx.$store.state.displayToken;
+                msg['Min Iris Amt :'].push(`${formatMsgsAndTags.formatAmount(amt)} ${denom.toUpperCase()}`);
+                let tokenDenom = '';
+                if(m.msg.withdraw_liquidity.denom){
+                    tokenDenom = m.msg.withdraw_liquidity.denom.split('uni:')[1];
+                }
+                msg['Min Token :'].push(`${m.msg.min_token} ${tokenDenom}`);
                 msg['Deadline :'].push(Tools.getDisplayDate(m.msg.deadline*1000));
             })
         }
