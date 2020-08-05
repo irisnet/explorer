@@ -712,6 +712,7 @@
                 });
 			},
 			handleConfigs (configs) {
+			    console.error(configs)
                 if (!configs) {return;}
 				this.netWorkArray = configs.map(item => {
 					if(item.network_name === constant.CHAINID.IRISHUB){
@@ -752,6 +753,7 @@
                         }
                     })
                 }
+                console.error('=======',currentEnv)
                 if(this.$store.state.testSkinStyle){
                     networkName = this.$store.state.currentSkinStyle;
                 }
@@ -772,6 +774,9 @@
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.NYANCATTESTNETACTIVECOLOR);
+                }else if(networkName === constant.CHAINID.BIFROST){
+					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.BIFROST_BG_COLOR);
+					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.BIFROST_ACTIVE_COLOR);
                 }else{
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.DEFAULTBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.DEFAULTHOVERCOLOR);

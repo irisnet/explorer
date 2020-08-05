@@ -118,6 +118,7 @@ const CHAINID = {};
 CHAINID.IRISHUB = 'irishub';
 CHAINID.FUXI = 'fuxi';
 CHAINID.NYANCAT = 'nyancat';
+CHAINID.BIFROST = 'bifrost';
 CHAINID.QA = 'rainbow-qa';
 CHAINID.DEV = 'rainbow-dev';
 CHAINID.GOZTESTNET = 'goz-testnet';

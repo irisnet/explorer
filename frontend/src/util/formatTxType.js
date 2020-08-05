@@ -23,17 +23,46 @@ export default class FormatTxType {
 				label:'Gov',
 				children:[]
 			},
+            nftObj = {
+				value:'nft',
+				label:'NFT',
+				children:[]
+			},
+            oracleObj = {
+				value:'oracle',
+				label:'Oracle',
+				children:[]
+			},
+            coinswapObj = {
+				value:'coinswap',
+				label:'Coinswap',
+				children:[]
+			},
+            assetObj = {
+				value:'asset',
+				label:'Asset',
+				children:[]
+			},
+
+
 			othersObj = {
 				value:'others',
 				label:'Others',
 				children:[]
 			};
 		txTypeArray.forEach( item => {
+
 			switch (item) {
 				case "Transfer":
 					tansferObj.children.push({
 						value:'transfer',
 						label:'Transfer'
+					});
+					break;
+				case "MultiSend":
+					tansferObj.children.push({
+						value:'multiSend',
+						label:'MultiSend'
 					});
 					break;
 				case "Burn":
@@ -84,6 +113,19 @@ export default class FormatTxType {
 						label:'WithdrawDelegatorRewardsAll'
 					});
 					break;
+                case "FundCommunityPool":
+                    delegationObj.children.push({
+                        value:'FundCommunityPool',
+                        label:'FundCommunityPool'
+                    });
+                    break;
+                case "WithdrawValidatorCommission":
+                    delegationObj.children.push({
+                        value:'WithdrawValidatorCommission',
+                        label:'WithdrawValidatorCommission'
+                    });
+                    break;
+
 				case "CreateValidator":
 					validationObj.children.push({
 						value:'createValidator',
@@ -126,26 +168,81 @@ export default class FormatTxType {
 						label:'Vote'
 					});
 					break;
+
+				case "IssueDenom":
+					nftObj.children.push({
+						value:'IssueDenom',
+						label:'IssueDenom'
+					});
+					break;
+				case "NFTEdit":
+					nftObj.children.push({
+						value:'NFTEdit',
+						label:'NFTEdit'
+					});
+					break;
+				case "NFTTransfer":
+					nftObj.children.push({
+						value:'NFTTransfer',
+						label:'NFTTransfer'
+					});
+					break;
+				case "NFTMint":
+					nftObj.children.push({
+						value:'NFTMint',
+						label:'NFTMint'
+					});
+					break;
+				case "NFTBurn":
+					nftObj.children.push({
+						value:'NFTBurn',
+						label:'NFTBurn'
+					});
+					break;
+				case "CreateFeed":
+                    oracleObj.children.push({
+						value:'CreateFeed',
+						label:'CreateFeed'
+					});
+					break;
+				case "StartFeed":
+                    oracleObj.children.push({
+						value:'StartFeed',
+						label:'StartFeed'
+					});
+					break;
+				case "PauseFeed":
+                    oracleObj.children.push({
+						value:'PauseFeed',
+						label:'PauseFeed'
+					});
+					break;
+				case "EditFeed":
+                    oracleObj.children.push({
+						value:'EditFeed',
+						label:'EditFeed'
+					});
+					break;
 				case "IssueToken":
-					othersObj.children.push({
+                    assetObj.children.push({
 						value:'issueToken',
 						label:'IssueToken'
 					});
 					break;
 				case "EditToken":
-					othersObj.children.push({
+                    assetObj.children.push({
 						value:'editToken',
 						label:'EditToken'
 					});
 					break;
 				case "MintToken":
-					othersObj.children.push({
+                    assetObj.children.push({
 						value:'mintToken',
 						label:'MintToken'
 					});
 					break;
 				case "TransferTokenOwner":
-					othersObj.children.push({
+                    assetObj.children.push({
 						value:'transferTokenOwner',
 						label:'TransferTokenOwner'
 					});
@@ -210,20 +307,27 @@ export default class FormatTxType {
 						label:'RefundHTLC'
 					});
 					break;
-				case "AddLiquidity":
+				case "VerifyInvariant":
 					othersObj.children.push({
+						value:'verifyInvariant',
+						label:'VerifyInvariant'
+					});
+					break;
+
+				case "AddLiquidity":
+					coinswapObj.children.push({
 						value:'addLiquidity',
 						label:'AddLiquidity'
 					});
 					break;
 				case "RemoveLiquidity":
-					othersObj.children.push({
+					coinswapObj.children.push({
 						value:'removeLiquidity',
 						label:'RemoveLiquidity'
 					});
 					break;
 				case "SwapOrder":
-					othersObj.children.push({
+					coinswapObj.children.push({
 						value:'swapOrder',
 						label:'SwapOrder'
 					});
@@ -233,10 +337,13 @@ export default class FormatTxType {
 						value:'addProfiler',
 						label:'AddProfiler'
 					});
+					break;
+
+
 			}
 			
 		});
-		allTxType.push(tansferObj,delegationObj,validationObj,govObj,othersObj);
+		allTxType.push(tansferObj,delegationObj,validationObj,govObj,nftObj, oracleObj,coinswapObj,assetObj,othersObj);
 		return allTxType
 	}
 	static getRefUrlTxType(txType){
@@ -244,6 +351,7 @@ export default class FormatTxType {
 		//下拉框回显项数据结构
 		let UrlTxType = [
 			['transfer','transfer'],
+			['transfer','MultiSend'],
 			['transfer','burn'],
 			['transfer','setMemoRegexp'],
 			['delegation','delegate'],
@@ -252,6 +360,7 @@ export default class FormatTxType {
 			['delegation','beginUnbonding'],
 			['delegation','withdrawDelegatorReward'],
 			['delegation','withdrawDelegatorRewardsAll'],
+			['delegation','WithdrawValidatorCommission'],
 			['validation','createValidator'],
 			['validation','editValidator'],
 			['validation','unjail'],
@@ -259,9 +368,19 @@ export default class FormatTxType {
 			['gov','submitProposal'],
 			['gov','deposit'],
 			['gov','vote'],
-			['others','issueToken'],
-			['others','editToken'],
-			['others','transferTokenOwner'],
+			['nft','IssueDenom'],
+			['nft','NFTEdit'],
+			['nft','NFTTransfer'],
+			['nft','NFTMint'],
+			['nft','NFTBurn'],
+			['oracle','CreateFeed'],
+			['oracle','StartFeed'],
+			['oracle','PauseFeed'],
+			['oracle','EditFeed'],
+			['asset','issueToken'],
+			['asset','editToken'],
+			['asset','mintToken'],
+			['asset','transferTokenOwner'],
 			['others','createGateway'],
 			['others','editGateway'],
 			['others','transferGatewayOwner'],
@@ -269,11 +388,13 @@ export default class FormatTxType {
 			['others','addTrustee'],
 			['others','deleteProfiler'],
 			['others','deleteTrustee'],
+			['others','verifyInvariant'],
 			['others','claimHTLC'],
 			['others','createHTLC'],
-			['others','addLiquidity'],
-			['others','removeLiquidity'],
-			['others','swapOrder'],
+			['coinswap','addLiquidity'],
+			['coinswap','removeLiquidity'],
+			['coinswap','swapOrder'],
+			['others','FundCommunityPool'],
 		];
 		UrlTxType.forEach( item => {
 			if(Tools.onlyFirstWordUpperCase(item[item.length -1]) === txType){

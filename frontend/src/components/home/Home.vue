@@ -38,6 +38,7 @@
                 <div class="mainnet_irishub" @click="changeStyleToMainnet">Mainnet irishub</div>
                 <div class="testnet_fuxi"@click="changeStyleToFuxiTestnet">Testnet FuXi</div>
                 <div class="testnet_nyancat"@click="changeStyleToNyancatTestnet">Testnet Nyancat</div>
+                <div class="testnet_nyancat"@click="changeStyleToBifrostTestnet">Testnet BIFROST</div>
             </div>
         </div>
     </div>
@@ -100,6 +101,19 @@
                 mainnetThemeStyle:['#3264FD', '#4571FA', '#537CFD', '#6287FB', '#7092FD', '#85A3FF', '#92ACFF', '#9CB3FF', '#AABEFF', '#BDCDFF', '#E9EBFC',],
                 testnetFuXiThemeStyle:['#0C4282', '#144B8D', '#1B5498', '#235CA1', '#2E65A8', '#386EAE', '#427ABC', '#5087C8', '#5992D5', '#69A1E2', '#E9EBFC',],
                 testnetNyancatThemeStyle:['#0D9388', '#149A8F', '#1DA196', '#26ABA0', '#32B5AA', '#3FBDB2', '#4EC2B8', '#59C8BE', '#64D1C7', '#70DCD2', '#E9EBFC',],
+                testnetBifrostThemeStyle:[
+                    'rgba(214,121,58,.9)',
+                    'rgba(214,121,58,.8)',
+                    'rgba(214,121,58,.7)',
+                    'rgba(214,121,58,.6)',
+                    'rgba(214,121,58,.5)',
+                    'rgba(214,121,58,.4)',
+                    'rgba(214,121,58,.3)',
+                    'rgba(214,121,58,.2)',
+                    'rgba(214,121,58,.1)',
+                    'rgba(214,121,58,.05)',
+                    '#FFF5EE',
+                ],
                 defaultThemeStyle:['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#f0f9ff',],
                 themeStyleArray:'',
                 sessionStorageCurrentEnv:sessionStorage.getItem('skinCurrentEnv')
@@ -154,6 +168,10 @@
                 this.$store.commit('currentSkinStyle','nyancat');
                 this.$store.commit('testSkinStyle',true);
             },
+            changeStyleToBifrostTestnet(){
+                this.$store.commit('currentSkinStyle','bifrost');
+                this.$store.commit('testSkinStyle',true);
+            },
        	    setThemeStyle(){
 		        if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
 			        this.themeStyleArray = this.mainnetThemeStyle;
@@ -161,6 +179,8 @@
 			        this.themeStyleArray = this.testnetFuXiThemeStyle;
 		        }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.NYANCAT){
 			        this.themeStyleArray = this.testnetNyancatThemeStyle;
+		        }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.BIFROST){
+			        this.themeStyleArray = this.testnetBifrostThemeStyle;
 		        }else {
 			        this.themeStyleArray = this.defaultThemeStyle;
 		        }
