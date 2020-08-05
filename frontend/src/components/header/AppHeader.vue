@@ -451,7 +451,7 @@
                     	break;
                     case 'stats' :
 	                    this.offSetLeft = `5.065rem`;
-	                    this.contentWidth = '1.15rem';
+	                    this.contentWidth = '1.25rem';
 	                    this.flShowStats = true;
                         break;
                     case 'iService' :
