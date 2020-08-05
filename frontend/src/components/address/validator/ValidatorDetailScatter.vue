@@ -44,11 +44,13 @@
 				mainnetThemeStyle:["#3264FD","#FF5C01"],
 				testnetFuXiThemeStyle:["#0C4282","#FF5C01"],
 				testnetNyancatThemeStyle:["#0D9388","#FF5C01"],
+				testnetBifrostThemeStyle:["#FF5C01","#3264FD"],
 				defaultThemeStyle:["#0580D3","#FF5C01"],
 				defaultJailedThemeStyle:["#0580D3","#101149"],
 				mainnetJailedThemeStyle:['#3264FD',"#101149"],
 				testnetFuXiJailedThemeStyle:['#0C4282',"#101149"],
 				testnetNyancatJailedThemeStyle:['#0D9388',"#101149"],
+				testnetBifrostJailedThemeStyle:['#FF5C01',"#101149"],
 				chartOptionColor:'',
 				currentMoniker:'',
 				tipColor:''
@@ -59,7 +61,7 @@
 				if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
 					this.tipColor = "#101149"
 				}else {
-					this.tipColor = "#FF5C01"
+					this.tipColor = "#3264FD"
 				}
 			}
 		},
@@ -181,6 +183,13 @@
 						this.chartOptionColor = this.testnetNyancatJailedThemeStyle;
 					}else {
 						this.chartOptionColor = this.testnetNyancatThemeStyle;
+					}
+					
+				}else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.BIFROST){
+					if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
+						this.chartOptionColor = this.testnetBifrostJailedThemeStyle;
+					}else {
+						this.chartOptionColor = this.testnetBifrostThemeStyle;
 					}
 					
 				}else {
