@@ -1811,7 +1811,7 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.INPUT].unshift(`${item.msg.input.coin.amount} ${item.msg.input.coin.denom.toUpperCase()}`);
                         message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
                         message[Constant.TRANSACTIONMESSAGENAME.ISBUYORDER].unshift(item.msg.is_buy_order);
-                        if(item.msg.output.coin.denom === store.state.displayToken){
+                        if(item.msg.output.coin.denom === store.state.nativeToken){
                             amountObj = Tools.formatAmountOfTxDetail(item.msg.output.coin);
                             message[Constant.TRANSACTIONMESSAGENAME.OUTPUT].unshift(amountObj);
                         } else {

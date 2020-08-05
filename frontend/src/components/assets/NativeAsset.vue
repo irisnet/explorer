@@ -13,7 +13,7 @@
                 <div class="native_asset_nav_footer_content">
                     <m-pagination
                             :total="issueTokenTotalPageNum"
-                            :page-size="pageSize"
+                   a         :page-size="pageSize"
                             :page="issueTokenCurrentPageNum"
                             :page-change="issueTokenPageChange"
                     ></m-pagination>

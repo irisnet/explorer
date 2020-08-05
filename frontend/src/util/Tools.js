@@ -172,7 +172,7 @@ export default class Tools {
 		let amount = '';
 		if(token.amount && token.amount !== '' && token.amount !== 0 && token.denom === store.state.nativeToken){
 			amount  = Tools.convertScientificNotation2Number(Tools.formatNumber(token.amount));
-		}else if(token.denom === store.state.nativeToken){
+		}else if(token.denom === store.state.displayToken){
 			amount  = token.amount;
 		}
 		coin.amount = amount;
@@ -597,7 +597,7 @@ export default class Tools {
 			amountRadixNumber = Tools.amountRadix(amountDenom);
 		}
 		if(amountRadixNumber > 0 ){
-			return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber)} ${store.state.nativeToken.toLocaleUpperCase()}`
+			return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber)} ${store.state.displayToken.toLocaleUpperCase()}`
 		}else {
 			if(amountDenom && amountDenom === store.state.nativeToken){
 				return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber) * -1))).toFormat(),fixedNumber)} ${store.state.nativeToken.toLocaleUpperCase()}`
