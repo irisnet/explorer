@@ -26,18 +26,18 @@
                         <span>{{$t('ExplorerCN.serviceDetail.serviceBindings.available')}}:</span>
                         <span>{{isAvailable}}</span>
                     </p>
-                    <!-- <p class="service_respond_record_text_content">
+                    <p class="service_respond_record_text_content">
                         <span>{{$t('ExplorerCN.serviceDetail.serviceBindings.pricing')}}:</span>
                         <span>{{price}}</span>
-                    </p> -->
+                    </p>
                     <p class="service_respond_record_text_content">
                         <span>{{$t('ExplorerCN.serviceDetail.serviceBindings.qos')}}:</span>
                         <span>{{`${qos} ${$t('ExplorerCN.unit.blocks')}`}} </span>
                     </p>
-                    <!-- <p class="service_respond_record_text_content">
+                    <p class="service_respond_record_text_content">
                         <span>{{$t('ExplorerCN.serviceDetail.serviceBindings.deposit')}}:</span>
                         <span>{{deposit}}</span>
-                    </p> -->
+                    </p>
                     <p class="service_respond_record_text_content">
                         <span>{{$t('ExplorerCN.serviceDetail.serviceBindings.hash')}}:</span>
                         <span>

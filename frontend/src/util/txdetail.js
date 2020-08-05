@@ -6,7 +6,12 @@ import moment from 'moment';
 
 export default class formatMsgsAndTags {
     static formatAmount(amount){
-        return new bigNumber(amount).toFormat()
+        amount = amount.toString()
+        if(amount.includes('.') || amount.includes(',')){
+            return amount
+        }else {
+            return new bigNumber(amount).toFormat()
+        }
     }
 
     static switchTxType(dataTx, ctx){
@@ -1836,6 +1841,4 @@ export default class formatMsgsAndTags {
         }
         return message
     }
-
-
 }

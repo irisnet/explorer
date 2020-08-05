@@ -30,7 +30,9 @@ Blockchain explorer for the IRIS Hub
     SHOW_FAUCET      : switch of show faucet
     INITIAL_SUPPLY   : initial supplay of IRIS Token
     CUR_ENV          : current environment(dev/qa/testnet/mainnet)
-    CronTimeAssetGateways: time interval of update asset gateways
+    NT_UNIT_DISPLAY  : current environment(token unit diaply)
+    NT_UNIT_MIN      : current environment(token unit min)
+    NT_SCALE         : current environment(token scale from min to display)
     CronTimeAssetTokens: time interval of update asset tokens
     CronTimeGovParams: time interval of update gov params
     CronTimeTxNumByDay: time interval of update tx num by day
@@ -40,21 +42,16 @@ Blockchain explorer for the IRIS Hub
     CronTimeValidatorIcons: time interval of update validator icons
     CronTimeProposalVoters: time interval of update voter info of proposal
     CronTimeValidatorStaticInfo: time interval of cronjob to update validator static info include uptime, selfBond, delegatorNum
-    CronTimeFormatStaticDay: define time format of cronjob execute by every day
-    CronTimeFormatStaticMonth: define time format of cronjob execute by eveny month
-    CronTimeStaticDataDay: time interval of cronjob to snapshot delegator and validator rewards info
-    CronTimeStaticDataMonth: time interval of cronjob to caculate delegator and validator rewards info
     CronTimeHeartBeat: time interval of heart beat in cron task
-    NetreqLimitMax: max network request to lcd node
+
     
-    
-    //irishub v0.11.0 add
-    PrefixAccAddr    : faa
-    PrefixAccPub     : fap
-    PrefixValAddr    : fva
-    PrefixValPub     : fvp
-    PrefixConsAddr   : fca
-    PrefixConsPub    : fcp
+    //irishub v1.0.0 change
+    PrefixAccAddr    : iaa
+    PrefixAccPub     : iap
+    PrefixValAddr    : iva
+    PrefixValPub     : ivp
+    PrefixConsAddr   : ica
+    PrefixConsPub    : icp
     
 
 ```
@@ -77,6 +74,6 @@ At first, update the file in the docs dirname with  the command:
 Then, copy the swagger.yaml content of docs to the lcd/lit/swagger-ui/swagger.yaml and cover  after the "swagger: \"2.0\"" position.
 that's sure ok,than execute the command:
 ```golang
-   #cd ackend/lcd/lite
+   #cd backend/lcd/lite
    #go generate
 ```

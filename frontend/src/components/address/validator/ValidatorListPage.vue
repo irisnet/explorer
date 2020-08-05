@@ -154,16 +154,15 @@
                                 let regex =  /[^\w\u4e00-\u9fa50-9a-zA-Z]/g;
                                 let replaceMoniker = item.description.moniker.replace(regex,'');
                                 let validatorIconSrc = replaceMoniker ? Tools.firstWordUpperCase(replaceMoniker.match(/^[0-9a-zA-Z\u4E00-\u9FA5]/g)[0]) : '';
-                                console.log(Constant.Denom.IRIS,"iris---------------")
 								return {
 									validatorStatus: status,
 									moniker: Tools.formatString(item.description.moniker,15,'...'),
 									operatorAddress: item.operator_address,
 									commission: `${(item.commission.rate * 100).toFixed(2)} %`,
-									bondedToken: `${Tools.formatPriceToFixed(Number(item.tokens),2)} ${Constant.Denom.IRIS.toLocaleUpperCase()}`,
+									bondedToken: `${Tools.formatPriceToFixed(Number(item.tokens),2)} ${this.$store.state.displayToken.toLocaleUpperCase()}`,
 									uptime: Tools.FormatUptime(item.uptime),
 									votingPower: `${(item.voting_rate * 100).toFixed(4)}%`,
-									selfBond: `${Tools.subStrings(Tools.formatPriceToFixed(Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0])), 2)} ${Constant.Denom.IRIS.toLocaleUpperCase()}`,
+									selfBond: `${Tools.subStrings(Tools.formatPriceToFixed(Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0])), 2)} ${this.$store.state.displayToken.toLocaleUpperCase()}`,
 									delegatorNum: item.delegator_num,
 									bondHeight: Number(item.bond_height),
 									unbondingHeight: item.unbonding_height && Number(item.unbonding_height) > 0 ? Number(item.unbonding_height) : '--',

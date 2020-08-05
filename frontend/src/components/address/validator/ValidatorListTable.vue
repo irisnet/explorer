@@ -169,10 +169,10 @@
                 return Tools.formatValidatorAddress(address)
             },
             formatToken(token){
-              return `${Tools.formatPriceToFixed(token,2)} ${Constant.Denom.IRIS.toLocaleUpperCase()}`
+              return `${Tools.formatPriceToFixed(token,2)} ${this.$store.state.displayToken.toLocaleUpperCase()}`
             },
             formatSelfBond(selfBondToken){
-              return `${Tools.formatPriceToFixed(selfBondToken,4)} ${Constant.Denom.IRIS.toLocaleUpperCase()}`
+              return `${Tools.formatPriceToFixed(selfBondToken,4)} ${this.$store.state.displayToken.toLocaleUpperCase()}`
             },
             setValidatorFields(validatorList){
                 validatorList.forEach(item => {

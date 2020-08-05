@@ -226,7 +226,7 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <!-- <el-table-column :min-width="ColumnMinWidth.price" :label="$t('ExplorerCN.addressDetail.pricing')">
+                    <el-table-column :min-width="ColumnMinWidth.price" :label="$t('ExplorerCN.addressDetail.pricing')">
                         <template slot-scope="scope">
                             <span>{{scope.row.pricing}}</span>
                         </template>
@@ -235,7 +235,7 @@
                         <template slot-scope="scope">
                             <span>{{scope.row.deposit}}</span>
                         </template>
-                    </el-table-column> -->
+                    </el-table-column>
                     <el-table-column :min-width="ColumnMinWidth.qos" :label="$t('ExplorerCN.addressDetail.qos')">
                         <template slot-scope="scope">
                             <span>{{`${scope.row.qos} ${$t('ExplorerCN.unit.blocks')}`}}</span>
@@ -618,15 +618,15 @@
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,
                             balanceNumber: item.amount,
 				            delegatedValue: this.totalDelegator ? this.totalDelegator : 0,
-				            delegated: this.totalDelegator ? `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`: 0,
+				            delegated: this.totalDelegator ? `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`: 0,
 				            unBondingValue: this.totalUnBondingDelegator ? this.totalUnBondingDelegator : 0,
-				            unBonding: this.totalUnBondingDelegator ?`${new BigNumber(Tools.formatStringToFixedNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`  : 0,
+				            unBonding: this.totalUnBondingDelegator ?`${new BigNumber(Tools.formatStringToFixedNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2),this.fixedNumber)).toFormat()} ${this.$store.state.displayToken.toUpperCase()}`  : 0,
 				            reward: this.allRewardsValue ? this.allRewardsValue : 0,
                             rewards:this.allRewardsValue ? this.allRewardsValue : 0,
 				            totalAmount:`${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal((Number(Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount.toString(),-18),this.fixedNumber))*100 +
 					            Number(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)) +
 					            Number(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber))+
-					            Number(Tools.formatStringToFixedNumber(this.allRewardsAmountValue.toString(),this.fixedNumber)) * 100).toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}` ,
+					            Number(Tools.formatStringToFixedNumber(this.allRewardsAmountValue.toString(),this.fixedNumber)) * 100).toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}` ,
 			            }
                     }else {
 			            return {
@@ -671,7 +671,7 @@
 					            },0)
                                 console.error('=1==1=1==1=1=',this.totalDelegator)
                             }
-                            this.totalDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+                            this.totalDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`
                         }else {
 				            this.delegationsItems = []
                         }
@@ -710,7 +710,7 @@
 						            return Number(item.amount.amount) + Number(total)
 					            },0)
                             }
-				            this.totalUnBondingDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+				            this.totalUnBondingDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`
 
                         }
 		            }catch (e) {
@@ -758,7 +758,7 @@
                                 },0);
                             }
                             this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(res.total_rewards[0].amount,-18),this.fixedNumber) : 0;
-                            this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegatorReward.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+                            this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegatorReward.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`
                             this.getAssetList()
 			            }
 		            }catch (e) {
@@ -926,7 +926,9 @@
 		        if(Fee.amount && Fee.denom){
 		            let FeeObject = Tools.formatAmount3(Fee,4)
 			        return `${FeeObject.amount} ${FeeObject.denom}`
-		        }
+		        }else {
+		            return '--'
+                }
 	        },
             pageNation(dataArray){
 	            let index = 0;
@@ -1052,8 +1054,8 @@
                                 });
                             });
                             let context = await getServiceContextsByServiceName(result.requestContextId || '');
-                            if (context && context.result && context.result.value) {
-                                result.state = context.result.value.state;
+                            if (context) {
+                                result.state = context.state;
                             }
                             this.consumerTxList.push(result);
                             if (item.respond && item.respond.length) {
@@ -1132,7 +1134,7 @@
                                 result.deposit = `${item.msgs[0].msg.deposit[0].amount} ${item.msgs[0].msg.deposit[0].denom}`;
                             }
                             let bindings = await getServiceBindingByServiceName(result.serviceName);
-                            (bindings.result || []).forEach((bind)=>{
+                            (bindings || []).forEach((bind)=>{
                                 if(result.provider === bind.provider && result.owner == bind.owner){
                                     result.isAvailable = bind.available;
                                     result.pricing = JSON.parse(bind.pricing || '{}').price;

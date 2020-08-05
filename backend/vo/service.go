@@ -34,5 +34,5 @@ type ServiceRequestRespond struct {
 	BatchResponseCount uint32   `json:"batch_response_count"`
 	ResponseThreshold  uint32   `json:"response_threshold"`
 	BatchState         int32    `json:"batch_state"`
-	State              int32    `json:"state"`
+	State              string   `json:"state"`
 }

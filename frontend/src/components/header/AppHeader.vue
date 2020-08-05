@@ -683,7 +683,9 @@
                         if(res.cur_env === constant.ENVCONFIG.TESTNET || res.cur_env === constant.ENVCONFIG.MAINNET){
                             this.$store.commit('hideTestSkinStyle',false)
                         }
-              
+                        this.$store.commit('nativeToken',res.nt_unit_min)
+                        this.$store.commit('displayToken',res.nt_unit_display)
+                        this.$store.commit('scaleLength',res.nt_scale)
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
