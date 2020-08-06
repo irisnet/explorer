@@ -140,7 +140,7 @@
 							this.navigationArray[1].value = `${Number(res.voting_ratio * 100).toFixed(2)} %`;
 							this.navigationArray[1].footerLabel = `${res.vote_val_num} / ${res.active_val_num} Validators`;
 							this.navigationArray[2].value = `${Number(res.avg_block_time).toFixed(2)} s`;
-							this.navigationArray[3].value = `${(res.bonded_ratio * 100).toFixed(2)} %`;
+							this.navigationArray[3].value = `${Tools.formatStringToFixedNumber((res.bonded_ratio * 100).toString(),2)} %`;
 							this.navigationArray[3].footerLabel = this.formatBondedTokens(res.bonded_tokens,res.total_supply);
 							// this.navigationArray[4].value = `${((Number(res.bonded_tokens) - Number(res.foundation_bonded)) / Number(res.circulation)*100).toFixed(2)} %`
 							// this.navigationArray[4].footerLabel = this.formatBondedTokens((Number(res.bonded_tokens) - Number(res.foundation_bonded)),res.circulation);
