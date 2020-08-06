@@ -148,7 +148,7 @@
                                     <router-link v-if="key === 'Withdraw Address:'"
                                                  :to="addressRoute(value)">{{value}}
                                     </router-link>
-                                    <router-link v-if="key === 'Proposer :'"
+                                    <router-link v-if="key === 'Proposer :' && value !== '--'"
                                                  :to="addressRoute(value)">{{value}}
                                     </router-link>
                                     <router-link v-if="key === 'Depositor :'"
@@ -196,6 +196,7 @@
                                     <span v-if="key === 'Website :' && value === '--'">--</span>
                                     <span v-if="key === 'Software :' && value === '--'">--</span>
                                     <span v-if="key === 'Identity :' && value === '--'">--</span>
+                                    <span v-if="key === 'Proposer :' && value === '--'">--</span>
                                 </div>
                                 <div class="commission_rate_container"
                                      v-if="key === 'Commission Rate :' && messageList['TxType :'][0] === 'CreateValidator' && value !== '--'">
@@ -378,6 +379,7 @@
                 Server.commonInterface({txDetail : {txHash : this.$route.query.txHash}}, (res) =>{
                     try {
                         if(res){
+                            console.error('=======',res)
                             let fromInformation, toInformation;
                             fromInformation = Tools.formatListAmount(res).fromAddressAndMoniker;
                             toInformation = Tools.formatListAmount(res).toAddressAndMoniker;
@@ -579,9 +581,9 @@
                         display: flex;
                         font-size: 0.14rem;
                         .tx_detail_message_information_name {
-                            width: 1.5rem;
-                            min-width: 1.5rem;
-                            max-width: 1.5rem;
+                            width: 1.6rem;
+                            min-width: 1.6rem;
+                            max-width: 1.6rem;
                             color: var(--contentColor);
                         }
                         .hide_rate_tip {

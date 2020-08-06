@@ -43,6 +43,12 @@ export default class FormatTxType {
 				label:'Asset',
 				children:[]
 			},
+            iServiceObj = {
+				value:'iService',
+				label:'iService',
+				children:[]
+			},
+
 
 
 			othersObj = {
@@ -339,11 +345,101 @@ export default class FormatTxType {
 					});
 					break;
 
+				case "DefineService":
+                    iServiceObj.children.push({
+						value:'defineService',
+						label:'DefineService'
+					});
+					break;
+				case "BindService":
+                    iServiceObj.children.push({
+						value:'bindService',
+						label:'BindService'
+					});
+					break;
+				case "CallService":
+                    iServiceObj.children.push({
+						value:'callService',
+						label:'CallService'
+					});
+					break;
+                case "service/SetWithdrawAddress":
+                    iServiceObj.children.push({
+                        value:'service/SetWithdrawAddress',
+                        label:'service/SetWithdrawAddress'
+                    });
+                    break;
+				case "RespondService":
+                    iServiceObj.children.push({
+						value:'respondService',
+						label:'RespondService'
+					});
+					break;
+				case "DisableServiceBinding":
+                    iServiceObj.children.push({
+						value:'disableServiceBinding',
+						label:'DisableServiceBinding'
+					});
+					break;
+				case "EnableServiceBinding":
+                    iServiceObj.children.push({
+						value:'enableServiceBinding',
+						label:'EnableServiceBinding'
+					});
+					break;
+				case "UpdateServiceBinding":
+                    iServiceObj.children.push({
+						value:'updateServiceBinding',
+						label:'UpdateServiceBinding'
+					});
+					break;
+				case "StartRequestContext":
+                    iServiceObj.children.push({
+						value:'startRequestContext',
+						label:'StartRequestContext'
+					});
+					break;
+				case "KillRequestContext":
+                    iServiceObj.children.push({
+						value:'killRequestContext',
+						label:'KillRequestContext'
+					});
+					break;
+				case "PauseRequestContext":
+                    iServiceObj.children.push({
+						value:'pauseRequestContext',
+						label:'PauseRequestContext'
+					});
+					break;
+				case "UpdateRequestContext":
+                    iServiceObj.children.push({
+						value:'updateRequestContext',
+						label:'UpdateRequestContext'
+					});
+					break;
+				case "RefundServiceDeposit":
+                    iServiceObj.children.push({
+						value:'refundServiceDeposit',
+						label:'RefundServiceDeposit'
+					});
+					break;
+				case "WithdrawEarnedFees":
+                    iServiceObj.children.push({
+						value:'WithdrawEarnedFees',
+						label:'WithdrawEarnedFees'
+					});
+					break;
+
+
+
+
+
 
 			}
 			
 		});
-		allTxType.push(tansferObj,delegationObj,validationObj,govObj,nftObj, oracleObj,coinswapObj,assetObj,othersObj);
+		allTxType.push(tansferObj,delegationObj,validationObj,
+            govObj,nftObj, oracleObj,coinswapObj,assetObj,iServiceObj,othersObj);
 		return allTxType
 	}
 	static getRefUrlTxType(txType){
@@ -390,7 +486,26 @@ export default class FormatTxType {
 			['others','deleteTrustee'],
 			['others','verifyInvariant'],
 			['others','claimHTLC'],
-			['others','createHTLC'],
+
+
+			['iService','DefineService'],
+			['iService','BindService'],
+			['iService','CallService'],
+			['iService','RespondService'],
+			['iService','DisableServiceBinding'],
+			['iService','EnableServiceBinding'],
+			['iService','UpdateServiceBinding'],
+			['iService','StartRequestContext'],
+			['iService','KillRequestContext'],
+			['iService','PauseRequestContext'],
+			['iService','UpdateRequestContext'],
+			['iService','RefundServiceDeposit'],
+			['iService','WithdrawEarnedFees'],
+			['iService','service/SetWithdrawAddress'],
+
+
+
+
 			['coinswap','addLiquidity'],
 			['coinswap','removeLiquidity'],
 			['coinswap','swapOrder'],

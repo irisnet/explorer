@@ -116,7 +116,7 @@ export default class formatMsgsAndTags {
                 return formatMsgsAndTags.txTypeBindService(dataTx);
             case Constant.TxType.UPDATE_SERVICE_BINDING :
                 return formatMsgsAndTags.txTypeUpdateServiceBinding(dataTx);
-            case Constant.TxType.SET_WITHDRAW_FEES_ADDRESS :
+            case Constant.TxType.SERVICE_SET_WITHDRAW_ADDRESS :
                 return formatMsgsAndTags.txTypeSetWithdrawFeesAddress(dataTx);
             case Constant.TxType.DISABLE_SERVICE_BINDING :
                 return formatMsgsAndTags.txTypeDisableServiceBinding(dataTx);
@@ -167,6 +167,9 @@ export default class formatMsgsAndTags {
                 return formatMsgsAndTags.txTypeRemoveLiquidity(dataTx, ctx);
             case Constant.TxType.SWAPORDER :
                 return formatMsgsAndTags.txTypeSwapOrder(dataTx, ctx);
+            case Constant.TxType.VERIFY_INVARIANT :
+                return formatMsgsAndTags.txTypeVerifyInvariant(dataTx, ctx);
+
 
 
 
@@ -904,6 +907,27 @@ export default class formatMsgsAndTags {
         return msg;
     }
 
+    static txTypeVerifyInvariant(tx, ctx){
+        const msg = {
+            'Type :' : [],
+            'Sender :' : [],
+            'Invariant Module Name :' : [],
+            'Invariant Route :' : [],
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Sender :'].push(m.msg.sender);
+                msg['Invariant Module Name :'].push(m.msg.invariant_module_name);
+                msg['Invariant Route :'].push(m.msg.invariant_route);
+
+            })
+        }
+        return msg;
+    }
+
+
+
 
 
     static txTypeTransfer(dataTx, txType){
@@ -1330,13 +1354,13 @@ export default class formatMsgsAndTags {
         return message
     }
 
-    static txTypeSubmitProposal(dataTx, txType){
+    /*static txTypeSubmitProposal(dataTx, txType){
         let message = {}, initialDepositObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.PROPOSER] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TITLE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION] = [];
+        //message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION] = [];
         message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
@@ -1344,12 +1368,12 @@ export default class formatMsgsAndTags {
                 switch (item.type){
                     case Constant.SUBMITPROPOSALTYPE.SUBMITPROPOSAL:
                         if(item.msg){
-                            initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.initialDeposit);
+                            initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.initial_deposit);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSER].unshift(item.msg.proposer);
-                            message[Constant.TRANSACTIONMESSAGENAME.TITLE].unshift(item.msg.title);
+                            message[Constant.TRANSACTIONMESSAGENAME.TITLE].unshift(item.title);
                             message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT].unshift(`${formatMsgsAndTags.formatAmount(initialDepositObj.amountNumber)} ${initialDepositObj.tokenName}`);
-                            message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.description);
-                            message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.msg.proposalType);
+                            //message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.description);
+                            message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.proposal_type);
                             if(item.msg.params && item.msg.params.length > 0){
                                 message[Constant.TRANSACTIONMESSAGENAME.PARAMETER] = [];
                                 message[Constant.TRANSACTIONMESSAGENAME.PARAMETER].unshift(JSON.stringify(item.msg.params));
@@ -1419,6 +1443,28 @@ export default class formatMsgsAndTags {
             })
         }
         return message
+    }*/
+
+    static txTypeSubmitProposal(tx){
+        const msg = {
+            'Type :' : [],
+            'Proposer :' : [],
+            'Initial Deposit :' : [],
+            'Type Url :' : [],
+            'Value :' : [],
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Proposer :'].push(m.msg.proposer || '--');
+                if(m.msg.initial_deposit && Array.isArray(m.msg.initial_deposit) && m.msg.initial_deposit.length > 0){
+                    msg['Initial Deposit :'].push(`${m.msg.initial_deposit[0].amount} ${m.msg.initial_deposit[0].denom}`);
+                }
+                msg['Type Url :'].push(m.msg.content.type_url || '--');
+                msg['Value :'].push(m.msg.content.Value || '--');
+            })
+        }
+        return msg;
     }
 
     static txTypeDeposit(dataTx, txType){
@@ -1750,30 +1796,21 @@ export default class formatMsgsAndTags {
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
+        //message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
+        //message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.SECRET] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
-        if(dataTx.status === 'success'){
-            if(dataTx.tags){
-                message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(dataTx.tags.sender);
-                message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.receiver);
-                message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(dataTx.tags['hash-lock']);
-                message[Constant.TRANSACTIONMESSAGENAME.SECRET].unshift(dataTx.tags.secret);
-            }
-        } else {
-            if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-                dataTx.msgs.forEach(item =>{
-                    if(item.type === txType){
-                        if(item.msg){
-                            message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg['hash_lock']);
-                            message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift('-');
-                            message[Constant.TRANSACTIONMESSAGENAME.TO].unshift('-');
-                            message[Constant.TRANSACTIONMESSAGENAME.SECRET].unshift(item.msg.secret);
-                        }
+        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
+            dataTx.msgs.forEach(item =>{
+                if(item.type === txType){
+                    if(item.msg){
+                        message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg['hash_lock']);
+                        //message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift('-');
+                        //message[Constant.TRANSACTIONMESSAGENAME.TO].unshift('-');
+                        message[Constant.TRANSACTIONMESSAGENAME.SECRET].unshift(item.msg.secret);
                     }
-                })
-            }
+                }
+            })
         }
 
         return message
