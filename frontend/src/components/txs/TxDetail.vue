@@ -115,7 +115,7 @@
                                     <router-link v-if="key === 'Output Address :' && value !== '-'"
                                                  :to="addressRoute(value)">{{value}}
                                     </router-link>
-                                    <router-link v-if="key === 'Sender :' && value !== '-'" :to="addressRoute(value)">
+                                    <router-link v-if="key === 'Sender :' && value !== '-' && value !== '--'" :to="addressRoute(value)">
                                         {{value}}
                                     </router-link>
                                     <router-link v-if="key === 'Symbol :' && value !== '-'"
@@ -197,6 +197,7 @@
                                     <span v-if="key === 'Software :' && value === '--'">--</span>
                                     <span v-if="key === 'Identity :' && value === '--'">--</span>
                                     <span v-if="key === 'Proposer :' && value === '--'">--</span>
+                                    <span v-if="key === 'Sender :' && value === '--'">--</span>
                                 </div>
                                 <div class="commission_rate_container"
                                      v-if="key === 'Commission Rate :' && messageList['TxType :'][0] === 'CreateValidator' && value !== '--'">
