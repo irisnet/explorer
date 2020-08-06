@@ -231,25 +231,25 @@ export default class FormatTxType {
 					break;
 				case "IssueToken":
                     assetObj.children.push({
-						value:'issueToken',
+						value:'IssueToken',
 						label:'IssueToken'
 					});
 					break;
 				case "EditToken":
                     assetObj.children.push({
-						value:'editToken',
+						value:'EditToken',
 						label:'EditToken'
 					});
 					break;
 				case "MintToken":
                     assetObj.children.push({
-						value:'mintToken',
+						value:'MintToken',
 						label:'MintToken'
 					});
 					break;
 				case "TransferTokenOwner":
                     assetObj.children.push({
-						value:'transferTokenOwner',
+						value:'TransferTokenOwner',
 						label:'TransferTokenOwner'
 					});
 					break;
@@ -340,26 +340,26 @@ export default class FormatTxType {
 					break;
 				case "AddProfiler":
 					othersObj.children.push({
-						value:'addProfiler',
+						value:'AddProfiler',
 						label:'AddProfiler'
 					});
 					break;
 
 				case "DefineService":
                     iServiceObj.children.push({
-						value:'defineService',
+						value:'DefineService',
 						label:'DefineService'
 					});
 					break;
 				case "BindService":
                     iServiceObj.children.push({
-						value:'bindService',
+						value:'BindService',
 						label:'BindService'
 					});
 					break;
 				case "CallService":
                     iServiceObj.children.push({
-						value:'callService',
+						value:'CallService',
 						label:'CallService'
 					});
 					break;
@@ -371,19 +371,19 @@ export default class FormatTxType {
                     break;
 				case "RespondService":
                     iServiceObj.children.push({
-						value:'respondService',
+						value:'RespondService',
 						label:'RespondService'
 					});
 					break;
 				case "DisableServiceBinding":
                     iServiceObj.children.push({
-						value:'disableServiceBinding',
+						value:'DisableServiceBinding',
 						label:'DisableServiceBinding'
 					});
 					break;
 				case "EnableServiceBinding":
                     iServiceObj.children.push({
-						value:'enableServiceBinding',
+						value:'EnableServiceBinding',
 						label:'EnableServiceBinding'
 					});
 					break;
@@ -395,31 +395,31 @@ export default class FormatTxType {
 					break;
 				case "StartRequestContext":
                     iServiceObj.children.push({
-						value:'startRequestContext',
+						value:'StartRequestContext',
 						label:'StartRequestContext'
 					});
 					break;
 				case "KillRequestContext":
                     iServiceObj.children.push({
-						value:'killRequestContext',
+						value:'KillRequestContext',
 						label:'KillRequestContext'
 					});
 					break;
 				case "PauseRequestContext":
                     iServiceObj.children.push({
-						value:'pauseRequestContext',
+						value:'PauseRequestContext',
 						label:'PauseRequestContext'
 					});
 					break;
 				case "UpdateRequestContext":
                     iServiceObj.children.push({
-						value:'updateRequestContext',
+						value:'UpdateRequestContext',
 						label:'UpdateRequestContext'
 					});
 					break;
 				case "RefundServiceDeposit":
                     iServiceObj.children.push({
-						value:'refundServiceDeposit',
+						value:'RefundServiceDeposit',
 						label:'RefundServiceDeposit'
 					});
 					break;
@@ -473,10 +473,10 @@ export default class FormatTxType {
 			['oracle','StartFeed'],
 			['oracle','PauseFeed'],
 			['oracle','EditFeed'],
-			['asset','issueToken'],
-			['asset','editToken'],
-			['asset','mintToken'],
-			['asset','transferTokenOwner'],
+			['asset','IssueToken'],
+			['asset','EditToken'],
+			['asset','MintToken'],
+			['asset','TransferTokenOwner'],
 			['others','createGateway'],
 			['others','editGateway'],
 			['others','transferGatewayOwner'],
@@ -486,6 +486,9 @@ export default class FormatTxType {
 			['others','deleteTrustee'],
 			['others','verifyInvariant'],
 			['others','claimHTLC'],
+			['others','AddProfiler'],
+			['others','createHTLC'],
+			['others','refundHTLC'],
 
 
 			['iService','DefineService'],

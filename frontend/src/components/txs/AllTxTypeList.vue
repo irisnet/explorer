@@ -97,6 +97,7 @@
 		name: "AllTxTypeList",
 		components: {PageTitle, DateTooltip, MAllTxTypeListTable,MPagination},
 		data() {
+		    console.error('========',this.getParamsByUrlHash().cascaderTxType)
 			return {
 			    pageTitle:pageTitleContent.BlockchainTransactions,
 				allTxTypeList: [],
@@ -293,7 +294,7 @@
                         }
                     })
                 }
-                cascaderTxType = FormatTxType.getRefUrlTxType(txType);
+                cascaderTxType = FormatTxType.getRefUrlTxType(decodeURIComponent(txType));
                 return  {txType,cascaderTxType,txStatus,filterStartTime,filterEndTime,urlParamShowStartTime,urlParamShowEndTime}
             },
 

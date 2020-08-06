@@ -195,7 +195,7 @@ export default class formatMsgsAndTags {
                 msg['Description :'].push(m.msg.description || '--');
                 msg['Tags :'].push(m.msg.tags);
                 msg['Author :'].push(m.msg.author || '--');
-                msg['Author Description :'].push(m.msg.authorDescription || '--');
+                msg['Author Description :'].push(m.msg.author_description || '--');
                 msg['Schemas :'].push(m.msg.schemas);
             })
         }
@@ -917,9 +917,9 @@ export default class formatMsgsAndTags {
         msg['Type :'].push(tx.type);
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m) =>{
-                msg['Sender :'].push(m.msg.sender);
-                msg['Invariant Module Name :'].push(m.msg.invariant_module_name);
-                msg['Invariant Route :'].push(m.msg.invariant_route);
+                msg['Sender :'].push(m.msg.sender || '--');
+                msg['Invariant Module Name :'].push(m.msg.invariant_module_name || '--');
+                msg['Invariant Route :'].push(m.msg.invariant_route || '--');
 
             })
         }
