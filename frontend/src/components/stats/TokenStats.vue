@@ -14,8 +14,8 @@
                         <span class="information_value"
                               :class="v.value ? 'skip_route' : ''"
                               v-if="v.label === 'Burned'">
-                            <router-link @click.native="$uMeng.push('IRIS Stats_Burned','click')"
-                                         :to="burnedCoins">{{v.value || '--'}}</router-link>
+                            <router-link v-show="v.value && v.value !== '--'" @click.native="$uMeng.push('IRIS Stats_Burned','click')"
+                                         :to="burnedCoins">{{v.value}}</router-link>
                             </span>
                         <span class="information_value"
                               :class="v.value ? 'skip_route' : ''"
@@ -24,7 +24,7 @@
                                          v-if="v.value && v.value !== '--'"
                                          :to="communityTaxCoins">{{v.value || '--'}}</router-link>
                             </span>
-                        <span v-if="v.value && v.value === '--'">--</span>
+                        <span v-if="v.label!=='Circulation'&& v.value && v.value === '--'">--</span>
                         <span class="information_value" v-if="v.label !== 'Burned' && v.label !== 'Community Tax'">{{v.value || '--'}}</span>
                     </div>
                 </div>
@@ -147,8 +147,7 @@ export default {
                                 let data = Object.entries(result);
 
                                 for (let v of data) {
-                                    v[1].totalAmount = Tools.formatAmount3(v[1].total_amount,4);
-                                    v[1].totalAmount = `${v[1].totalAmount.amount} ${v[1].totalAmount.denom.toLocaleUpperCase()}`
+                                    v[1].totalAmount = Tools.formatAmount2(v[1].total_amount,4);
                                     v[1].percentValue = this.formatDecimalNumberToFixedNumber(
                                         Number(v[1].percent) * 100
                                     );
