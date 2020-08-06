@@ -214,6 +214,13 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 			Abstain:           data.FinalVotes.Abstain,
 			SystemVotingPower: data.FinalVotes.SystemVotingPower,
 		}
+		if tmp.FinalVotes.SystemVotingPower == "" {
+			systemVotingPower, err = service.GetSystemVotingPower()
+			if err != nil {
+				logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
+			}
+			tmp.FinalVotes.SystemVotingPower = utils.NewRatFromFloat64(systemVotingPower).FloatString(4)
+		}
 	}
 
 	l := vo.Level{}

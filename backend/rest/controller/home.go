@@ -100,7 +100,7 @@ func registerNavigationBar(r *mux.Router) error {
 			total := new(big.Rat).Add(loose, bonded)
 			if total.Cmp(new(big.Rat).SetInt64(0)) == 1 && total.Cmp(bonded) >= 0 {
 				ratio := new(big.Rat).Quo(bonded, total)
-				result.BondedRatio = ratio.FloatString(2)
+				result.BondedRatio = ratio.FloatString(18)
 			}
 
 			result.BondedTokens = poolStake.BondedTokens
