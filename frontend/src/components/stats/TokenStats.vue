@@ -147,13 +147,8 @@ export default {
                                 let data = Object.entries(result);
 
                                 for (let v of data) {
-                                    v[1].totalAmount = this.$options.filters.amountFromat(
-                                        v[1].total_amount,
-                                        undefined,
-                                        4,
-                                        true
-                                    );
-                                    v[1].totalAmount = `${new bigNumber(v[1].totalAmount.split(' ')[0]).toFormat()} ${v[1].totalAmount.split(' ')[1]}`
+                                    v[1].totalAmount = Tools.formatAmount3(v[1].total_amount,4);
+                                    v[1].totalAmount = `${v[1].totalAmount.amount} ${v[1].totalAmount.denom.toLocaleUpperCase()}`
                                     v[1].percentValue = this.formatDecimalNumberToFixedNumber(
                                         Number(v[1].percent) * 100
                                     );
