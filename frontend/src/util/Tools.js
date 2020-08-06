@@ -378,9 +378,14 @@ export default class Tools {
 		});
 	}
 	static onlyFirstWordUpperCase(str){
-		return str.replace(/(\s|^)[a-z]/, function(char){
-			return char.toUpperCase();
-		});
+	    if(str === 'service/SetWithdrawAddress'){
+	        return str;
+        }else{
+            return str.replace(/(\s|^)[a-z]/, function(char){
+                return char.toUpperCase();
+            });
+        }
+
 	}
 	static firstWordLowerCase (str){
 		return str.toLowerCase().replace(/(\s|^)[a-z]/g, function(char){
@@ -1007,6 +1012,7 @@ export default class Tools {
 	 * */
 	static formatAmountOfTxDetail(amount){
 	    let [amountNumber,tokenName,moreAmountsNumber] = ['--','--',[]];
+	    console.error('=-----------',amount)
 	    if(amount instanceof Array && amount.length > 0) {
 	        if(amount.length !== 1){
 	            moreAmountsNumber = amount.map( (item) => {

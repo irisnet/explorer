@@ -56,7 +56,7 @@ TxType.WithdrawValidatorCommission = 'WithdrawValidatorCommission';
 TxType.DEFINE_SERVICE = 'DefineService';
 TxType.BIND_SERVICE = 'BindService';
 TxType.UPDATE_SERVICE_BINDING = 'UpdateServiceBinding';
-TxType.SET_WITHDRAW_FEES_ADDRESS = 'SetWithdrawFeesAddress';
+TxType.SERVICE_SET_WITHDRAW_ADDRESS = 'service/SetWithdrawAddress';
 TxType.DISABLE_SERVICE_BINDING = 'DisableServiceBinding';
 TxType.ENABLE_SERVICE_BINDING = 'EnableServiceBinding';
 TxType.REFUND_SERVICE_DEPOSIT = 'RefundServiceDeposit';
@@ -83,6 +83,9 @@ TxType.CREATE_FEED = 'CreateFeed';
 TxType.START_FEED = 'StartFeed';
 TxType.PAUSE_FEED = 'PauseFeed';
 TxType.EDIT_FEED = 'EditFeed';
+
+
+TxType.VERIFY_INVARIANT = 'VerifyInvariant';
 
 
 
