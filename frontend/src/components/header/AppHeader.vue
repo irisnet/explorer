@@ -39,7 +39,7 @@
                                 :class="activeIService ? 'nav_item_active' : ''"
                                 v-if="showIService"
                                 @mouseenter="showTwoMenu('iService')" @mouseleave="hideTwoMenu('iService')">
-                                <router-link :to="`/services`">service</router-link> <div class="active_block"></div></li>
+                                <router-link :to="`/services`">Service</router-link> <div class="active_block"></div></li>
                         </ul>
                     </div>
 
@@ -98,8 +98,8 @@
                             <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
                             <li class="header_submenu_item no_border_style" v-show="flShowGov"><router-link :to="`/txs/governance`">Gov Txs</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowGov">Vote Tx</li>-->
-                            <li class="header_submenu_item" v-show="flShowStats"><router-link :to="`/stats/irisrichlist`">{{$store.state.nativeToken}} Rich List</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-show="flShowStats"><router-link :to="`/stats/irisstats`">{{$store.state.nativeToken}} Stats</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowStats"><router-link :to="`/stats/irisrichlist`">{{formatFirstWorldUpperCase($store.state.displayToken)}} Rich List</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-show="flShowStats"><router-link :to="`/stats/irisstats`">{{formatFirstWorldUpperCase($store.state.displayToken)}} Stats</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowStats">Public Address</li>-->
                         </ul>
                     </div>
@@ -204,8 +204,8 @@
                         <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowStatsMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowStatsMenu">
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisrichlist`)">{{$store.state.nativeToken}} Rich List</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisstats`)">{{$store.state.nativeToken}} Stats</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisrichlist`)">{{formatFirstWorldUpperCase($store.state.nativeToken)}} Rich List</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisstats`)">{{formatFirstWorldUpperCase($store.state.nativeToken)}} Stats</li>
                     </ul>
                 </div>
 
@@ -376,6 +376,9 @@
             }
         },
 		methods: {
+		    formatFirstWorldUpperCase(str){
+		        return Tools.firstWordUpperCase(str)
+            },
 			flShowBlockchain(v){
 				switch (v) {
 					case 'blockChain' :
@@ -448,7 +451,7 @@
                     	break;
                     case 'stats' :
 	                    this.offSetLeft = `5.065rem`;
-	                    this.contentWidth = '1.15rem';
+	                    this.contentWidth = '1.25rem';
 	                    this.flShowStats = true;
                         break;
                     case 'iService' :
@@ -683,7 +686,9 @@
                         if(res.cur_env === constant.ENVCONFIG.TESTNET || res.cur_env === constant.ENVCONFIG.MAINNET){
                             this.$store.commit('hideTestSkinStyle',false)
                         }
-              
+                        this.$store.commit('nativeToken',res.nt_unit_min)
+                        this.$store.commit('displayToken',res.nt_unit_display)
+                        this.$store.commit('scaleLength',res.nt_scale)
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
@@ -710,6 +715,7 @@
                 });
 			},
 			handleConfigs (configs) {
+			    console.error(configs)
                 if (!configs) {return;}
 				this.netWorkArray = configs.map(item => {
 					if(item.network_name === constant.CHAINID.IRISHUB){
@@ -750,6 +756,7 @@
                         }
                     })
                 }
+                console.error('=======',currentEnv)
                 if(this.$store.state.testSkinStyle){
                     networkName = this.$store.state.currentSkinStyle;
                 }
@@ -770,6 +777,10 @@
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.NYANCATTESTNETACTIVECOLOR);
+                }else if(networkName === constant.CHAINID.BIFROST){
+					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.BIFROST_BG_COLOR);
+                    root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.BIFROST_HOVER_COLOR);
+					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.BIFROST_ACTIVE_COLOR);
                 }else{
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.DEFAULTBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.DEFAULTHOVERCOLOR);

@@ -2,13 +2,19 @@ import Constant from "../constant/Constant"
 import numberMoveDecimal from "move-decimal-point"
 import Tools from "../util/Tools"
 import bigNumber from 'bignumber.js'
+import moment from 'moment';
 
 export default class formatMsgsAndTags {
     static formatAmount(amount){
-        return new bigNumber(amount).toFormat()
+        amount = amount.toString()
+        if(amount.includes('.') || amount.includes(',')){
+            return amount
+        }else {
+            return new bigNumber(amount).toFormat()
+        }
     }
 
-    static switchTxType(dataTx){
+    static switchTxType(dataTx, ctx){
         let message;
         switch (dataTx.type){
             case Constant.TxType.TRANSFER :
@@ -104,14 +110,6 @@ export default class formatMsgsAndTags {
             case Constant.TxType.REFUNDHTLC :
                 return message = formatMsgsAndTags.txTypeRefundHTLC(dataTx, Constant.TxType.REFUNDHTLC);
                 break;
-            case Constant.TxType.ADDLIQUIDITY :
-                return message = formatMsgsAndTags.txTypeAddLiquidity(dataTx, Constant.TxType.ADDLIQUIDITY);
-                break;
-            case Constant.TxType.REMOVELIQUIDITY :
-                return message = formatMsgsAndTags.txTypeRemoveLiquidity(dataTx, Constant.TxType.REMOVELIQUIDITY);
-                break;
-            case Constant.TxType.SWAPORDER :
-                return message = formatMsgsAndTags.txTypeSwapOrder(dataTx, Constant.TxType.SWAPORDER);
             case Constant.TxType.DEFINE_SERVICE :
                 return formatMsgsAndTags.txTypeDefineService(dataTx);
             case Constant.TxType.BIND_SERVICE :
@@ -163,6 +161,12 @@ export default class formatMsgsAndTags {
                 return formatMsgsAndTags.txTypePauseFeed(dataTx);
             case Constant.TxType.EDIT_FEED :
                 return formatMsgsAndTags.txTypeEditFeed(dataTx);
+            case Constant.TxType.ADDLIQUIDITY :
+                return formatMsgsAndTags.txTypeAddLiquidity(dataTx, ctx);
+            case Constant.TxType.REMOVELIQUIDITY :
+                return formatMsgsAndTags.txTypeRemoveLiquidity(dataTx, ctx);
+            case Constant.TxType.SWAPORDER :
+                return formatMsgsAndTags.txTypeSwapOrder(dataTx, ctx);
 
 
 
@@ -796,6 +800,105 @@ export default class formatMsgsAndTags {
                 } else {
                     msg['Service Fee Cap :'].push('--')
                 }
+            })
+        }
+        return msg;
+    }
+
+
+    static txTypeAddLiquidity(tx, ctx){
+        const msg = {
+            'Type :' : [],
+            'Sender :' : [],
+            'Exact Iris Amt :' : [],
+            'Max Token :' : [],
+            'Min Liquidity :' : [],
+            'Deadline :' : [],
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Sender :'].push(m.msg.sender);
+                const amt = Tools.numberMoveDecimal(m.msg.exact_iris_amt);
+                const denom = ctx.$store.state.displayToken;
+                msg['Exact Iris Amt :'].push(`${formatMsgsAndTags.formatAmount(amt)} ${denom.toUpperCase()}`);
+                if(m.msg.max_token.denom && m.msg.max_token.amount){
+                    msg['Max Token :'].push(`${m.msg.max_token.amount} ${m.msg.max_token.denom}`);
+                }
+                msg['Min Liquidity :'].push(m.msg.min_liquidity);
+                msg['Deadline :'].push(Tools.getDisplayDate(m.msg.deadline*1000));
+            })
+        }
+        return msg;
+    }
+
+    static txTypeRemoveLiquidity(tx, ctx){
+        const msg = {
+            'Type :' : [],
+            'Sender :' : [],
+            'Withdraw Liquidity :' : [],
+            'Min Iris Amt :' : [],
+            'Min Token :' : [],
+            'Deadline :' : [],
+        };
+        msg['Type :'].push(tx.type);
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+                msg['Sender :'].push(m.msg.sender);
+                if(m.msg.withdraw_liquidity.denom && m.msg.withdraw_liquidity.amount){
+
+                    msg['Withdraw Liquidity :'].push(`${m.msg.withdraw_liquidity.amount}`);
+                }
+                const amt = Tools.numberMoveDecimal(m.msg.min_iris_amt);
+                const denom = ctx.$store.state.displayToken;
+                msg['Min Iris Amt :'].push(`${formatMsgsAndTags.formatAmount(amt)} ${denom.toUpperCase()}`);
+                let tokenDenom = '';
+                if(m.msg.withdraw_liquidity.denom){
+                    tokenDenom = m.msg.withdraw_liquidity.denom.split('uni:')[1];
+                }
+                msg['Min Token :'].push(`${m.msg.min_token} ${tokenDenom}`);
+                msg['Deadline :'].push(Tools.getDisplayDate(m.msg.deadline*1000));
+            })
+        }
+        return msg;
+    }
+
+    static txTypeSwapOrder(tx, ctx){
+        const msg = {
+            'Type :' : [],
+            'Is Buy Order :' : [],
+            'Input Address :' : [],
+            'Input :' : [],
+            'Output Address :' : [],
+            'Output :' : [],
+            'Deadline :' : [],
+        };
+        msg['Type :'].push(tx.type);
+        const nativeDenom = ctx.$store.state.nativeToken;
+        if(tx && tx.msgs && Array.isArray(tx.msgs)){
+            tx.msgs.forEach((m) =>{
+
+                msg['Is Buy Order :'].push(m.msg.is_buy_order);
+                msg['Input Address :'].push(m.msg.input.address);
+                if(m.msg.input.coin){
+                    let amount = m.msg.input.coin.amount, denom = m.msg.input.coin.denom.toUpperCase();
+                    if(m.msg.input.coin.denom === nativeDenom){
+                        amount = formatMsgsAndTags.formatAmount(m.msg.input.coin.amount)
+                    }
+
+                    msg['Input :'].push(`${amount} ${denom}`);
+                }
+                msg['Output Address :'].push(m.msg.output.address);
+                if(m.msg.output.coin){
+                    let amount = m.msg.output.coin.amount, denom = m.msg.output.coin.denom.toUpperCase();
+                    if(m.msg.output.coin.denom === nativeDenom){
+                        amount = formatMsgsAndTags.formatAmount(m.msg.output.coin.amount)
+                    }
+
+                    msg['Output :'].push(`${amount} ${denom}`);
+                }
+                msg['Deadline :'].push(Tools.getDisplayDate(m.msg.deadline*1000));
+
             })
         }
         return msg;
@@ -1738,88 +1841,6 @@ export default class formatMsgsAndTags {
                 }
             }
 
-        }
-        return message
-    }
-
-    static txTypeAddLiquidity(dataTx, txType){
-        let message = {};
-        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.MAXTOKEN] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.EXACTIRISAMT] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.MINLIQUIDITY] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.SENDER] = [];
-        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach(item =>{
-                if(item.type === txType){
-                    message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
-                    if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.MAXTOKEN].unshift(`${formatMsgsAndTags.formatAmount(item.msg.max_token.amount)} ${item.msg.max_token.denom.toUpperCase()}`);
-                        message[Constant.TRANSACTIONMESSAGENAME.EXACTIRISAMT].unshift(item.msg.exact_iris_amt);
-                        message[Constant.TRANSACTIONMESSAGENAME.MINLIQUIDITY].unshift(item.msg.min_liquidity);
-                        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
-                        message[Constant.TRANSACTIONMESSAGENAME.SENDER].unshift(item.msg.sender);
-                    }
-                }
-            })
-        }
-        return message
-    }
-
-    static txTypeRemoveLiquidity(dataTx, txType){
-        let message = {};
-        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.MINTOKEN] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.WITHDRAWLIQUIDITY] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.MINIRISAMT] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.SENDER] = [];
-        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach(item =>{
-                if(item.type === txType){
-                    message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
-                    if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.MINTOKEN].unshift(item.msg.min_token);
-                        message[Constant.TRANSACTIONMESSAGENAME.WITHDRAWLIQUIDITY].unshift(`${formatMsgsAndTags.formatAmount(item.msg.withdraw_liquidity.amount)} ${item.msg.withdraw_liquidity.denom.toUpperCase()}`);
-                        message[Constant.TRANSACTIONMESSAGENAME.MINIRISAMT].unshift(item.msg.min_iris_amt);
-                        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
-                        message[Constant.TRANSACTIONMESSAGENAME.SENDER].unshift(item.msg.sender);
-                    }
-                }
-            })
-        }
-        return message
-    }
-
-    static txTypeSwapOrder(dataTx, txType){
-        let message = {}, amountObj;
-        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.INPUTADDRESS] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.OUTPUTADDRESS] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.INPUT] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.OUTPUT] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.ISBUYORDER] = [];
-        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach(item =>{
-                if(item.type === txType){
-                    message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
-                    if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.INPUTADDRESS].unshift(item.msg.input.address);
-                        message[Constant.TRANSACTIONMESSAGENAME.OUTPUTADDRESS].unshift(item.msg.output.address);
-                        message[Constant.TRANSACTIONMESSAGENAME.INPUT].unshift(`${item.msg.input.coin.amount} ${item.msg.input.coin.denom.toUpperCase()}`);
-                        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
-                        message[Constant.TRANSACTIONMESSAGENAME.ISBUYORDER].unshift(item.msg.is_buy_order);
-                        if(item.msg.output.coin.denom === Constant.Denom.IRISATTO){
-                            amountObj = Tools.formatAmountOfTxDetail(item.msg.output.coin);
-                            message[Constant.TRANSACTIONMESSAGENAME.OUTPUT].unshift(amountObj);
-                        } else {
-                            message[Constant.TRANSACTIONMESSAGENAME.OUTPUT].unshift(`${item.msg.input.coin.amount} ${item.msg.input.coin.denom.toUpperCase()}`);
-                        }
-                    }
-                }
-            })
         }
         return message
     }

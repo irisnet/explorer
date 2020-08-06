@@ -64,8 +64,6 @@
 	import Tools from "../../../util/Tools"
 	import AddressInformationPie from "./AddressInformationPie";
 	import moveDecimal from 'move-decimal-point'
-	import {GetNativeTokenName} from "../../../helper/ConfigHelper";
-
     export default {
 		name: "AddressInformationComponent",
 		components: {AddressInformationPie, MClip},
@@ -135,10 +133,8 @@
 			},
 			async formatAssetInformation(assetInformation){
 			    try{
-			        const res = await GetNativeTokenName();
-                    if(res && res.msg === 'success'){
-			            this.tokenName = res.data;
-                    }
+        
+				    this.tokenName = this.$store.state.displayToken.toLocaleUpperCase();
                     assetInformation.forEach( item => {
                         if(item && item.token === this.tokenName){
 

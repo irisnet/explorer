@@ -600,9 +600,7 @@ export default {
                                 it.Tx_Hash = it.tx_hash;
                                 it.submited = it.submited ? "Yes" : "No";
                                 it.address = it.proposer;
-                                it.depositedAmount = this.$options.filters.amountFromat(
-                                    it.deposited_amount
-                                );
+                                it.depositedAmount = `${Tools.formatAmount2(it.deposited_amount)}`
                             }
                             this.txTableList.depositedProposals.items =
                                 data.items;

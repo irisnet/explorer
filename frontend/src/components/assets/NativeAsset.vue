@@ -292,9 +292,11 @@
 		        }
 	        },
             formatFee(fee){
-	        	if(fee && fee.denom){
+	        	if(fee && fee.amount && fee.denom){
 	        	    let feeObject = Tools.formatAmount3(fee,4)
 	        		return `${feeObject.amount} ${feeObject.denom.toLocaleLowerCase()}`
+                }else {
+	        	    return  '--'
                 }
             }
         }

@@ -98,12 +98,12 @@
             </template>
             <template slot-scope="{ row }" slot="amount">
                 <div class="name_address">
-                    <div v-if="!row.amount.includes('Tokens')">
+                    <div v-if="row.amount && !row.amount.includes('Tokens')">
                             <span>
                                 <span>{{row.amount}}</span>
                             </span>
                     </div>
-                    <div  v-if="row.amount.includes('Tokens')"  class="skip_route">
+                    <div  v-if="row.amount && row.amount.includes('Tokens')"  class="skip_route">
                         <router-link :to="`/tx?txHash=${row.txHash}`">{{row.amount}}</router-link>
                     </div>
                 </div>

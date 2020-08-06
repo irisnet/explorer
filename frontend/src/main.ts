@@ -97,15 +97,6 @@ axios.get(`/api/block/blockinfo/1`).then(data => {
   let firstBlockTime = new Date(blockinfo.timestamp.split('T')[0]).getTime() - 24 * 60 * 60 * 1000;
   sessionStorage.setItem('firstBlockTime',Tools.formatDateYearToDate(firstBlockTime))
 });
-axios.get(`/api/unit_info`).then(data => {
-    if(data.status === 200){
-        return data.data
-    }
-}).then(result => {
-    store.commit('nativeToken',result.data.nt_unit_min)
-    store.commit('displayToken',result.data.nt_unit_display)
-    store.commit('scaleLength',result.data.nt_scale)
-})
 sessionStorage.setItem("Show_faucet",JSON.stringify(0));
 const routerPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {

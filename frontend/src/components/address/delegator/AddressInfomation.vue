@@ -611,7 +611,6 @@
             },
             getAssetList(){
                 this.assetsItems = this.assetList.map( item => {
-                    console.error('-----',item)
                     if (!item) { return {}};
 	            	if(item && item.denom === this.$store.state.nativeToken){
 			            return {
@@ -619,15 +618,15 @@
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,
                             balanceNumber: item.amount,
 				            delegatedValue: this.totalDelegator ? this.totalDelegator : 0,
-				            delegated: this.totalDelegator ? `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`: 0,
+				            delegated: this.totalDelegator ? `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`: 0,
 				            unBondingValue: this.totalUnBondingDelegator ? this.totalUnBondingDelegator : 0,
-				            unBonding: this.totalUnBondingDelegator ?`${new BigNumber(Tools.formatStringToFixedNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`  : 0,
+				            unBonding: this.totalUnBondingDelegator ?`${new BigNumber(Tools.formatStringToFixedNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2),this.fixedNumber)).toFormat()} ${this.$store.state.displayToken.toUpperCase()}`  : 0,
 				            reward: this.allRewardsValue ? this.allRewardsValue : 0,
                             rewards:this.allRewardsValue ? this.allRewardsValue : 0,
 				            totalAmount:`${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal((Number(Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount.toString(),-18),this.fixedNumber))*100 +
 					            Number(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)) +
 					            Number(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber))+
-					            Number(Tools.formatStringToFixedNumber(this.allRewardsAmountValue.toString(),this.fixedNumber)) * 100).toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}` ,
+					            Number(Tools.formatStringToFixedNumber(this.allRewardsAmountValue.toString(),this.fixedNumber)) * 100).toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}` ,
 			            }
                     }else {
 			            return {
@@ -646,7 +645,6 @@
 	            	    address: this.$route.params.param
                     }},(res) => {
 		            try {
-		                console.error('=====',res)
 		            	if(res && res.length > 0){
 				            let copyResult = JSON.parse(JSON.stringify(res));
 				            this.delegationPageNationArrayData = this.pageNation(copyResult);
@@ -673,7 +671,7 @@
 					            },0)
                                 console.error('=1==1=1==1=1=',this.totalDelegator)
                             }
-                            this.totalDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+                            this.totalDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`
                         }else {
 				            this.delegationsItems = []
                         }
@@ -712,7 +710,7 @@
 						            return Number(item.amount.amount) + Number(total)
 					            },0)
                             }
-				            this.totalUnBondingDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+				            this.totalUnBondingDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`
 
                         }
 		            }catch (e) {
@@ -724,14 +722,13 @@
 	            Server.commonInterface({rewardList:{
 	            	address: this.$route.params.param
                     }},(res) => {
-                    console.error('========',res)
 		            try {
 		            	if(res && res.delagations_rewards && res.delagations_rewards.length > 0) {
                             res.delagations_rewards.map( item => {
 				            	if(item.amount && item.amount.length === 0){
 						            item.amount.push({
 							            amount:0,
-                                        denom:this.$store.state.displayToken
+                                        denom:this.$store.state.displayToken.toLocaleUpperCase()
                                     })
                                 }
                             });
@@ -761,7 +758,7 @@
                                 },0);
                             }
                             this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(res.total_rewards[0].amount,-18),this.fixedNumber) : 0;
-                            this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegatorReward.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+                            this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegatorReward.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`
                             this.getAssetList()
 			            }
 		            }catch (e) {
@@ -929,7 +926,9 @@
 		        if(Fee.amount && Fee.denom){
 		            let FeeObject = Tools.formatAmount3(Fee,4)
 			        return `${FeeObject.amount} ${FeeObject.denom}`
-		        }
+		        }else {
+		            return '--'
+                }
 	        },
             pageNation(dataArray){
 	            let index = 0;
@@ -1033,7 +1032,6 @@
                 try {
                     const res = await getCallServiceWithAddress(this.$route.params.param, this.consumerTxPageNum, this.consumerTxPageSize, true);
                     if(res){
-                        console.log('ConsumerTx======:',res);
                         this.consumerTxCount = res.count;
                         this.consumerTxList = [];
                         for (let item of res.data){
@@ -1056,7 +1054,6 @@
                                 });
                             });
                             let context = await getServiceContextsByServiceName(result.requestContextId || '');
-                            debugger;
                             if (context) {
                                 result.state = context.state;
                             }

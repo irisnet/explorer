@@ -177,6 +177,12 @@
             {offset: 0, color: 'rgba(13, 147, 136, 0.8)'},
             {offset: 1, color: 'rgba(245, 247, 253, 1)'}
           ]
+        }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.BIFROST){
+          this.skinStyle = '#D6793A';
+          this.lineSkinBackgroundStyle = [
+            {offset: 0, color: 'rgba(214,121,58, 0.8)'},
+            {offset: 1, color: 'rgba(245, 247, 253, 1)'}
+          ]
         }else {
           this.skinStyle = '#0580D3';
           this.lineSkinBackgroundStyle = [

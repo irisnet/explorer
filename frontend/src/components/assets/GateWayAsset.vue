@@ -295,9 +295,11 @@
 		        }
 	        },
 	        formatFee(fee){
-		        if(fee){
+		        if(fee && fee.denom){
 			        return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(fee.amount)),4)} ${Tools.formatDenom(fee.denom).toUpperCase()}`;
-		        }
+		        }else {
+		            return  '--'
+                }
 	        }
         }
 	}
