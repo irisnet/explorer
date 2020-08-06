@@ -147,8 +147,7 @@ export default {
                                 let data = Object.entries(result);
 
                                 for (let v of data) {
-                                    v[1].totalAmount = Tools.formatAmount3(v[1].total_amount,4);
-                                    v[1].totalAmount = `${v[1].totalAmount.amount} ${v[1].totalAmount.denom.toLocaleUpperCase()}`
+                                    v[1].totalAmount = Tools.formatAmount2(v[1].total_amount,4);
                                     v[1].percentValue = this.formatDecimalNumberToFixedNumber(
                                         Number(v[1].percent) * 100
                                     );
@@ -165,6 +164,7 @@ export default {
                             }
                             resolve();
                         } catch (err) {
+                            console.error(err)
                             this.pieDatasNoData = true;
                             resolve();
                         }
