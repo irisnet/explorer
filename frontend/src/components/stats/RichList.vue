@@ -51,7 +51,7 @@ export default {
             latestTime: "",
             richListTimer: null,
             pageTitle: pageTitleConfig.StatsIRISRichList,
-            contentDoc:`Top 100 Addresses by ${this.$store.state.nativeToken}`
+            contentDoc:`Top 100 Addresses by ${Tools.firstWordUpperCase(this.$store.state.nativeToken)}`
         };
     },
     mounted() {
@@ -73,7 +73,7 @@ export default {
                                 rank: item.rank,
                                 Address: item.address,
                                 Balance: `${Tools.formatPrice(
-                                    Tools.convertScientificNotation3Number(item.balance[0].amount)
+                                    Tools.formatAmount2(item.balance)
                                 )}`,
                                 Percentage: this.formatPercentage(item.percent)
                             };

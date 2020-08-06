@@ -54,7 +54,7 @@
                   slot: 'Address',
                 },
                 {
-                  title: `Amount (${this.$store.state.nativeToken})`,
+                  title: `Amount (${Tools.firstWordUpperCase(this.$store.state.nativeToken)})`,
                   key: 'Balance',
                   
                   className: 'text_right'
