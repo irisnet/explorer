@@ -294,7 +294,7 @@
             formatFee(fee){
 	        	if(fee && fee.amount && fee.denom){
 	        	    let feeObject = Tools.formatAmount3(fee,4)
-	        		return `${feeObject.amount} ${feeObject.denom.toLocaleLowerCase()}`
+	        		return `${feeObject.amount} ${feeObject.denom.toLocaleUpperCase()}`
                 }else {
 	        	    return  '--'
                 }
