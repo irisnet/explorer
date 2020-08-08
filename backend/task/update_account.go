@@ -171,7 +171,10 @@ func getDelegationInfo(address string) (float64, error) {
 			}
 		}
 	}
-	token = utils.CovertValue(token, utils.CoinTypeAtto, utils.CoinTypeStake)
+	serveconf := conf.Get().Server
+	if serveconf.NtScale > 0 {
+		token = new(big.Rat).Mul(token, new(big.Rat).SetInt64(int64(serveconf.NtScale)))
+	}
 	return utils.ParseStringToFloat(token.FloatString(18))
 }
 
