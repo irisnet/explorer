@@ -79,8 +79,8 @@ func GetGenesisGovModuleParamMap() (map[string]interface{}, error) {
 	stakeMap := appStateMap[GovModuleStaking].(map[string]interface{})
 	stakeParamMap := stakeMap["params"].(map[string]interface{})
 
-	mintMap := appStateMap[GovModuleMint].(map[string]interface{})
-	mintParamMap := mintMap["params"].(map[string]interface{})
+	//mintMap := appStateMap[GovModuleMint].(map[string]interface{})
+	//mintParamMap := mintMap["params"].(map[string]interface{})
 
 	distrMap := appStateMap[GovModuleDistr].(map[string]interface{})
 	distrParamMap := distrMap["params"].(map[string]interface{})
@@ -91,10 +91,10 @@ func GetGenesisGovModuleParamMap() (map[string]interface{}, error) {
 	for k, v := range distrParamMap {
 		slashingParamMap[k] = v
 	}
-
-	for k, v := range mintParamMap {
-		slashingParamMap[k] = v
-	}
+	//
+	//for k, v := range mintParamMap {
+	//	slashingParamMap[k] = v
+	//}
 
 	for k, v := range stakeParamMap {
 		slashingParamMap[k] = v
@@ -114,7 +114,7 @@ func Block(height int64) (result BlockVo) {
 	}
 	var precommits []Precommit
 	for idx := range block.LastCommit.Signatures {
-		vote := block.LastCommit.GetVote(idx)
+		vote := block.LastCommit.GetVote(int32(idx))
 		precommits = append(precommits, Precommit{
 			Height:           fmt.Sprint(vote.Height),
 			ValidatorAddress: vote.ValidatorAddress.String(),
@@ -155,7 +155,7 @@ func BlockLatest() (result BlockVo) {
 
 	var precommits []Precommit
 	for idx := range block.LastCommit.Signatures {
-		vote := block.LastCommit.GetVote(idx)
+		vote := block.LastCommit.GetVote(int32(idx))
 		precommits = append(precommits, Precommit{
 			Height:           fmt.Sprint(vote.Height),
 			ValidatorAddress: vote.ValidatorAddress.String(),
