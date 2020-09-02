@@ -7,10 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/irishub-sdk-go/types"
 	"strings"
-	"github.com/tendermint/tendermint/crypto"
 )
-
-
 
 func NodeInfo() (result NodeInfoVo, err error) {
 
@@ -196,14 +193,9 @@ func ValidatorSet(height int64) (result ValidatorSetVo) {
 		BlockHeight: fmt.Sprint(validatorset.BlockHeight),
 	}
 	for _, val := range validatorset.Validators {
-		var pubKey crypto.PubKey
-		if bz, err := client.Cdc.MarshalJSON(val.PubKey); err == nil {
-			_ = client.Cdc.UnmarshalJSON(bz, &pubKey)
-		}
-		bech32Addr, _ := types.ConsAddressFromHex(val.Address)
-		bech32PubKey, _ := types.Bech32ifyConsPub(pubKey)
+		bech32PubKey, _ := types.Bech32ifyConsPub(val.PubKey)
 		result.Validators = append(result.Validators, StakeValidatorVo{
-			Address:          bech32Addr.String(),
+			Address:          val.Address,
 			PubKey:           bech32PubKey,
 			ProposerPriority: val.ProposerPriority,
 			VotingPower:      val.VotingPower,
@@ -219,18 +211,12 @@ func LatestValidatorSet() (result ValidatorSetVo) {
 		return result
 	}
 	result = ValidatorSetVo{
-		BlockHeight:fmt.Sprint(validator.BlockHeight),
-
+		BlockHeight: fmt.Sprint(validator.BlockHeight),
 	}
 	for _, val := range validator.Validators {
-		var pubKey crypto.PubKey
-		if bz, err := client.Cdc.MarshalJSON(val.PubKey); err == nil {
-			_ = client.Cdc.UnmarshalJSON(bz, &pubKey)
-		}
-		bech32Addr, _ := types.ConsAddressFromHex(val.Address)
-		bech32PubKey, _ := types.Bech32ifyConsPub(pubKey)
+		bech32PubKey, _ := types.Bech32ifyConsPub(val.PubKey)
 		result.Validators = append(result.Validators, StakeValidatorVo{
-			Address:          bech32Addr.String(),
+			Address:          val.Address,
 			PubKey:           bech32PubKey,
 			ProposerPriority: val.ProposerPriority,
 			VotingPower:      val.VotingPower,
@@ -272,5 +258,3 @@ func BlockResult(height int64) (result BlockResultVo, txsnum int) {
 	return
 
 }
-
-

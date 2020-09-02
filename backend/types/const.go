@@ -2,6 +2,7 @@ package types
 
 import (
 	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/conf"
 )
 
 const (
@@ -109,15 +110,13 @@ const (
 
 	Format = "2006/01/02T15:04:05Z07:00"
 
-	TimeLayout             = "2006-01-02T15:04:05"
-	TimeLayout1            = "2006-01-02 15:04:05 +0000 UTC"
-	Change                 = "powerChange"
-	Slash                  = "slash"
-	Recover                = "recover"
+	TimeLayout  = "2006-01-02T15:04:05"
+	TimeLayout1 = "2006-01-02 15:04:05 +0000 UTC"
+	Change      = "powerChange"
+	Slash       = "slash"
+	Recover     = "recover"
 
-
-
-	StakeUint     = "stake"
+	//StakeUint     = "stake"
 	AssetMinDenom = "-min"
 	Unknown       = "unknown"
 
@@ -220,12 +219,12 @@ var (
 
 	BankList        = []string{TxTypeTransfer, TxTypeMultiSend}
 	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}
-	StakeList      = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeMsgFundCommunityPool, TxTypeMsgWithdrawValidatorCommission}
-	GovernanceList = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
-	GuardianList   = []string{TxTypeAddProfiler, TxTypeAddTrustee, TxTypeDeleteProfiler, TxTypeDeleteTrustee}
-	HTLCList       = []string{TxTypeClaimHTLC, TxTypeCreateHTLC, TxTypeRefundHTLC}
-	CoinswapList   = []string{TxTypeAddLiquidity, TxTypeRemoveLiquidity, TxTypeSwapOrder}
-	CrisisList     = []string{TxTypeVerifyInvariant}
+	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeMsgFundCommunityPool, TxTypeMsgWithdrawValidatorCommission}
+	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
+	GuardianList    = []string{TxTypeAddProfiler, TxTypeAddTrustee, TxTypeDeleteProfiler, TxTypeDeleteTrustee}
+	HTLCList        = []string{TxTypeClaimHTLC, TxTypeCreateHTLC, TxTypeRefundHTLC}
+	CoinswapList    = []string{TxTypeAddLiquidity, TxTypeRemoveLiquidity, TxTypeSwapOrder}
+	CrisisList      = []string{TxTypeVerifyInvariant}
 
 	//ForwardList = []string{TxTypeBeginRedelegate}
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
@@ -245,6 +244,7 @@ var (
 
 	FoundationDelegatorAddr = "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts"
 	MainnetAccPrefix        = "iaa"
+	StakeUint     = conf.Get().Server.NtUnitMin
 )
 
 func IsDeclarationType(typ string) bool {
