@@ -585,7 +585,7 @@ export default class formatMsgsAndTags {
         if(tx && tx.msgs && Array.isArray(tx.msgs)){
             tx.msgs.forEach((m) =>{
                 msg['From :'].push(m.msg.sender);
-                msg['Denom :'].push(m.msg.denom);
+                msg['Denom :'].push(m.msg.id);
                 msg['Schema :'].push(m.msg.schema);
             })
         }
@@ -608,8 +608,8 @@ export default class formatMsgsAndTags {
                 msg['From :'].push(m.msg.sender);
                 msg['NFT Id :'].push(m.msg.id);
                 msg['Denom :'].push(m.msg.denom);
-                msg['NFT Uri :'].push(m.msg.token_uri);
-                msg['NFT Data :'].push(m.msg.token_data);
+                msg['NFT Uri :'].push(m.msg.uri);
+                msg['NFT Data :'].push(m.msg.data);
             })
         }
         return msg;
@@ -633,8 +633,8 @@ export default class formatMsgsAndTags {
                 msg['Recipient :'].push(m.msg.recipient);
                 msg['NFT Id :'].push(m.msg.id);
                 msg['Denom :'].push(m.msg.denom);
-                msg['NFT Uri :'].push(m.msg.token_uri);
-                msg['NFT Data :'].push(m.msg.token_data);
+                msg['NFT Uri :'].push(m.msg.uri);
+                msg['NFT Data :'].push(m.msg.data);
             })
         }
         return msg;
@@ -660,8 +660,8 @@ export default class formatMsgsAndTags {
                 msg['Recipient :'].push(m.msg.recipient);
                 msg['NFT Id :'].push(m.msg.id);
                 msg['Denom :'].push(m.msg.denom);
-                msg['NFT Uri :'].push(m.msg.token_uri);
-                msg['NFT Data :'].push(m.msg.token_data);
+                msg['NFT Uri :'].push(m.msg.uri);
+                msg['NFT Data :'].push(m.msg.data);
             })
         }
         return msg;
@@ -1115,34 +1115,36 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
         message[Constant.TRANSACTIONMESSAGENAME.SHARES] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.TOSHARES] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ENDTIME] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
-        if(dataTx.status === 'success'){
-            if(dataTx.tags){
-                amountObj = Tools.formatListByTagsBalance(dataTx.tags);
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`);
-                message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(dataTx.tags['source-validator']);
-                message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(`${Tools.numberMoveDecimal(dataTx.tags['shares-src'])} SHARES`);
-                message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags['destination-validator'])
-                message[Constant.TRANSACTIONMESSAGENAME.TOSHARES].unshift(`${Tools.numberMoveDecimal(dataTx.tags['shares-dst'])} SHARES`);
-                message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(dataTx.tags['end-time']));
-            }
-        } else {
-            if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-                dataTx.msgs.forEach(item =>{
-                    if(item.type === txType){
-                        if(item.msg){
-                            message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
-                            message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_src_addr);
-                            message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(item.msg.shares_amount ? `${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES` : '--');
-                            message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.validator_dst_addr)
-                            message[Constant.TRANSACTIONMESSAGENAME.TOSHARES].unshift('--');
-                            message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift('--');
-                        }
+        if(dataTx.amount){
+            message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(Tools.formatAmount2(dataTx.amount));
+        }else {
+            message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
+        }
+        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
+            dataTx.msgs.forEach(item =>{
+                if(item.type === txType){
+                    if(item.msg){
+                        message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_src_addr);
+                        message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(item.msg.shares_amount ? item.msg.shares_amount : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.validator_dst_addr)
                     }
-                })
-            }
+                }
+            })
+        }
+        if(dataTx.events){
+            dataTx.events.forEach((item) => {
+                if(item.type === Constant.EventType.BEGINREDELEGATE){
+                    if(item.attributes && item.attributes.completion_time){
+                        message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(item.attributes.completion_time));
+                    }else {
+                        message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift('--');
+                    }
+                }
+            })
+        }else {
+            message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift('--');
         }
         return message
     }
@@ -1167,7 +1169,7 @@ export default class formatMsgsAndTags {
     }
 
     static txTypeBeginUnbonding(dataTx, txType){
-        let message = {}, amountObj;
+        let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.SHARES] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
@@ -1175,44 +1177,36 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ENDTIME] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
-        if(dataTx.status === 'success'){
-            if(dataTx.tags){
-                amountObj = Tools.formatListByTagsBalance(dataTx.tags, true);
-                message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(dataTx.tags['source-validator']);
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`);
-                message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.delegator);
-                message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(dataTx.tags['end-time']))
-            }
-            if(dataTx.msgs){
-                if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-                    dataTx.msgs.forEach(item =>{
-                        if(item.msg){
-                            message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(`${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES`)
-                        }
-                    })
+        if(dataTx.amount){
+            message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(Tools.formatAmount2(dataTx.amount));
+        }else {
+            message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
+        }
+        
+        if(dataTx.events){
+            dataTx.events.forEach((item) => {
+                if(item.type === Constant.EventType.BEGINUNBONDING){
+                    if(item.attributes && item.attributes.completion_time){
+                        message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(item.attributes.completion_time));
+                    }else {
+                        message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift('--');
+                    }
                 }
-            }
-        } else {
-            if(dataTx.tags && dataTx.tags.balance && dataTx.tags['end-time']){
-                amountObj = Tools.formatListByTagsBalance(dataTx.tags);
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`);
-                message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(dataTx.tags['end-time']))
-
-            } else {
-                message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift('--')
-            }
-            if(dataTx.msgs){
-                if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-                    dataTx.msgs.forEach(item =>{
-                        if(item.msg){
-                            amountObj = Tools.formatListByTagsBalance(item.msg.shares_amount, true);
-                            amountObj.amountNumber !== '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`) : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
-                            message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(`${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES`)
-                            message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg['validator_addr']);
-                            message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr);
-                        }
-                    })
-                }
+            })
+        }else {
+            message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift('--');
+        }
+        
+        
+        if(dataTx.msgs){
+            if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
+                dataTx.msgs.forEach(item =>{
+                    if(item.msg){
+                        item.msg ? message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(item.msg.shares_amount) : message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift('--')
+                        message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_addr);
+                        message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr);
+                    }
+                })
             }
         }
         return message
@@ -1226,14 +1220,14 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         if(dataTx.status === 'success'){
-            if(dataTx.tags && dataTx.tags['withdraw-reward-total']){
+            /*if(dataTx.tags && dataTx.tags['withdraw-reward-total']){
                 let tags = {};
                 tags.balance = dataTx.tags['withdraw-reward-total']
                 amountObj = Tools.formatListByTagsBalance(tags, true);
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
             } else {
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
-            }
+            }*/
         } else {
             message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
         }
@@ -1262,7 +1256,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         if(dataTx.status === 'success'){
             let formAddressArray = [], toAddressArray = [];
-            if(dataTx.tags){
+            /*if(dataTx.tags){
                 for(let item in dataTx.tags){
                     if(item.startsWith('withdraw-reward-from-validator')){
                         formAddressArray.push(item.split('-')[item.split('-').length - 1])
@@ -1271,7 +1265,7 @@ export default class formatMsgsAndTags {
                         toAddressArray.push(dataTx.tags[item])
                     }
                 }
-            }
+            }*/
             message[Constant.TRANSACTIONMESSAGENAME.FROM] = formAddressArray.length > 0 ? formAddressArray : '-';
             if(dataTx.monikers){
                 message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map(item =>{
@@ -1313,7 +1307,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         let formAddressArray = [], toAddressArray = [];
         if(dataTx.status === 'success'){
-            if(dataTx.tags){
+            /*if(dataTx.tags){
                 for(let item in dataTx.tags){
                     if(item.startsWith('withdraw-reward-from-validator')){
                         formAddressArray.push(item.split('-')[item.split('-').length - 1])
@@ -1322,7 +1316,7 @@ export default class formatMsgsAndTags {
                         toAddressArray.push(dataTx.tags[item])
                     }
                 }
-            }
+            }*/
         } else {
             if(dataTx.msgs){
                 dataTx.msgs.forEach(item =>{

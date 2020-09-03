@@ -744,43 +744,37 @@ export default class Tools {
 	                }
 					break;
 				case Constant.TxType.BEGINREDELEGATE:
-					amount = Tools.formatListByTagsBalance(data.tags);
-					if(data.status === 'success'){
-					    if(data.tags){
-	                        fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['source-validator'],data.monikers));
-	                        toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['destination-validator'],data.monikers))
-	                    }
-	                }else {
-					    if(data.msgs){
-	                        data.msgs.forEach( item => {
-	                             if(item.msg){
-	                                 fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_src_addr,data.monikers));
-	                                 toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_dst_addr,data.monikers))
-	                             }
-	                        })
-	                    }
-	                }
+					amount = Tools.formatListByAmount(data.amount);
+					if(data.msgs){
+						data.msgs.forEach( item => {
+							if(item.msg){
+								fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_src_addr,data.monikers));
+								toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_dst_addr,data.monikers))
+							}
+						})
+					}
 					break;
 				case Constant.TxType.SETWITHDRAWADDRESS:
+					if(data.msgs){
+						data.msgs.forEach( item => {
+							if(item.msg){
+								fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.withdraw_addr,data.monikers));
+								toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.delegator_addr,data.monikers))
+							}
+						})
+					}
 					amount = Tools.formatListByAmount(data.amount);
 					break;
 				case Constant.TxType.BEGINUNBONDING:
-					amount = Tools.formatListByTagsBalance(data.tags);
-					if(data.status === 'success'){
-					    if(data.tags){
-	                        fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['source-validator'],data.monikers));
-	                        toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags['delegator'],data.monikers))
-	                    }
-	                }else {
-					    if(data.msgs){
-					        data.msgs.forEach( item => {
-					            if(item.msg){
-	                                fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_addr,data.monikers));
-	                                toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.delegator_addr,data.monikers))
-	                            }
-	                        })
-	                    }
-	                }
+					amount = Tools.formatListByAmount(data.amount);
+					if(data.msgs){
+						data.msgs.forEach( item => {
+							if(item.msg){
+								fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.validator_addr,data.monikers));
+								toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.delegator_addr,data.monikers))
+							}
+						})
+					}
 					break;
 				case Constant.TxType.WITHDRAWDELEGATORREWARD:
 					amount = Tools.formatListByAmount(data.amount);
