@@ -24,15 +24,15 @@ type (
 		Num          int64     `bson:"num"`
 		TotalAccNum  int64     `bson:"total_acc_num"`
 		DelegatorNum int64     `bson:"delegator_num"`
-		TokenStat    TokenStat `bson:"token_stat"`
+		//TokenStat    TokenStat `bson:"token_stat"`
 		CreateTime   time.Time `bson:"create_time"`
 	}
-	TokenStat struct {
-		TotalSupply      string `bson:"total_supply"`
-		Circulation      string `bson:"circulation"`
-		Bonded           string `bson:"bonded"`
-		FoundationBonded string `bson:"foundation_bonded"`
-	}
+	//TokenStat struct {
+	//	TotalSupply      string `bson:"total_supply"`
+	//	Circulation      string `bson:"circulation"`
+	//	Bonded           string `bson:"bonded"`
+	//	FoundationBonded string `bson:"foundation_bonded"`
+	//}
 )
 
 func (m TxNumStat) Name() string {

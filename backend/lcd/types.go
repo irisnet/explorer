@@ -8,11 +8,6 @@ import (
 )
 
 const (
-	//UrlGovParam                                  = "%s/params?module=%s"
-	UrlDistributionRewardsByValidatorAcc        = "%s/distribution/%s/rewards"
-	UrlValidatorsSigningInfoByConsensuPublicKey = "%s/slashing/validators/%s/signing-info"
-	UrlTokenStatsSupply                         = "https://rpc.irisnet.org/token-stats/supply"
-	UrlTokenStatsCirculation                    = "https://rpc.irisnet.org/token-stats/circulation"
 	UrlLookupIconsByKeySuffix                   = "https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=%s"
 	CommunityTaxAddr                            = "iaa1x98k5n7xj0h3udnf5dcdzw85tsfa75qm0kqak0"
 )

@@ -7,10 +7,8 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/irishub-sdk-go/types"
 	"strings"
-	"github.com/tendermint/tendermint/crypto"
+	"encoding/hex"
 )
-
-
 
 func NodeInfo() (result NodeInfoVo, err error) {
 
@@ -79,8 +77,8 @@ func GetGenesisGovModuleParamMap() (map[string]interface{}, error) {
 	stakeMap := appStateMap[GovModuleStaking].(map[string]interface{})
 	stakeParamMap := stakeMap["params"].(map[string]interface{})
 
-	mintMap := appStateMap[GovModuleMint].(map[string]interface{})
-	mintParamMap := mintMap["params"].(map[string]interface{})
+	//mintMap := appStateMap[GovModuleMint].(map[string]interface{})
+	//mintParamMap := mintMap["params"].(map[string]interface{})
 
 	distrMap := appStateMap[GovModuleDistr].(map[string]interface{})
 	distrParamMap := distrMap["params"].(map[string]interface{})
@@ -91,10 +89,10 @@ func GetGenesisGovModuleParamMap() (map[string]interface{}, error) {
 	for k, v := range distrParamMap {
 		slashingParamMap[k] = v
 	}
-
-	for k, v := range mintParamMap {
-		slashingParamMap[k] = v
-	}
+	//
+	//for k, v := range mintParamMap {
+	//	slashingParamMap[k] = v
+	//}
 
 	for k, v := range stakeParamMap {
 		slashingParamMap[k] = v
@@ -114,7 +112,7 @@ func Block(height int64) (result BlockVo) {
 	}
 	var precommits []Precommit
 	for idx := range block.LastCommit.Signatures {
-		vote := block.LastCommit.GetVote(idx)
+		vote := block.LastCommit.GetVote(int32(idx))
 		precommits = append(precommits, Precommit{
 			Height:           fmt.Sprint(vote.Height),
 			ValidatorAddress: vote.ValidatorAddress.String(),
@@ -155,7 +153,7 @@ func BlockLatest() (result BlockVo) {
 
 	var precommits []Precommit
 	for idx := range block.LastCommit.Signatures {
-		vote := block.LastCommit.GetVote(idx)
+		vote := block.LastCommit.GetVote(int32(idx))
 		precommits = append(precommits, Precommit{
 			Height:           fmt.Sprint(vote.Height),
 			ValidatorAddress: vote.ValidatorAddress.String(),
@@ -196,14 +194,11 @@ func ValidatorSet(height int64) (result ValidatorSetVo) {
 		BlockHeight: fmt.Sprint(validatorset.BlockHeight),
 	}
 	for _, val := range validatorset.Validators {
-		var pubKey crypto.PubKey
-		if bz, err := client.Cdc.MarshalJSON(val.PubKey); err == nil {
-			_ = client.Cdc.UnmarshalJSON(bz, &pubKey)
-		}
-		bech32Addr, _ := types.ConsAddressFromHex(val.Address)
-		bech32PubKey, _ := types.Bech32ifyConsPub(pubKey)
+		bech32PubKey, _ := types.Bech32ifyConsPub(val.PubKey)
+		bech32PrefixAccAddr := types.GetAddrPrefixCfg().GetBech32AccountAddrPrefix()
+		bz, _ := types.GetFromBech32(val.Address, bech32PrefixAccAddr)
 		result.Validators = append(result.Validators, StakeValidatorVo{
-			Address:          bech32Addr.String(),
+			Address:          strings.ToUpper(hex.EncodeToString(bz)),
 			PubKey:           bech32PubKey,
 			ProposerPriority: val.ProposerPriority,
 			VotingPower:      val.VotingPower,
@@ -219,18 +214,14 @@ func LatestValidatorSet() (result ValidatorSetVo) {
 		return result
 	}
 	result = ValidatorSetVo{
-		BlockHeight:fmt.Sprint(validator.BlockHeight),
-
+		BlockHeight: fmt.Sprint(validator.BlockHeight),
 	}
 	for _, val := range validator.Validators {
-		var pubKey crypto.PubKey
-		if bz, err := client.Cdc.MarshalJSON(val.PubKey); err == nil {
-			_ = client.Cdc.UnmarshalJSON(bz, &pubKey)
-		}
-		bech32Addr, _ := types.ConsAddressFromHex(val.Address)
-		bech32PubKey, _ := types.Bech32ifyConsPub(pubKey)
+		bech32PubKey, _ := types.Bech32ifyConsPub(val.PubKey)
+		bech32PrefixAccAddr := types.GetAddrPrefixCfg().GetBech32AccountAddrPrefix()
+		bz, _ := types.GetFromBech32(val.Address, bech32PrefixAccAddr)
 		result.Validators = append(result.Validators, StakeValidatorVo{
-			Address:          bech32Addr.String(),
+			Address:          strings.ToUpper(hex.EncodeToString(bz)),
 			PubKey:           bech32PubKey,
 			ProposerPriority: val.ProposerPriority,
 			VotingPower:      val.VotingPower,
@@ -272,5 +263,3 @@ func BlockResult(height int64) (result BlockResultVo, txsnum int) {
 	return
 
 }
-
-

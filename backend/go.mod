@@ -8,7 +8,7 @@ require (
 	github.com/go-openapi/spec v0.19.3 // indirect
 	github.com/gorilla/handlers v1.4.2
 	github.com/gorilla/mux v1.7.3
-	github.com/irisnet/irishub-sdk-go v0.0.0-20200730102011-ac816d319025
+	github.com/irisnet/irishub-sdk-go v0.0.0-20200902054029-cfc63fc31881
 	github.com/mailru/easyjson v0.7.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/rakyll/statik v0.1.6
@@ -16,7 +16,7 @@ require (
 	github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24
 	github.com/stretchr/testify v1.6.1
 	github.com/swaggo/swag v1.6.3
-	github.com/tendermint/tendermint v0.33.6
+	github.com/tendermint/tendermint v0.34.0-rc3 // indirect
 	go.uber.org/zap v1.13.0
 	golang.org/x/crypto v0.0.0-20200429183012-4b2356b1ed79
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e

@@ -9,6 +9,7 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	ctypes "github.com/irisnet/explorer/backend/types"
 	"time"
+	"math/big"
 )
 
 func Validator(address string) (result ValidatorVo, err error) {
@@ -59,6 +60,9 @@ func Validators(page, size int) (result []ValidatorVo) {
 	}
 
 	for _, val := range validators {
+		if tokenRat, ok := new(big.Rat).SetString(val.Tokens); ok {
+			val.Tokens = utils.ConverToDisplayUint(ctypes.NtScale, tokenRat).FloatString(4)
+		}
 		uptime, _ := time.Parse(ctypes.TimeLayout1, val.Commission.UpdateTime)
 		unbondtime, _ := time.Parse(ctypes.TimeLayout1, val.UnbondingTime)
 		result = append(result, ValidatorVo{
