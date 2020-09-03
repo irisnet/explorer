@@ -39,12 +39,17 @@ module.exports = {
     devServer: {
         proxy: {
           '/api':{
-              target:'http://localhost:8080',        //backend address:port
-              ......
+             	target:'http://10.1.4.185:8081',
+            	secure:false,
+          },
+          '/node':{
+              target:'http://10.1.4.248:3500',
+            	secure:false,
+            	pathRewrite:{'^/node': '/'}
           }
         }
-    },
-};
+    }
+}
 ```
 
 
