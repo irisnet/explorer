@@ -1220,12 +1220,18 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         
-        let attr = Tools.getAttributesFromEvents(dataTx.events,Constant.EventType.WITHDRAW_REWARDS); 
-        if (attr && attr.amount) {
+        let attrs = Tools.getAttributesFromEvents(dataTx.events,Constant.EventType.WITHDRAW_REWARDS); 
+        if (attrs && attrs.length) {
             let amount = {
-                denom: Tools.formatAccountCoinsDenom(attr.amount)[0], 
-                amount: Tools.formatAccountCoinsAmount(attr.amount)[0], 
+                denom: '', 
+                amount:0,
             };
+            attrs.forEach((item)=>{
+                if (item.amount) {
+                    amount.amount = amount.amount*1 + Tools.formatAccountCoinsAmount(item.amount)[0]*1;
+                    amount.denom = Tools.formatAccountCoinsDenom(item.amount)[0];
+                }
+            });
             if (amount.denom) {
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(Tools.formatAmount2(amount));
             }
@@ -1697,9 +1703,9 @@ export default class formatMsgsAndTags {
             })
         }
 
-        let attr = Tools.getAttributesFromEvents(dataTx.events,Constant.EventType.REQUEST_RAND);
-        message[Constant.TRANSACTIONMESSAGENAME.RANDHEIGHT].unshift(attr.generate_height || '--')
-        message[Constant.TRANSACTIONMESSAGENAME.REQUESTID].unshift(attr.request_id || '--')
+        let attrs = Tools.getAttributesFromEvents(dataTx.events,Constant.EventType.REQUEST_RAND);
+        message[Constant.TRANSACTIONMESSAGENAME.RANDHEIGHT].unshift((attrs[0]||{}).generate_height || '--')
+        message[Constant.TRANSACTIONMESSAGENAME.REQUESTID].unshift((attrs[0]||{}).request_id || '--')
         return message
     }
 

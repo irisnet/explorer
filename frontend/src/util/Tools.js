@@ -1164,11 +1164,11 @@ export default class Tools {
 	}
 
 	static getAttributesFromEvents(events,type){
-		let result = {};
+		let result = [];
 		if (events && events.length) {
 			events.forEach((item)=>{
-				if (item.type == type) {
-					result = {...item.attributes,type:type};
+				if (item.type == type && item.attributes) {
+					result.push(item.attributes);
 				}
 			});
 		}
