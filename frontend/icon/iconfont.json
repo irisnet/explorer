@@ -6,20 +6,69 @@
   "description": "",
   "glyphs": [
     {
-        "icon_id": "14183675",
-        "name": "GOZ",
-        "font_class": "GOZ",
-        "unicode": "e65b",
-        "unicode_decimal": 58971
+      "icon_id": "16967260",
+      "name": "BIFROST",
+      "font_class": "BI-01",
+      "unicode": "e609",
+      "unicode_decimal": 58889
     },
-      {
-          "icon_id": "13982898",
-          "name": "缺省默认头像",
-          "font_class": "queshengmorentouxiang",
-          "unicode": "e659",
-          "unicode_decimal": 58969
-      },
-      {
+    {
+      "icon_id": "14409079",
+      "name": "复位",
+      "font_class": "fuwei",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "10124727",
+      "name": "排序-下",
+      "font_class": "paixu-xia",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "10124732",
+      "name": "排序-上",
+      "font_class": "paixu-shang",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "14209633",
+      "name": "刷新",
+      "font_class": "shuaxin",
+      "unicode": "e65e",
+      "unicode_decimal": 58974
+    },
+    {
+      "icon_id": "14206834",
+      "name": "选中 全部",
+      "font_class": "xuanzhongquanbu",
+      "unicode": "e65c",
+      "unicode_decimal": 58972
+    },
+    {
+      "icon_id": "14206835",
+      "name": "未选中 全部",
+      "font_class": "weixuanzhongquanbu",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "14183675",
+      "name": "GOZ",
+      "font_class": "GOZ",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
+      "icon_id": "13982898",
+      "name": "缺省默认头像",
+      "font_class": "queshengmorentouxiang",
+      "unicode": "e659",
+      "unicode_decimal": 58969
+    },
+    {
       "icon_id": "13851059",
       "name": "展开",
       "font_class": "zhankai",

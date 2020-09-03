@@ -18,8 +18,8 @@ skinStyle.TESTNETHOVERCOLOR = '#24548E';
 skinStyle.TESTNETACTIVECOLOR = 'rgba(0,0,0,0.15)';
 
 //Bifrost皮肤样式色值
-skinStyle.BIFROST_BG_COLOR = '#D6793A';
-skinStyle.BIFROST_HOVER_COLOR = '#BC662A';
+skinStyle.BIFROST_BG_COLOR = '#002D63';
+skinStyle.BIFROST_HOVER_COLOR = '#1772E1';
 skinStyle.BIFROST_ACTIVE_COLOR = 'rgba(0,0,0,0.15)';
 
 
