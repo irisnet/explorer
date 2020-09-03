@@ -34,15 +34,15 @@ type TxNumGroupByDayVo struct {
 	Num          int64        `json:"num"`
 	TotalAccNum  int64        `json:"total_acc_num"`
 	DelegatorNum int64        `json:"delegator_num"`
-	TokenStat    TokenStatStr `json:"token_stat"`
+	//TokenStat    TokenStatStr `json:"token_stat"`
 }
 
-type TokenStatStr struct {
-	TotalSupply      string `json:"total_supply"`
-	Circulation      string `json:"circulation"`
-	Bonded           string `json:"bonded"`
-	FoundationBonded string `json:"foundation_bonded"`
-}
+//type TokenStatStr struct {
+//	TotalSupply      string `json:"total_supply"`
+//	Circulation      string `json:"circulation"`
+//	Bonded           string `json:"bonded"`
+//	FoundationBonded string `json:"foundation_bonded"`
+//}
 
 type TxNumGroupByDayVoRespond []TxNumGroupByDayVo
 type QueryTxTypeRespond []string
