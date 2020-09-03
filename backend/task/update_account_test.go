@@ -48,7 +48,7 @@ func TestUpdateAccount_getBalance(t *testing.T) {
 
 
 func TestUpdateAccount_getDelegationInfo(t *testing.T) {
-	ret, _ := getDelegationInfo(account.Address)
+	ret, _ := getDelegationInfo("iaa1na97nt5xfndqph0y98jeq640fzqwhujjzfyjq8")
 	t.Log(ret)
 }
 

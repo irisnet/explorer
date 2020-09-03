@@ -244,7 +244,9 @@ var (
 
 	FoundationDelegatorAddr = "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts"
 	MainnetAccPrefix        = "iaa"
-	StakeUint     = conf.Get().Server.NtUnitMin
+	StakeUint               = conf.Get().Server.NtUnitMin
+	NtUnitDisplay           = conf.Get().Server.NtUnitDisplay
+	NtScale           = conf.Get().Server.NtScale
 )
 
 func IsDeclarationType(typ string) bool {

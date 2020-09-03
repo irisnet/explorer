@@ -207,11 +207,14 @@ func computeVotingPower(validator document.Validator, shares string) utils.Coin 
 
 	tokensAsRat := new(big.Rat)
 	tokensAsRat.Mul(rate, sharesAsRat)
+
+	tokensAsRat = utils.ConverToDisplayUint(types.NtScale, tokensAsRat)
+
 	amount, _ := strconv.ParseFloat(tokensAsRat.FloatString(4), 64)
 
 	return utils.Coin{
 		Amount: amount,
-		Denom:  types.StakeUint,
+		Denom:  types.NtUnitDisplay,
 	}
 }
 

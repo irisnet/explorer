@@ -608,7 +608,7 @@ func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []in
 	for i := 0; i < len(items); i++ {
 		if stakeTx, ok := items[i].(vo.StakeTx); ok {
 			for _, msg := range stakeTx.Msgs {
-				switch stakeTx.Type {
+				switch msg.Type {
 				case types.TxTypeBeginRedelegate:
 					msgData := msg.MsgData.(msgvo.TxMsgBeginRedelegate)
 					FromMoniker, ToMoniker := service.BuildFTMoniker(msgData.ValidatorSrcAddr, msgData.ValidatorDstAddr)

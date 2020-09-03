@@ -30,7 +30,7 @@ func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
 }
 
 func TestGetJailedUntilAndMissedBlocksCountByConsensusPublicKey(t *testing.T) {
-	jailedUntil, missedBlockCount, _, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("icp1zcjduepq6tfg639yglaxnxxst8mk058g86zuqlvnr0ql7d6setzj0x0flrysr6de8x")
+	jailedUntil, missedBlockCount, _, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("icp1zcjduepqwuhmlewmrr0hvfcjkccm7qk7kektujr8ten0tve0rd9eqexdee2qujw3vv")
 
 	if err != nil {
 		t.Error(err)
@@ -59,7 +59,7 @@ func TestValidators(t *testing.T) {
 
 
 func TestGetDelegationsByDelAddr(t *testing.T) {
-	address := "iaa18e2e9fxxrr88k78gg7fhuuqgccfv8self9ye65"
+	address := "iaa1na97nt5xfndqph0y98jeq640fzqwhujjzfyjq8"
 	res := GetDelegationsByDelAddr(address)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
@@ -82,7 +82,7 @@ func TestStakePool(t *testing.T) {
 }
 
 func TestSignInfo(t *testing.T) {
-	pubKey := "icp1zcjduepq6tfg639yglaxnxxst8mk058g86zuqlvnr0ql7d6setzj0x0flrysr6de8x"
+	pubKey := "icp1wuhmlewmrr0hvfcjkccm7qk7kektujr8ten0tve0rd9eqexdee2qrm74re"
 	res := SignInfo(pubKey)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
