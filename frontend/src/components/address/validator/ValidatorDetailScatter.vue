@@ -61,7 +61,7 @@
 				if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
 					this.tipColor = "#101149"
 				}else {
-					this.tipColor = "#3264FD"
+					this.tipColor = "#FF5C01"
 				}
 			}
 		},

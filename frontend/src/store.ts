@@ -19,7 +19,7 @@ const store = new Vuex.Store({
     setQrImg:'',
     testSkinStyle:false,
     hideTestSkinStyle: true,
-    scaleLength : 0,
+    scaleLength :  sessionStorage.getItem('scaleLength') ? sessionStorage.getItem('scaleLength') : 0,
     nativeToken: sessionStorage.getItem('nativeToken') ? sessionStorage.getItem('nativeToken') : '',
     displayToken: sessionStorage.getItem('displayToken') ? sessionStorage.getItem('displayToken') : '',
     showHeaderUnfoldBtn:sessionStorage.getItem('flShowHeaderUnfoldBtn') ? sessionStorage.getItem('flShowHeaderUnfoldBtn') : 'show',
