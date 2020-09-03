@@ -95,8 +95,8 @@ export default class formatMsgsAndTags {
             case Constant.TxType.ADDTRUSTEE :
                 return message = formatMsgsAndTags.txTypeAddTrustee(dataTx, Constant.TxType.ADDTRUSTEE);
                 break;
-            case Constant.TxType.DELETEPROFIKER :
-                return message = formatMsgsAndTags.txTypeDeleteProfiler(dataTx, Constant.TxType.DELETEPROFIKER);
+            case Constant.TxType.DELETEPROFILER :
+                return message = formatMsgsAndTags.txTypeDeleteProfiler(dataTx, Constant.TxType.DELETEPROFILER);
                 break;
             case Constant.TxType.DELETETRUSTEE :
                 return message = formatMsgsAndTags.txTypeDeleteTrustee(dataTx, Constant.TxType.DELETETRUSTEE);
@@ -1219,19 +1219,25 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
-        if(dataTx.status === 'success'){
-            /*if(dataTx.tags && dataTx.tags['withdraw-reward-total']){
-                let tags = {};
-                tags.balance = dataTx.tags['withdraw-reward-total']
-                amountObj = Tools.formatListByTagsBalance(tags, true);
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
-            } else {
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
-            }*/
-        } else {
+        
+        let attrs = Tools.getAttributesFromEvents(dataTx.events,Constant.EventType.WITHDRAW_REWARDS); 
+        if (attrs && attrs.length) {
+            let amount = {
+                denom: '', 
+                amount:0,
+            };
+            attrs.forEach((item)=>{
+                if (item.amount) {
+                    amount.amount = amount.amount*1 + Tools.formatAccountCoinsAmount(item.amount)[0]*1;
+                    amount.denom = Tools.formatAccountCoinsDenom(item.amount)[0];
+                }
+            });
+            if (amount.denom) {
+                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(Tools.formatAmount2(amount));
+            }
+        }else {
             message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
         }
-
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
             dataTx.msgs.forEach(item =>{
                 if(item.msg){
@@ -1245,106 +1251,106 @@ export default class formatMsgsAndTags {
 
     static txTypeWithdrawDelegatorRewardsAll(dataTx, txType){
         let message = {}, amountObj;
-        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
-        if(dataTx.status === 'success'){
-            let formAddressArray = [], toAddressArray = [];
-            /*if(dataTx.tags){
-                for(let item in dataTx.tags){
-                    if(item.startsWith('withdraw-reward-from-validator')){
-                        formAddressArray.push(item.split('-')[item.split('-').length - 1])
-                    }
-                    if(item === 'withdraw-address'){
-                        toAddressArray.push(dataTx.tags[item])
-                    }
-                }
-            }*/
-            message[Constant.TRANSACTIONMESSAGENAME.FROM] = formAddressArray.length > 0 ? formAddressArray : '-';
-            if(dataTx.monikers){
-                message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map(item =>{
-                    return {
-                        address : item,
-                        moniker : dataTx.monikers[item]
-                    }
-                })
-            }
-            if(dataTx.amount && dataTx.amount.length > 0){
-                amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
-            } else {
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
-            }
-            message[Constant.TRANSACTIONMESSAGENAME.TO] = toAddressArray.length > 0 ? toAddressArray : '-';
-        } else {
-            if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-                dataTx.msgs.forEach(item =>{
-                    if(item.msg){
-                        amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
-                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(dataTx.amount.length > 0 ? `${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}` : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_addr ? item.msg.validator_addr : '-');
-                        message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr ? item.msg.delegator_addr : '-')
-                    }
-                })
-            }
+        // message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
+        // message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
+        // message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
+        // message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
+        // message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
+        // if(dataTx.status === 'success'){
+        //     let formAddressArray = [], toAddressArray = [];
+        //     /*if(dataTx.tags){
+        //         for(let item in dataTx.tags){
+        //             if(item.startsWith('withdraw-reward-from-validator')){
+        //                 formAddressArray.push(item.split('-')[item.split('-').length - 1])
+        //             }
+        //             if(item === 'withdraw-address'){
+        //                 toAddressArray.push(dataTx.tags[item])
+        //             }
+        //         }
+        //     }*/
+        //     message[Constant.TRANSACTIONMESSAGENAME.FROM] = formAddressArray.length > 0 ? formAddressArray : '-';
+        //     if(dataTx.monikers){
+        //         message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map(item =>{
+        //             return {
+        //                 address : item,
+        //                 moniker : dataTx.monikers[item]
+        //             }
+        //         })
+        //     }
+        //     if(dataTx.amount && dataTx.amount.length > 0){
+        //         amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
+        //         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
+        //     } else {
+        //         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
+        //     }
+        //     message[Constant.TRANSACTIONMESSAGENAME.TO] = toAddressArray.length > 0 ? toAddressArray : '-';
+        // } else {
+        //     if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
+        //         dataTx.msgs.forEach(item =>{
+        //             if(item.msg){
+        //                 amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
+        //                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(dataTx.amount.length > 0 ? `${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}` : '--');
+        //                 message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_addr ? item.msg.validator_addr : '-');
+        //                 message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr ? item.msg.delegator_addr : '-')
+        //             }
+        //         })
+        //     }
 
-        }
+        // }
         return message
     }
 
     static txTypeWithdrawValidatorRewardsAll(dataTx, txType){
         let message = {}, amountObj;
-        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
-        let formAddressArray = [], toAddressArray = [];
-        if(dataTx.status === 'success'){
-            /*if(dataTx.tags){
-                for(let item in dataTx.tags){
-                    if(item.startsWith('withdraw-reward-from-validator')){
-                        formAddressArray.push(item.split('-')[item.split('-').length - 1])
-                    }
-                    if(item === 'withdraw-address'){
-                        toAddressArray.push(dataTx.tags[item])
-                    }
-                }
-            }*/
-        } else {
-            if(dataTx.msgs){
-                dataTx.msgs.forEach(item =>{
-                    if(item.msg){
-                        formAddressArray.unshift(item.msg.validator_addr ? item.msg.validator_addr : '--')
-                    }
-                })
-            }
-        }
-        message[Constant.TRANSACTIONMESSAGENAME.FROM] = formAddressArray.length > 0 ? formAddressArray : '-';
-        if(dataTx.monikers){
-            if(message[Constant.TRANSACTIONMESSAGENAME.FROM] !== '-'){
-                message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map(item =>{
-                    if(dataTx.monikers[item]){
-                        return {
-                            address : item,
-                            moniker : dataTx.monikers[item]
-                        }
-                    } else {
-                        return {
-                            address : item,
-                            moniker : dataTx.monikers[item],
-                            isLink : true,
-                        }
-                    }
+        // message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
+        // message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
+        // message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
+        // message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
+        // message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
+        // let formAddressArray = [], toAddressArray = [];
+        // if(dataTx.status === 'success'){
+        //     /*if(dataTx.tags){
+        //         for(let item in dataTx.tags){
+        //             if(item.startsWith('withdraw-reward-from-validator')){
+        //                 formAddressArray.push(item.split('-')[item.split('-').length - 1])
+        //             }
+        //             if(item === 'withdraw-address'){
+        //                 toAddressArray.push(dataTx.tags[item])
+        //             }
+        //         }
+        //     }*/
+        // } else {
+        //     if(dataTx.msgs){
+        //         dataTx.msgs.forEach(item =>{
+        //             if(item.msg){
+        //                 formAddressArray.unshift(item.msg.validator_addr ? item.msg.validator_addr : '--')
+        //             }
+        //         })
+        //     }
+        // }
+        // message[Constant.TRANSACTIONMESSAGENAME.FROM] = formAddressArray.length > 0 ? formAddressArray : '-';
+        // if(dataTx.monikers){
+        //     if(message[Constant.TRANSACTIONMESSAGENAME.FROM] !== '-'){
+        //         message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map(item =>{
+        //             if(dataTx.monikers[item]){
+        //                 return {
+        //                     address : item,
+        //                     moniker : dataTx.monikers[item]
+        //                 }
+        //             } else {
+        //                 return {
+        //                     address : item,
+        //                     moniker : dataTx.monikers[item],
+        //                     isLink : true,
+        //                 }
+        //             }
 
-                })
-            }
-        }
-        amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
-        amountObj.amountNumber === '--' || amountObj.tokenName === '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--') : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
-        message[Constant.TRANSACTIONMESSAGENAME.TO] = toAddressArray.length > 0 ? toAddressArray : '-';
+        //         })
+        //     }
+        // }
+        // amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
+        // amountObj.amountNumber === '--' || amountObj.tokenName === '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--') : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
+        // message[Constant.TRANSACTIONMESSAGENAME.TO] = toAddressArray.length > 0 ? toAddressArray : '-';
         return message
     }
 
@@ -1687,20 +1693,19 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.BLOCKINTERVAL] = [];
         message[Constant.TRANSACTIONMESSAGENAME.REQUESTID] = [];
         message[Constant.TRANSACTIONMESSAGENAME.RANDHEIGHT] = [];
+
+        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
             dataTx.msgs.forEach(item =>{
-                if(item.type === txType){
-                    message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
-                    if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.BLOCKINTERVAL].unshift(item.msg['block-interval'] || item.msg['block-interval'] === 0 ? item.msg['block-interval'] : '--');
-                    }
+                if(item.type === txType && item.msg){
+                    message[Constant.TRANSACTIONMESSAGENAME.BLOCKINTERVAL].unshift(item.msg['block-interval'] || item.msg['block-interval'] === 0 ? item.msg['block-interval'] : '--');
                 }
             })
         }
-        if(dataTx.tags && JSON.stringify(Object.keys(dataTx.tags)[0]) !== '{}'){
-            message[Constant.TRANSACTIONMESSAGENAME.RANDHEIGHT].unshift(dataTx.tags['rand-height'] || dataTx.tags['rand-height'] == 0 ? dataTx.tags['rand-height'] : '--')
-            message[Constant.TRANSACTIONMESSAGENAME.REQUESTID].unshift(dataTx.tags['request-id'] ? dataTx.tags['request-id'] : '--')
-        }
+
+        let attrs = Tools.getAttributesFromEvents(dataTx.events,Constant.EventType.REQUEST_RAND);
+        message[Constant.TRANSACTIONMESSAGENAME.RANDHEIGHT].unshift((attrs[0]||{}).generate_height || '--')
+        message[Constant.TRANSACTIONMESSAGENAME.REQUESTID].unshift((attrs[0]||{}).request_id || '--')
         return message
     }
 
@@ -1847,31 +1852,15 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK] = [];
-        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            if(dataTx.status === 'success'){
-                message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
-                if(dataTx.tags){
-                    message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(dataTx.tags['hash-lock']);
-                    message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.sender);
-                }
-            } else {
-                if(dataTx.msgs){
-                    dataTx.msgs.forEach(item =>{
-                        if(item.type === txType){
-                            message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
-                            if(item.msg){
-                                message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg['hash_lock']);
-                            }
-                        }
-                    })
-                }
-                if(dataTx.tags && dataTx.tags.sender){
-                    message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.sender ? dataTx.tags.sender : '-');
-                } else {
-                    message[Constant.TRANSACTIONMESSAGENAME.TO].unshift('-');
-                }
-            }
 
+        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
+        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
+            dataTx.msgs.forEach(item =>{
+                if(item.msg && item.type === txType){
+                    message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg['hash_lock'] || '--');
+                    message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.sender  || '--');
+                }
+            })
         }
         return message
     }

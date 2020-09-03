@@ -28,7 +28,7 @@ TxType.TRANSFERGATEWAYOWNER = 'TransferGatewayOwner';
 TxType.REQUESTRAND = 'RequestRand';
 TxType.ADDPROFILER = 'AddProfiler';
 TxType.ADDTRUSTEE = 'AddTrustee';
-TxType.DELETEPROFIKER = 'DeleteProfiler';
+TxType.DELETEPROFILER = 'DeleteProfiler';
 TxType.DELETETRUSTEE = 'DeleteTrustee';
 TxType.CLAIMHTLC = 'ClaimHTLC';
 TxType.CREATEHTLC = 'CreateHTLC';
@@ -91,8 +91,10 @@ TxType.VERIFY_INVARIANT = 'VerifyInvariant';
 
 const EventType = {}
 
-EventType.BEGINREDELEGATE = 'redelegate'
-EventType.BEGINUNBONDING = 'unbond'
+EventType.BEGINREDELEGATE = 'redelegate';
+EventType.BEGINUNBONDING = 'unbond';
+EventType.WITHDRAW_REWARDS = 'withdraw_rewards';
+EventType.REQUEST_RAND = 'request_rand';
 
 
 const ValidatorStatus = {};
@@ -143,6 +145,8 @@ RADIXDENOM.IRISPICO = 'iris-pico';
 RADIXDENOM.IRISPICONUMBER = '1000000';
 RADIXDENOM.IRISFEMTO = 'iris-femto';
 RADIXDENOM.IRISFEMTONUMBER = '1000';
+RADIXDENOM.UIRIS = 'uiris';
+RADIXDENOM.UIRISNUMBER = '100000'; 
 RADIXDENOM.IRIS = store.nativeToken;
 RADIXDENOM.IRISNUMBER = '1';
 

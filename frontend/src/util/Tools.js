@@ -1162,4 +1162,16 @@ export default class Tools {
 			}
 		}
 	}
+
+	static getAttributesFromEvents(events,type){
+		let result = [];
+		if (events && events.length) {
+			events.forEach((item)=>{
+				if (item.type == type && item.attributes) {
+					result.push(item.attributes);
+				}
+			});
+		}
+		return result;
+	}
 }
