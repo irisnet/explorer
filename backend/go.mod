@@ -16,7 +16,7 @@ require (
 	github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24
 	github.com/stretchr/testify v1.6.1
 	github.com/swaggo/swag v1.6.3
-	github.com/tendermint/tendermint v0.34.0-rc3
+	github.com/tendermint/tendermint v0.34.0-rc3 // indirect
 	go.uber.org/zap v1.13.0
 	golang.org/x/crypto v0.0.0-20200429183012-4b2356b1ed79
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e

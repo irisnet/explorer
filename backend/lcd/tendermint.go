@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/irishub-sdk-go/types"
 	"strings"
+	"encoding/hex"
 )
 
 func NodeInfo() (result NodeInfoVo, err error) {
@@ -194,8 +195,10 @@ func ValidatorSet(height int64) (result ValidatorSetVo) {
 	}
 	for _, val := range validatorset.Validators {
 		bech32PubKey, _ := types.Bech32ifyConsPub(val.PubKey)
+		bech32PrefixAccAddr := types.GetAddrPrefixCfg().GetBech32AccountAddrPrefix()
+		bz, _ := types.GetFromBech32(val.Address, bech32PrefixAccAddr)
 		result.Validators = append(result.Validators, StakeValidatorVo{
-			Address:          val.Address,
+			Address:          strings.ToUpper(hex.EncodeToString(bz)),
 			PubKey:           bech32PubKey,
 			ProposerPriority: val.ProposerPriority,
 			VotingPower:      val.VotingPower,
@@ -215,8 +218,10 @@ func LatestValidatorSet() (result ValidatorSetVo) {
 	}
 	for _, val := range validator.Validators {
 		bech32PubKey, _ := types.Bech32ifyConsPub(val.PubKey)
+		bech32PrefixAccAddr := types.GetAddrPrefixCfg().GetBech32AccountAddrPrefix()
+		bz, _ := types.GetFromBech32(val.Address, bech32PrefixAccAddr)
 		result.Validators = append(result.Validators, StakeValidatorVo{
-			Address:          val.Address,
+			Address:          strings.ToUpper(hex.EncodeToString(bz)),
 			PubKey:           bech32PubKey,
 			ProposerPriority: val.ProposerPriority,
 			VotingPower:      val.VotingPower,
