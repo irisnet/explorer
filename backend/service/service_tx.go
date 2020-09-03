@@ -608,7 +608,7 @@ func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []in
 	for i := 0; i < len(items); i++ {
 		if stakeTx, ok := items[i].(vo.StakeTx); ok {
 			for _, msg := range stakeTx.Msgs {
-				switch stakeTx.Type {
+				switch msg.Type {
 				case types.TxTypeBeginRedelegate:
 					msgData := msg.MsgData.(msgvo.TxMsgBeginRedelegate)
 					FromMoniker, ToMoniker := service.BuildFTMoniker(msgData.ValidatorSrcAddr, msgData.ValidatorDstAddr)
@@ -916,12 +916,13 @@ func buildBaseTx(tx vo.CommonTx) vo.BaseTx {
 }
 
 func fetchLogMessage(logmsg string) string {
-
-	const TagMsg = "\"message\":\""
-	msg_begin := strings.Index(logmsg, TagMsg)
-	if msg_begin > 0 {
-		data := strings.Split(logmsg, TagMsg)
-		return data[1][:len(data[1])-2]
+	TagMsg := []string{"out of gas in location", "failed to execute message"}
+	if strings.Contains(logmsg, TagMsg[0]) || strings.Contains(logmsg, TagMsg[1]) {
+		msg_begin := strings.Index(logmsg, ";")
+		if msg_begin > 0 {
+			return string([]byte(logmsg)[msg_begin+1:])
+		}
 	}
+
 	return ""
 }

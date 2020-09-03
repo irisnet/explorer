@@ -52,7 +52,7 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) vo.Va
 			tmp.VotingPower = fmt.Sprint(v.VotingPower)
 			tmp.ProposerPriority = fmt.Sprint(v.ProposerPriority)
 			for _, validator := range validatorArr {
-				if validator.ConsensusPubkey == v.PubKey {
+				if validator.ProposerAddr == v.Address {
 					tmp.OperatorAddress = validator.OperatorAddress
 					tmp.Moniker = validator.Description.Moniker
 					tmp.IsProposer = tmp.OperatorAddress == proposal

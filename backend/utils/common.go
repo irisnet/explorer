@@ -18,6 +18,7 @@ const (
 	StatusFailed = "failed"
 	StatusFail   = "fail"
 )
+
 func RemoveDuplicationStrArr(list []string) []string {
 	unique_set := make(map[string]bool, len(list))
 	for _, x := range list {
@@ -196,3 +197,17 @@ func CovertShareTokens(tokens, shares, selfBond string) string {
 
 	return selfBondTokensAsRat.FloatString(18)
 }
+
+func ConverToDisplayUint(ntscale int, token *big.Rat) *big.Rat {
+	if ntscale > 0 {
+		token = new(big.Rat).Quo(token, new(big.Rat).SetInt64(int64(math.Pow10(ntscale))))
+	}
+	return token
+}
+//
+//func ConverToMinUnit(ntscale int, token *big.Rat) *big.Rat {
+//	if ntscale > 0 {
+//		token = new(big.Rat).Mul(token, new(big.Rat).SetInt64(int64(math.Pow10(ntscale))))
+//	}
+//	return token
+//}
