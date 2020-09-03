@@ -1232,12 +1232,6 @@ export default class formatMsgsAndTags {
         }else {
             message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
         }
-        
-
-        if (dataTx.events && dataTx.events.length) {
-            
-        }
-
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
             dataTx.msgs.forEach(item =>{
                 if(item.msg){
