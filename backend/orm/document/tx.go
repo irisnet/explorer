@@ -21,7 +21,7 @@ const (
 	Tx_Field_To         = "to"
 	Tx_Field_Signers    = "signers"
 	Tx_Field_Amount     = "amount"
-	Tx_Field_Type       = "types"
+	Tx_Field_Type       = "type"
 	Tx_Field_Fee        = "fee"
 	Tx_Field_Memo       = "memo"
 	Tx_Field_Status     = "status"
@@ -501,8 +501,6 @@ func (_ CommonTx) QueryTxAsset(tokenType, symbol string, page, size int, total b
 	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 	return num, txs, err
 }
-
-
 
 func FilterUnknownTxs(query bson.M) bson.M {
 
