@@ -613,12 +613,6 @@
                 this.assetsItems = this.assetList.map( item => {
                     if (!item) { return {}};
                     if(item && item.denom === this.$store.state.nativeToken){
-			            console.log(item)
-			            console.log(this.totalDelegator)
-			            console.log(this.totalUnBondingDelegator)
-			            console.log(this.allRewardsAmountValue)
-			           
-			           
 			            return {
 				            token: Tools.formatDenom(item.denom),
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,

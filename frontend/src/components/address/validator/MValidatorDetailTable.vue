@@ -462,7 +462,6 @@ export default {
             }
         },
         formatAddress(address) {
-            console.log(address,">>>>>>>>>>>>>>>>>>>>>>>>>")
             return Tools.formatValidatorAddress(address);
         },
         formatMoniker(moniker) {
