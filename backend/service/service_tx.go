@@ -918,9 +918,9 @@ func buildBaseTx(tx vo.CommonTx) vo.BaseTx {
 func fetchLogMessage(logmsg string) string {
 	TagMsg := []string{"out of gas in location", "failed to execute message"}
 	if strings.Contains(logmsg, TagMsg[0]) || strings.Contains(logmsg, TagMsg[1]) {
-		msg_begin := strings.Index(logmsg, ":")
+		msg_begin := strings.Index(logmsg, ";")
 		if msg_begin > 0 {
-			return string([]byte(logmsg)[msg_begin:])
+			return string([]byte(logmsg)[msg_begin+1:])
 		}
 	}
 
