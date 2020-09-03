@@ -66,10 +66,10 @@ export default class FormatTxType {
 					});
 					break;
 				case "MultiSend":
-					tansferObj.children.push({
-						value:'multiSend',
-						label:'MultiSend'
-					});
+					// tansferObj.children.push({
+					// 	value:'multiSend',
+					// 	label:'MultiSend'
+					// });
 					break;
 				case "Burn":
 					tansferObj.children.push({
@@ -125,12 +125,12 @@ export default class FormatTxType {
                         label:'FundCommunityPool'
                     });
                     break;
-                case "WithdrawValidatorCommission":
-                    delegationObj.children.push({
-                        value:'WithdrawValidatorCommission',
-                        label:'WithdrawValidatorCommission'
-                    });
-                    break;
+                // case "WithdrawValidatorCommission":
+                //     delegationObj.children.push({
+                //         value:'WithdrawValidatorCommission',
+                //         label:'WithdrawValidatorCommission'
+                //     });
+                //     break;
 
 				case "CreateValidator":
 					validationObj.children.push({

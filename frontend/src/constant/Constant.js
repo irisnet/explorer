@@ -91,8 +91,10 @@ TxType.VERIFY_INVARIANT = 'VerifyInvariant';
 
 const EventType = {}
 
-EventType.BEGINREDELEGATE = 'redelegate'
-EventType.BEGINUNBONDING = 'unbond'
+EventType.BEGINREDELEGATE = 'redelegate';
+EventType.BEGINUNBONDING = 'unbond';
+EventType.WITHDRAW_REWARDS = 'withdraw_rewards';
+EventType.REQUEST_RAND = 'request_rand';
 
 
 const ValidatorStatus = {};

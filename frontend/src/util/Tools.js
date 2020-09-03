@@ -1163,8 +1163,8 @@ export default class Tools {
 		}
 	}
 
-	static getEventsBuyType(events,type){
-		let result = {type};
+	static getAttributesFromEvents(events,type){
+		let result = {};
 		if (events && events.length) {
 			events.forEach((item)=>{
 				if (item.type == type) {
