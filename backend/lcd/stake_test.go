@@ -59,7 +59,7 @@ func TestValidators(t *testing.T) {
 
 
 func TestGetDelegationsByDelAddr(t *testing.T) {
-	address := "iaa1na97nt5xfndqph0y98jeq640fzqwhujjzfyjq8"
+	address := "iaa17vkfw608qg2fpkrguk7rmwl04hgf7j7fv8740q"
 	res := GetDelegationsByDelAddr(address)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))

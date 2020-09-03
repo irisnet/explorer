@@ -8,7 +8,6 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
-	"strconv"
 	"math/big"
 	"strings"
 	"sort"
@@ -167,10 +166,18 @@ func (service *AccountService) QueryDelegations(address string) (result vo.Accou
 			Shares:  val.Shares,
 			Height:  val.Height,
 		}
+		if shareRat, ok := new(big.Rat).SetString(val.Shares); ok {
+			amountstr := utils.ConverToDisplayUint(types.NtScale, shareRat).FloatString(18)
+			amount, _ := utils.ParseStringToFloat(amountstr)
+			data.Amount = utils.Coin{
+				Denom:  types.NtUnitDisplay,
+				Amount: amount,
+			}
+		}
 		if validatorMap != nil {
 			if valdator, ok := validatorMap[val.ValidatorAddr]; ok {
 				data.Moniker = valdator.Description.Moniker
-				data.Amount = computeVotingPower(valdator, val.Shares)
+				//data.Amount = computeVotingPower(valdator, val.Shares)
 			}
 		}
 		result = append(result, &data)
@@ -192,31 +199,31 @@ func getValidators(valaddrlist []string) (validatorMap map[string]document.Valid
 
 	return validatorMap
 }
-
-func computeVotingPower(validator document.Validator, shares string) utils.Coin {
-	rate, err := utils.QuoByStr(validator.Tokens, validator.DelegatorShares)
-	if err != nil {
-		logger.Warn("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
-		rate, _ = new(big.Rat).SetString("1")
-	}
-	sharesAsRat, ok := new(big.Rat).SetString(shares)
-	if !ok {
-		logger.Error("convert validator.Tokens type (string to big.Rat) ", logger.Any("result", ok),
-			logger.String("validator tokens", validator.Tokens))
-	}
-
-	tokensAsRat := new(big.Rat)
-	tokensAsRat.Mul(rate, sharesAsRat)
-
-	tokensAsRat = utils.ConverToDisplayUint(types.NtScale, tokensAsRat)
-
-	amount, _ := strconv.ParseFloat(tokensAsRat.FloatString(4), 64)
-
-	return utils.Coin{
-		Amount: amount,
-		Denom:  types.NtUnitDisplay,
-	}
-}
+//
+//func computeVotingPower(validator document.Validator, shares string) utils.Coin {
+//	rate, err := utils.QuoByStr(validator.Tokens, validator.DelegatorShares)
+//	if err != nil {
+//		logger.Warn("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
+//		rate, _ = new(big.Rat).SetString("1")
+//	}
+//	sharesAsRat, ok := new(big.Rat).SetString(shares)
+//	if !ok {
+//		logger.Error("convert validator.Tokens type (string to big.Rat) ", logger.Any("result", ok),
+//			logger.String("validator tokens", validator.Tokens))
+//	}
+//
+//	tokensAsRat := new(big.Rat)
+//	tokensAsRat.Mul(rate, sharesAsRat)
+//
+//	tokensAsRat = utils.ConverToDisplayUint(types.NtScale, tokensAsRat)
+//
+//	amount, _ := strconv.ParseFloat(tokensAsRat.FloatString(4), 64)
+//
+//	return utils.Coin{
+//		Amount: amount,
+//		Denom:  types.NtUnitDisplay,
+//	}
+//}
 
 func (service *AccountService) QueryUnbondingDelegations(address string) (result vo.AccountUnbondingDelegationsRespond) {
 

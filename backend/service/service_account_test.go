@@ -32,7 +32,7 @@ func TestQuery(t *testing.T) {
 }
 
 func TestAccountService_QueryDelegations(t *testing.T) {
-	addrStr := "faa15n5p9g0tnamcey4gkxaw2azjg8px6ahg7phdup"
+	addrStr := "iaa17vkfw608qg2fpkrguk7rmwl04hgf7j7fv8740q"
 
 	res := new(AccountService).QueryDelegations(addrStr)
 	bytesmsg, _ := json.Marshal(res)
