@@ -612,7 +612,13 @@
             getAssetList(){
                 this.assetsItems = this.assetList.map( item => {
                     if (!item) { return {}};
-	            	if(item && item.denom === this.$store.state.nativeToken){
+                    if(item && item.denom === this.$store.state.nativeToken){
+			            console.log(item)
+			            console.log(this.totalDelegator)
+			            console.log(this.totalUnBondingDelegator)
+			            console.log(this.allRewardsAmountValue)
+			           
+			           
 			            return {
 				            token: Tools.formatDenom(item.denom),
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,
@@ -623,7 +629,7 @@
 				            unBonding: this.totalUnBondingDelegator ?`${new BigNumber(Tools.formatStringToFixedNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2),this.fixedNumber)).toFormat()} ${this.$store.state.displayToken.toUpperCase()}`  : 0,
 				            reward: this.allRewardsValue ? this.allRewardsValue : 0,
                             rewards:this.allRewardsValue ? this.allRewardsValue : 0,
-				            totalAmount:`${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal((Number(Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount.toString(),-18),this.fixedNumber))*100 +
+				            totalAmount:`${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal((Number(Tools.formatStringToFixedNumber(Tools.formatAmount3(item).amount,this.fixedNumber))*100 +
 					            Number(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)) +
 					            Number(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber))+
 					            Number(Tools.formatStringToFixedNumber(this.allRewardsAmountValue.toString(),this.fixedNumber)) * 100).toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}` ,
@@ -746,7 +752,7 @@
                             if(res.delagations_rewards.length > 0){
                                 res.delagations_rewards.forEach( item => {
                                     if(item.amount && item.amount.length > 0){
-                                        item.amount[0].amount = (Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount[0].amount,-18),this.fixedNumber)) * 100
+                                        item.amount[0].amount = (Tools.formatStringToFixedNumber(Tools.formatAmount2(item.amount),this.fixedNumber) * 100)
                                     }
                                 })
                                 this.totalDelegatorReward = res.delagations_rewards.reduce( (total,item) => {
@@ -757,7 +763,7 @@
                                     return Number(amount) + Number(total)
                                 },0);
                             }
-                            this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(res.total_rewards[0].amount,-18),this.fixedNumber) : 0;
+                            this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.formatAmount3(res.total_rewards).amount,this.fixedNumber) : 0;
                             this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegatorReward.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`
                             this.getAssetList()
 			            }
