@@ -1168,4 +1168,16 @@ export default class Tools {
 			}
 		}
 	}
+
+	static getEventsBuyType(events,type){
+		let result = {type};
+		if (events && events.length) {
+			events.forEach((item)=>{
+				if (item.type == type) {
+					result = {...item.attributes,type:type};
+				}
+			});
+		}
+		return result;
+	}
 }

@@ -95,8 +95,8 @@ export default class formatMsgsAndTags {
             case Constant.TxType.ADDTRUSTEE :
                 return message = formatMsgsAndTags.txTypeAddTrustee(dataTx, Constant.TxType.ADDTRUSTEE);
                 break;
-            case Constant.TxType.DELETEPROFIKER :
-                return message = formatMsgsAndTags.txTypeDeleteProfiler(dataTx, Constant.TxType.DELETEPROFIKER);
+            case Constant.TxType.DELETEPROFILER :
+                return message = formatMsgsAndTags.txTypeDeleteProfiler(dataTx, Constant.TxType.DELETEPROFILER);
                 break;
             case Constant.TxType.DELETETRUSTEE :
                 return message = formatMsgsAndTags.txTypeDeleteTrustee(dataTx, Constant.TxType.DELETETRUSTEE);
@@ -1236,6 +1236,10 @@ export default class formatMsgsAndTags {
             }
         } else {
             message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
+        }
+
+        if (dataTx.events && dataTx.events.length) {
+            
         }
 
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
