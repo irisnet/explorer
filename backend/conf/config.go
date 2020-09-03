@@ -132,7 +132,7 @@ func loadDefault() {
 		KeyDbUser:                      "iris",
 		KeyDbPwd:                       "irispassword",
 		KeyDbPoolLimit:                 "4096",
-		KeyServerPort:                  "8081",
+		KeyServerPort:                  "8080",
 		KeyAddrHubLcd:                  "http://irisnet-lcd.dev.bianjie",
 		KeyAddrHubNode:                 "http://10.2.10.140:11657",
 		KeyAddrFaucet:                  "http://192.168.150.7:30200",
