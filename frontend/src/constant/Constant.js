@@ -89,9 +89,10 @@ TxType.VERIFY_INVARIANT = 'VerifyInvariant';
 
 
 
+const EventType = {}
 
-
-
+EventType.BEGINREDELEGATE = 'redelegate'
+EventType.BEGINUNBONDING = 'unbond'
 
 
 const ValidatorStatus = {};
@@ -241,6 +242,7 @@ SUBMITPROPOSALTYPE.SUBMITPROPOSAL = 'SubmitProposal';
 const C = {
   PREFIX,
   SUFFIX,
+  EventType,
   TxType,
   ValidatorStatus,
   Denom,
@@ -250,7 +252,7 @@ const C = {
   CHAINID,
   RADIXDENOM,
   TRANSACTIONMESSAGENAME,
-  SUBMITPROPOSALTYPE
+  SUBMITPROPOSALTYPE,
 };
 
 export default C;
