@@ -385,6 +385,7 @@
                             let fromInformation, toInformation;
                             fromInformation = Tools.formatListAmount(res).fromAddressAndMoniker;
                             toInformation = Tools.formatListAmount(res).toAddressAndMoniker;
+                            this.monikers = [...fromInformation,...toInformation];
                             this.gasPrice = `${res.gas_price} ${this.$store.state.nativeToken.toLocaleUpperCase()}`;
                             if(res.isProfiler){
                                 this.isProfiler = res.isProfiler;

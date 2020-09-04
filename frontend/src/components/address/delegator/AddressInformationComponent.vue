@@ -121,8 +121,8 @@
 			}
 		},
 		mounted () {
-
 			this.assetInformation = this.data;
+			this.formatAssetInformation(this.assetInformation)
 		},
 		methods:{
 			flShowAssetInfo(data){
@@ -136,7 +136,7 @@
 				    this.tokenName = this.$store.state.displayToken;
 				    this.nativeTokenName = this.$store.state.nativeToken;
                     assetInformation.forEach( item => {
-	                    if(item && item.token === this.nativeTokenName){
+	                    if(item && item.token === this.tokenName){
 	                        this.totalAmount = item.totalAmount;
                             
                             this.assetConstitute.forEach( res => {

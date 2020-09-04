@@ -534,7 +534,7 @@ export default {
                                 }
                                 it.amount = this.$options.filters.amountFromat(
                                     it.amount,
-                                    Constants.Denom.IRIS.toUpperCase(),2
+                                    Constants.Denom.IRIS.toLocaleUpperCase(),2
                                 );
                                 let selfShares = Tools.formatPriceToFixed(it.self_shares,4);
                                 it.shares = `${selfShares} (${this.formatPerNumber(
