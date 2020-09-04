@@ -111,7 +111,7 @@
                             </template>
                         </el-table-column>
 
-                        <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerCN.transactions.timestamp')" 
+                        <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerCN.transactions.timestamp')"
                                          prop="time"></el-table-column>
                         <el-table-column :min-width="ColumnMinWidth.address" :label="$t('ExplorerCN.serviceDetail.consumer')">
                             <template slot-scope="scope">
@@ -200,8 +200,6 @@
                 try {
                     const serviceInfo = await getServiceRespondInfo(this.$route.params.serviceName, this.$route.params.provider);
                     const bindings = await getServiceBindingByServiceName(this.$route.params.serviceName, this.$route.params.provider);
-                    console.log(serviceInfo)
-                    console.log(bindings)
                     if(serviceInfo){
                         this.hash = serviceInfo.hash;
                         this.owner = serviceInfo.owner;

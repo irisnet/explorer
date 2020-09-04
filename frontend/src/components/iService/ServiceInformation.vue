@@ -72,7 +72,7 @@
                                 <span>
                                     <router-link
                                             :to="`service/respond/${$route.query.serviceName}/${scope.row.provider}`">
-                                        {{`${scope.row.respondTimes} ${$t('ExplorerCN.unit.time')}`}} 
+                                        {{`${scope.row.respondTimes} ${$t('ExplorerCN.unit.time')}`}}
                                     </router-link>
                                 </span>
                             </template>
@@ -212,7 +212,7 @@
                             </template>
                         </el-table-column>
 
-                        <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerCN.transactions.timestamp')" 
+                        <el-table-column :min-width="ColumnMinWidth.time" :label="$t('ExplorerCN.transactions.timestamp')"
                                          prop="timestamp"></el-table-column>
                     </el-table>
                 </div>
@@ -317,7 +317,6 @@
             async getServiceInformation(){
                 const res = await getServiceDetail(this.$route.query.serviceName);
                 try {
-                    console.log('---', res)
                     if(res.msgs && res.msgs.length > 0 && res.msgs[0].msg){
                         const {author, author_description, description, name, schemas, tags} = res.msgs[0].msg;
                         this.author = author;
