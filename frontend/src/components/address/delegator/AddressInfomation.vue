@@ -821,7 +821,7 @@
                                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
 						        if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
 							        if(item.status === 'success'){
-								        if(item.tags.balance){
+								        if((item.tags || {}).balance){
 									        let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
 									        let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
 									        item.amount[0].formatAmount =  new BigNumber(Tools.formatStringToFixedNumber(tokenStr,2)).toFormat();
