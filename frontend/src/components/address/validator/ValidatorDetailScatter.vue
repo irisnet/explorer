@@ -113,7 +113,7 @@
 							return `<div>
 										<p>${value[2]}</p>
 										<p>Commission Rate:${value[0]}%</p>
-										<p>Bonded Tokens:<br/>${new bigNumber(value[1]).toFormat()} ${this.$store.state.nativeToken}</p>
+										<p>Bonded Tokens:<br/>${new bigNumber(value[1]).toFormat()} ${this.$store.state.displayToken.toLocaleUpperCase()}</p>
 										</div>`
 						}
 					},
