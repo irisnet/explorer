@@ -196,7 +196,7 @@
 								if (Array.isArray(data) && data[0]) {
 									this.bondedAndCommissionArr.map(item => {
 										if(item.label === 'Commission Rewards:'){
-											return item.value = this.$options.filters.amountFromat(data[0],"",this.irisTokenFixedNumber) || '--'
+											return item.value = Tools.formatAmount2(data[0]) || '--'
 										}
 									})
 								}else {
