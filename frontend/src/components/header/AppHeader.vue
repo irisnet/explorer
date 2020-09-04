@@ -775,13 +775,13 @@
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.MAINNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.MAINNETACTIVECOLOR);
                     root.style.setProperty(skinStyle.skinStyle.HEADERBGCOLOR,skinStyle.skinStyle.MAINNET_HEADER_BG_COLOR);
-    
+
                 } else if(networkName === constant.CHAINID.FUXI) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.TESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.TESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.TESTNETACTIVECOLOR);
                     root.style.setProperty(skinStyle.skinStyle.HEADERBGCOLOR,skinStyle.skinStyle.TESTNET_HEADER_BG_COLOR);
-    
+
                 }else if(networkName === constant.CHAINID.NYANCAT){
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETHOVERCOLOR);
@@ -1087,7 +1087,7 @@
             @include flex;
             flex-direction: column;
             align-items: center;
-            background: var(--bgColor);
+            background: var(--headerColor);
             .navButton {
                 width: 100% !important;
                 padding: 0 0.2rem;
@@ -1128,7 +1128,7 @@
                         height: 0.36rem;
                         line-height: 0.36rem;
                         font-size: 0.14rem;
-                        background: var(--bgColor);
+                        background: var(--headerColor);
                         color: #c9eafd;
                         width: 1.6rem;
                         text-align: left;
@@ -1167,7 +1167,7 @@
             flex-direction: column;
             border-bottom: 0.01rem solid #cccccc;
             position: relative;
-            background: var(--bgColor);
+            background: var(--headerColor);
             .feature_btn {
                 width: 0.25rem;
                 height: 0.25rem;
@@ -1202,11 +1202,11 @@
                         span {
                             &:first-child {
                                 font-size: 0.24rem;
-                                color: var(--bgColor);
+                                color: var(--headerColor);
                             }
                             &:last-child {
                                 font-size: 0.24rem;
-                                color: var(--bgColor);
+                                color: var(--headerColor);
                             }
                         }
                     }
@@ -1243,7 +1243,7 @@
                     top: 0.08rem;
                     font-size: 0.15rem;
                     right: 0.15rem;
-                    color: var(--bgColor);
+                    color: var(--headerColor);
                     cursor: pointer;
                 }
                 .clear_icon {
@@ -1274,7 +1274,7 @@
                 z-index: 1010;
                 width: 100%;
                 left: 0;
-                background: var(--bgColor);
+                background: var(--headerColor);
                 @include flex();
                 flex-direction: column;
                 position: absolute;
@@ -1331,7 +1331,7 @@
                     height: 0.39rem;
                     line-height: 0.39rem;
                     padding-left: 0.15rem;
-                    background: var(--bgColor);
+                    background: var(--headerColor);
                     color: #fff;
                     font-size: 0.14rem;
                     a {
@@ -1345,7 +1345,7 @@
                     color: #c9eafd;
                     font-size: 0.14rem;
                     background: url("../../assets/caret-bottom.png") no-repeat 97% 0.12rem,
-                    var(--bgColor);
+                    var(--headerColor);
                 }
                 .feature_subNav {
                     padding-left: 0.3rem;
