@@ -110,7 +110,7 @@ func registerNavigationBar(r *mux.Router) error {
 				result.BondedRatio = ratio.FloatString(18)
 			}
 
-			result.BondedTokens = poolStake.BondedTokens
+			result.BondedTokens = bonded.FloatString(18)
 			result.TotalSupply = total.FloatString(18)
 		}
 		funGroup = append(funGroup, queryBondedInfo)
