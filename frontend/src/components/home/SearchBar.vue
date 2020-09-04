@@ -103,9 +103,9 @@
 						this.searchTx();
 					} else if(/^[a-f0-9]{64}$/.test(this.searchInputValue)){
 						this.searchHashLock()
-					} else if (Tools.isBech32(this.$Crypto.config.iris.bech32.accAddr, this.searchInputValue)) {
+					} else if (Tools.isBech32(localStorage['acc_addr_prefix'] || this.$Crypto.config.iris.bech32.accAddr, this.searchInputValue)) {
 						this.searchDelegator();
-					} else if (Tools.isBech32(this.$Crypto.config.iris.bech32.valAddr, this.searchInputValue)) {
+					} else if (Tools.isBech32(localStorage['val_addr_prefix'] || this.$Crypto.config.iris.bech32.valAddr, this.searchInputValue)) {
 						this.searchValidator();
 					} else if (/^\+?[1-9][0-9]*$/.test(this.searchInputValue)) {
 						this.searchBlockAndProposal();
