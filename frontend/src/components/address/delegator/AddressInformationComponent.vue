@@ -110,7 +110,8 @@
 				unbonding:'',
 				rewards:'',
 				otherTokenList:[],
-                tokenName:'IRIS',
+                tokenName:'',
+				nativeTokenName: ''
 			}
 		},
 		watch:{
@@ -132,9 +133,10 @@
 			},
 			async formatAssetInformation(assetInformation){
 			    try{
-				    this.tokenName = this.$store.state.nativeToken;
+				    this.tokenName = this.$store.state.displayToken;
+				    this.nativeTokenName = this.$store.state.nativeToken;
                     assetInformation.forEach( item => {
-	                    if(item && item.token === this.tokenName){
+	                    if(item && item.token === this.nativeTokenName){
 	                        this.totalAmount = item.totalAmount;
                             
                             this.assetConstitute.forEach( res => {
