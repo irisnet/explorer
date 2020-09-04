@@ -338,7 +338,6 @@
             async getServiceBindingList(){
                 try {
                     const serviceList = await getServiceBindingTxList(this.$route.query.serviceName, this.providerPageNum, this.providerPageSize);
-                    console.log(serviceList)
                     if(serviceList && serviceList.data){
                         let bindings = await getServiceBindingByServiceName(this.$route.query.serviceName);
                         serviceList.data.forEach((s) =>{
@@ -349,18 +348,21 @@
                             s.deposit = '--';
                             s.disabledTime = '--';
                             (bindings || []).forEach((b) =>{
-                                let deposit = `${b.deposit[0].amount} ${b.deposit[0].denom}`;
+                                const  copyPricing = {
+                                    amount: Tools.formatAccountCoinsAmount(JSON.parse(b.pricing || '{}').price)[0],
+                                    denom: Tools.formatAccountCoinsDenom(JSON.parse(b.pricing || '{}').price)[0]
+                                }
+                                let deposit = `${Tools.formatAmount2(b.deposit[0])}`;
                                 if(s.provider === b.provider){
                                     s.isAvailable = b.available ? 'True' : 'False';
                                     s.available = b.available;
-                                    s.price = JSON.parse(b.pricing).price;
+                                    s.price = `${Tools.formatAmount3(copyPricing).amount} ${this.$store.state.displayToken.toLocaleUpperCase()}`;
                                     s.qos = `${b.qos} ${this.$t('ExplorerCN.unit.blocks')}`;
                                     s.deposit = deposit;
                                     s.disabledTime = b.available ? '--' : Tools.getFormatDate(b.disabled_time);
                                 }
                             })
                         })
-                        console.log(serviceList)
                         this.serviceList = serviceList.data;
                         this.providerCount = Number(serviceList.count);
                         this.providerPageSize = Number(serviceList.pageSize);

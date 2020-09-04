@@ -1129,7 +1129,7 @@
                                 provider:item.msgs[0].msg.provider,
                                 owner:item.msgs[0].msg.owner,
                                 respond_times:item.respond_times,
-                                pricing:`${Tools.formatAmount3(copyPricing).amount} ${this.$store.state.displayToken}`,
+                                pricing:`${Tools.formatAmount3(copyItem).amount} ${this.$store.state.displayToken.toLocaleUpperCase()}`,
                                 qos:item.msgs[0].msg.qos,
                                 time: Tools.getDisplayDate(item.time),
                                 unbindTime:item.unbinding_time ? Tools.getDisplayDate(item.unbinding_time) : '--',

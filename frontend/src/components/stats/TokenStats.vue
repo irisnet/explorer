@@ -20,9 +20,10 @@
                         <span class="information_value"
                               :class="v.value ? 'skip_route' : ''"
                               v-if="v.label === 'Community Tax'">
-                            <router-link @click.native="$uMeng.push('IRIS Stats_Community Tax','click')"
-                                         v-if="v.value && v.value !== '--'"
-                                         :to="communityTaxCoins">{{v.value || '--'}}</router-link>
+                            <!--<router-link @click.native="$uMeng.push('IRIS Stats_Community Tax','click')"
+                                         v-if="v.value && v.value !== '&#45;&#45;'"
+                                         :to="communityTaxCoins">{{v.value || '&#45;&#45;'}}</router-link>-->
+                            <span>--</span>
                             </span>
                         <span v-if="v.label!=='Circulation'&& v.value && v.value === '--'">--</span>
                         <span class="information_value" v-if="v.label !== 'Burned' && v.label !== 'Community Tax'">{{v.value || '--'}}</span>
