@@ -125,14 +125,14 @@
                                                  :to="addressRoute(value)">{{value}}
                                     </router-link>
                                     <router-link v-if="key === 'From :' && value !== '-' &&  typeof(value) === 'string'"
-                                                 :to="addressRoute(value)">{{fromMoniker || value}}
+                                                 :to="addressRoute(value)">{{getMoniker(value)}}
                                     </router-link>
                                     <router-link
                                             v-if="key === 'From :' && value !== '-' &&  typeof(value) === 'object' && !value.isLink"
                                             :to="addressRoute(value.address)">{{value.moniker || value.address}}
                                     </router-link>
                                     <router-link v-if="key === 'To :' && value !== '-'" :to="addressRoute(value)">
-                                        {{toMoniker || value}}
+                                        {{getMoniker(value)}}
                                     </router-link>
                                     <router-link v-if="key === 'Owner :'" :to="addressRoute(value)">{{value}}
                                     </router-link>
@@ -244,8 +244,8 @@
                 signerValue : '',
                 memoValue : '',
                 messageList : null,
-                fromMoniker : '',
-                toMoniker : '',
+                // fromMoniker : '',
+                // toMoniker : '',
                 log : '',
                 gasPrice : '',
                 gasLimit : '',
@@ -257,6 +257,7 @@
                 flShowRateToolTip : false,
                 isProfiler : false,
                 failTipStyle : false,
+                monikers: [],
             }
         },
         watch : {
@@ -384,6 +385,7 @@
                             let fromInformation, toInformation;
                             fromInformation = Tools.formatListAmount(res).fromAddressAndMoniker;
                             toInformation = Tools.formatListAmount(res).toAddressAndMoniker;
+                            this.monikers = [...fromInformation,...toInformation];
                             this.gasPrice = Tools.convertScientificNotation2Number(
                                 Tools.formaNumberAboutGasPrice(res.gas_price)
                             );
@@ -402,8 +404,8 @@
                             this.gasUsedValue = res.gas_used;
                             this.signerValue = res.signer;
                             this.memoValue = res.memo ? res.memo : '--';
-                            this.fromMoniker = fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].moniker : '';
-                            this.toMoniker = toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].moniker : '';
+                            // this.fromMoniker = fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].moniker : '';
+                            // this.toMoniker = toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].moniker : '';
                             this.messageList = formatMessage.switchTxType(res, this);
                             if(this.messageList && this.messageList.tooltip){
                                 this.flShowRateToolTip = true
@@ -414,6 +416,15 @@
                         console.error(e)
                     }
                 })
+            },
+            getMoniker(address){
+                let moniker = address;
+                this.monikers.forEach((item)=>{
+                    if (item.address == address && item.moniker && item.moniker.length) {
+                        moniker = item.moniker;
+                    }
+                });
+                return moniker;
             }
         }
     }
