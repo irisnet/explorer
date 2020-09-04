@@ -12,7 +12,7 @@ type IServiceService struct {
 
 func (service *IServiceService) QueryServiceBindings(servicename, provider string) vo.ServiceBindingRespond {
 	bindings := lcd.GetServiceBindings(servicename, provider)
-	var resp vo.ServiceBindingRespond
+	resp := []vo.ServiceBinding{}
 	if len(bindings) == 0 {
 		return resp
 	}
