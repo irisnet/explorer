@@ -112,7 +112,7 @@
 		mounted(){
 			this.getNavigation();
 			clearInterval(this.timer);
-			setInterval(() =>{
+			this.timer = setInterval(() =>{
 				this.getNavigation()
 			},5000)
 		},

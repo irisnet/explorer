@@ -443,9 +443,9 @@ export default class Tools {
 				transferAmount = formatListAmount.amountNumber === '--' ? '--' : Tools.formatStringToFixedNumber(formatListAmount.amountNumber,2);
 				tokenId = formatListAmount.tokenName === '--' ? '--' : formatListAmount.tokenName;
 				if(item.fee.amount && item.fee.denom){
-					let feeAmount = Tools.formatAmount3(item.fee,6);
-					transferFee = `${feeAmount.amount}`;
-					Fee = `${feeAmount.amount} ${feeAmount.denom}`;
+					let feeAmount = Tools.formatAmount2(item.fee,6);
+					transferFee = `${feeAmount}`;
+					Fee = `${feeAmount}`;
 				}
 				commonHeaderObjList = {
 					'Tx_Hash' : item.hash,
@@ -1135,11 +1135,10 @@ export default class Tools {
 		    }
 		    amountRadixNumber = Tools.amountRadix(amountDenom);
 	    }
-		
 		if(amountRadixNumber > 0 ){
 			return {
 				amount: Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber),
-				denom: amountDenom.toLocaleUpperCase()
+				denom: store.state.displayToken.toLocaleUpperCase()
 			}
 		}else {
 			if(amountDenom && amountDenom === store.state.nativeToken){
