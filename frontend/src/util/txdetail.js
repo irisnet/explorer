@@ -1169,7 +1169,6 @@ export default class formatMsgsAndTags {
     static txTypeBeginUnbonding(dataTx, txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.SHARES] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
@@ -1200,7 +1199,6 @@ export default class formatMsgsAndTags {
             if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
                 dataTx.msgs.forEach(item =>{
                     if(item.msg){
-                        item.msg ? message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(item.msg.shares_amount) : message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift('--')
                         message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_addr);
                         message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr);
                     }
