@@ -162,7 +162,7 @@
         if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
           this.skinStyle = '#3264FD';
           this.lineSkinBackgroundStyle = [
-            {offset: 0, color: 'rgba(50, 100, 253, 0.8)'},
+            {offset: 0, color: 'rgba(23, 114, 225, 0.8)'},
             {offset: 1, color: 'rgba(50, 100, 253, 0)'}
           ]
         }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.FUXI){
@@ -178,9 +178,9 @@
             {offset: 1, color: 'rgba(245, 247, 253, 1)'}
           ]
         }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.BIFROST){
-          this.skinStyle = '#D6793A';
+          this.skinStyle = '#1772E1';
           this.lineSkinBackgroundStyle = [
-            {offset: 0, color: 'rgba(214,121,58, 0.8)'},
+            {offset: 0, color: 'rgba(23,114,225, 0.8)'},
             {offset: 1, color: 'rgba(245, 247, 253, 1)'}
           ]
         }else {

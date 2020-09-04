@@ -564,8 +564,8 @@
             },
 	        formatFee(fee){
 		        if(fee && fee.denom){
-		            let feeObject = Tools.formatAmount3(fee,4)
-			        return `${feeObject.amount} ${feeObject.denom}`
+		            let feeObject = Tools.formatAmount2(fee,4)
+			        return `${feeObject}`
 		        }else {
 		            return  '--'
                 }

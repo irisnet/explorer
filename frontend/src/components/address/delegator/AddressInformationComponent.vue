@@ -116,7 +116,6 @@
 		watch:{
 			data(){
 				this.assetInformation = this.data;
-                console.log('===============',this.data)
 				this.formatAssetInformation(this.assetInformation)
 			}
 		},
