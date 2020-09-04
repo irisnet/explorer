@@ -18,7 +18,7 @@
                                          :to="burnedCoins">{{v.value}}</router-link>
                             </span>
                         <span class="information_value"
-                              :class="v.value ? 'skip_route' : ''"
+                              :class="v.value ? '' : ''"
                               v-if="v.label === 'Community Tax'">
                             <!--<router-link @click.native="$uMeng.push('IRIS Stats_Community Tax','click')"
                                          v-if="v.value && v.value !== '&#45;&#45;'"
