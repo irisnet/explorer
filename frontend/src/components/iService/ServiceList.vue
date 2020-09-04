@@ -114,20 +114,24 @@
                     if(serviceList && serviceList.data){
                         console.log(serviceList)
                         for(let service of serviceList.data){
-                            let bindings = await getServiceBindingByServiceName(service.serviceName);
-                            if(bindings){
-                                service.bindList.forEach((s)=>{
-                                    s.bindTime = Tools.getDisplayDate(s.bindTime);
-                                    bindings.forEach((b)=>{
-                                        if(s.provider === b.provider){
-                                            s.isAvailable = b.available ? 'True' : 'False';
-                                            s.available = b.available;
-                                            s.price = JSON.parse(b.pricing).price;
-                                            s.qos = `${b.qos} ${this.$t('ExplorerCN.unit.blocks')}`;
-                                        }
-                                    })
-                                })
+                            let bindings = [];
+                            if (service.serviceName && service.serviceName.length) {
+                                bindings = await getServiceBindingByServiceName(service.serviceName);
                             }
+                            service.bindList.forEach((s)=>{
+                                s.bindTime = Tools.getDisplayDate(s.bindTime);
+                                s.price = '--';
+                                s.qos = '--';
+                                s.isAvailable = 'False';
+                                bindings.forEach((b)=>{
+                                    if(s.provider === b.provider){
+                                        s.isAvailable = b.available ? 'True' : 'False';
+                                        s.available = b.available;
+                                        s.price = JSON.parse(b.pricing).price;
+                                        s.qos = `${b.qos} ${this.$t('ExplorerCN.unit.blocks')}`;
+                                    }
+                                })
+                            })
                         }
                         console.log(serviceList)
                         this.serviceList = serviceList.data;
