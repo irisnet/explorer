@@ -1113,7 +1113,6 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.SHARES] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ENDTIME] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
@@ -1127,7 +1126,6 @@ export default class formatMsgsAndTags {
                 if(item.type === txType){
                     if(item.msg){
                         message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_src_addr);
-                        message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(item.msg.shares_amount ? item.msg.shares_amount : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.validator_dst_addr)
                     }
                 }
@@ -1220,10 +1218,10 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         
-        let attrs = Tools.getAttributesFromEvents(dataTx.events,Constant.EventType.WITHDRAW_REWARDS); 
+        let attrs = Tools.getAttributesFromEvents(dataTx.events,Constant.EventType.WITHDRAW_REWARDS);
         if (attrs && attrs.length) {
             let amount = {
-                denom: '', 
+                denom: '',
                 amount:0,
             };
             attrs.forEach((item)=>{
