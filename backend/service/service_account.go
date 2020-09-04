@@ -199,6 +199,7 @@ func getValidators(valaddrlist []string) (validatorMap map[string]document.Valid
 
 	return validatorMap
 }
+
 //
 //func computeVotingPower(validator document.Validator, shares string) utils.Coin {
 //	rate, err := utils.QuoByStr(validator.Tokens, validator.DelegatorShares)
@@ -241,7 +242,7 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 			Address: val.ValidatorAddr,
 			EndTime: val.MinTime,
 			Height:  val.CreationHeight,
-			Amount:  utils.Coin{Amount: amount},
+			Amount:  utils.Coin{Amount: amount, Denom: types.StakeUint},
 		}
 		if validatorMap != nil {
 			if valdator, ok := validatorMap[val.ValidatorAddr]; ok {

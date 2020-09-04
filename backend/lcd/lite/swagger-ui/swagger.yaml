@@ -708,6 +708,8 @@ definitions:
     type: object
   vo.EnvConfig:
     properties:
+      acc_addr_prefix:
+        type: string
       chain_id:
         type: string
       configs:
@@ -721,6 +723,8 @@ definitions:
       nt_unit_display:
         type: string
       nt_unit_min:
+        type: string
+      val_addr_prefix:
         type: string
     type: object
   vo.Event:

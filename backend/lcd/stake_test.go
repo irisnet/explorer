@@ -99,7 +99,7 @@ func TestGetUnbondingDelegationsByValidatorAddr(t *testing.T) {
 }
 
 func TestGetUnbondingDelegationsByDelegatorAddr(t *testing.T) {
-	unbondingDelegations := GetUnbondingDelegationsByDelegatorAddr("iaa18e2e9fxxrr88k78gg7fhuuqgccfv8self9ye65")
+	unbondingDelegations := GetUnbondingDelegationsByDelegatorAddr("iaa1ryyqz07d75fx20hk9npmnan9p0jn9yw35vpk6k")
 	for k, v := range unbondingDelegations {
 		t.Logf("k: %v  v: %v \n", k, v)
 	}

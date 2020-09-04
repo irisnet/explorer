@@ -26,6 +26,8 @@ type EnvConfig struct {
 	NtScale       int        `json:"nt_scale"`
 	NtUnitMin     string     `json:"nt_unit_min"`
 	NtUnitDisplay string     `json:"nt_unit_display"`
+	AccAddrPrefix string     `json:"acc_addr_prefix"`
+	ValAddrPrefix string     `json:"val_addr_prefix"`
 }
 
 type ConfigVo struct {

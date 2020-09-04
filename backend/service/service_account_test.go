@@ -40,7 +40,7 @@ func TestAccountService_QueryDelegations(t *testing.T) {
 }
 
 func TestAccountService_QueryUnbondingDelegations(t *testing.T) {
-	addrStr := "faa15n5p9g0tnamcey4gkxaw2azjg8px6ahg7phdup"
+	addrStr := "iaa1ryyqz07d75fx20hk9npmnan9p0jn9yw35vpk6k"
 
 	res := new(AccountService).QueryUnbondingDelegations(addrStr)
 	bytesmsg, _ := json.Marshal(res)
