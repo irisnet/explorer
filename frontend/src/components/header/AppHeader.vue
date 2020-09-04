@@ -694,6 +694,7 @@
                         sessionStorage.setItem('nativeToken',res.nt_unit_min)
                         localStorage.setItem('acc_addr_prefix',res.acc_addr_prefix)
                         localStorage.setItem('val_addr_prefix',res.val_addr_prefix)
+                        sessionStorage.setItem('displayToken',res.nt_unit_display)
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
@@ -720,7 +721,6 @@
                 });
 			},
 			handleConfigs (configs) {
-			    console.error(configs)
                 if (!configs) {return;}
 				this.netWorkArray = configs.map(item => {
 					if(item.network_name === constant.CHAINID.IRISHUB){

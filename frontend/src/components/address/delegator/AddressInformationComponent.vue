@@ -110,7 +110,8 @@
 				unbonding:'',
 				rewards:'',
 				otherTokenList:[],
-                tokenName:'IRIS',
+                tokenName:'',
+				nativeTokenName: ''
 			}
 		},
 		watch:{
@@ -120,8 +121,8 @@
 			}
 		},
 		mounted () {
-
 			this.assetInformation = this.data;
+			this.formatAssetInformation(this.assetInformation)
 		},
 		methods:{
 			flShowAssetInfo(data){
@@ -132,7 +133,8 @@
 			},
 			async formatAssetInformation(assetInformation){
 			    try{
-				    this.tokenName = this.$store.state.nativeToken;
+				    this.tokenName = this.$store.state.displayToken;
+				    this.nativeTokenName = this.$store.state.nativeToken;
                     assetInformation.forEach( item => {
 	                    if(item && item.token === this.tokenName){
 	                        this.totalAmount = item.totalAmount;

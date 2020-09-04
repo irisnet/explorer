@@ -676,7 +676,6 @@
                                 this.totalDelegator = res.reduce( (total,item) => {
                                     return Number(item.amount.amount) + Number(total)
 					            },0)
-                                console.error('=1==1=1==1=1=',this.totalDelegator)
                             }
                             this.totalDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`
                         }else {
