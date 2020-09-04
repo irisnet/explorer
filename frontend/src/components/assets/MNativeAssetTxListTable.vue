@@ -174,7 +174,7 @@
 	                {
 		                title:'Fee',
 		                key:'TxFee',
-		                slot: `TxFee(${this.$store.state.nativeToken})`,
+		                slot: `TxFee(${this.$store.state.displayToken.toLocaleUpperCase()})`,
 	                },
 	                {
 		                title:'Status',
@@ -227,7 +227,7 @@
 					{
 						title:'Fee',
 						key:'TxFee',
-						slot: `TxFee(${this.$store.state.nativeToken})`,
+						slot: `TxFee(${this.$store.state.displayToken.toLocaleUpperCase()})`,
 						tooltipClassName: 'tooltip_left'
 					},
 					{
@@ -264,7 +264,7 @@
 					{
 						title:'Fee',
 						key:'TxFee',
-						slot: `TxFee(${this.$store.state.nativeToken})`,
+						slot: `TxFee(${this.$store.state.displayToken.toLocaleUpperCase()})`,
 						tooltipClassName: 'tooltip_left'
 					},
 					{
@@ -313,7 +313,7 @@
 					{
 						title:'Fee',
 						key:'TxFee',
-						slot: `TxFee(${this.$store.state.nativeToken})`,
+						slot: `TxFee(${this.$store.state.displayToken.toLocaleUpperCase()})`,
 						tooltipClassName: 'tooltip_left'
 					},
 					{
@@ -356,7 +356,7 @@
 					{
 						title:'Fee',
 						key:'TxFee',
-						slot: `TxFee(${this.$store.state.nativeToken})`,
+						slot: `TxFee(${this.$store.state.displayToken.toLocaleUpperCase()})`,
 						tooltipClassName: 'tooltip_left'
 					},
 					{
@@ -403,7 +403,7 @@
 					{
 						title:'Fee',
 						key:'TxFee',
-						slot: `TxFee(${this.$store.state.nativeToken})`,
+						slot: `TxFee(${this.$store.state.displayToken.toLocaleUpperCase()})`,
 						tooltipClassName: 'tooltip_left'
 					},
 					{

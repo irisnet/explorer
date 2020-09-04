@@ -1013,7 +1013,7 @@ export default {
                     if(data.status === 'success'){
                       if(data.type === "BeginUnbonding" || data.type === 'BeginRedelegate'){
                         let  tokenValue = Tools.formatAccountCoinsAmount(data.tags.balance)[0];
-                        fieidValue = `${Tools.numberMoveDecimal(tokenValue)} ${this.$store.state.nativeToken}`
+                        fieidValue = `${Tools.numberMoveDecimal(tokenValue)} ${this.$store.state.displayToken.toLocaleUpperCase()}`
                       }else {
                         fieidValue = this.forAmount(data);
                       }

@@ -17,7 +17,7 @@ export default {
 	GovProposals:'Proposal List',
 	GovProposalsProposalDetails:'Proposal Details',
 	GovGovTxs:'Gov Txs List',
-	StatsIRISRichList:`${Tools.firstWordUpperCase(store.state.displayToken)} Rich List`,
+	StatsIRISRichList:`${sessionStorage.getItem('displayToken').toLocaleUpperCase()} Rich List`,
 	StatsIRISRichListAddress:'Address',
-	StatsIRISStats:`${Tools.firstWordUpperCase(store.state.displayToken)} Stats Analyse`,
+	StatsIRISStats:`${sessionStorage.getItem('displayToken').toLocaleUpperCase()} Stats Analyse`,
 }
