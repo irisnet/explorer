@@ -7,7 +7,7 @@
             :class="[$store.state.isMobile ? 'mobile_list_page_container' : 'pc_list_page_container']"
         >
             <div>
-                <div class="page_title">{{$store.state.nativeToken}} Token Stats</div>
+                <div class="page_title">{{$store.state.displayToken.toLocaleUpperCase()}} Token Stats</div>
                 <div class="table_container" v-show="!itemsNoData">
                     <div class="information_props_wrap" v-for="v in items" :key="v.label">
                         <span class="information_props">{{v.label}}</span>
@@ -18,7 +18,7 @@
                                          :to="burnedCoins">{{v.value}}</router-link>
                             </span>
                         <span class="information_value"
-                              :class="v.value ? 'skip_route' : ''"
+                              :class="v.value ? '' : ''"
                               v-if="v.label === 'Community Tax'">
                             <!--<router-link @click.native="$uMeng.push('IRIS Stats_Community Tax','click')"
                                          v-if="v.value && v.value !== '&#45;&#45;'"
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div v-show="itemsNoData" class="no_data_show"><img src="../../assets/no_data.svg" alt=""></div>
-                <div class="page_title">{{$store.state.nativeToken}} Token Distribution</div>
+                <div class="page_title">{{$store.state.displayToken.toLocaleUpperCase()}} Token Distribution</div>
                 <div class="echarts_container" v-show="!pieDatasNoData">
                     <m-token-stats-echart :data="pieDatas"></m-token-stats-echart>
                 </div>

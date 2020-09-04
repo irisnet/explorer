@@ -137,7 +137,7 @@
 					},
 					yAxis: {
 						type: 'value',
-						name:`Bonded_Token(${this.$store.state.nativeToken})`,
+						name:`Bonded_Token(${this.$store.state.displayToken.toLocaleUpperCase()})`,
 						nameLocation: 'end',
 						nameGap: 20,
 						nameTextStyle: {

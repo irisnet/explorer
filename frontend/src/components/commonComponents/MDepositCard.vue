@@ -169,7 +169,7 @@
 	        },
             setMinDepositToken(depositObj){
 	            if(depositObj.level.gov_param.min_deposit.amount === 0){
-		            this.minDepositToken = `0 ${this.$store.state.notiveToken}`
+		            this.minDepositToken = `0 ${this.$store.state.displayToken.toLocaleUpperCase()}`
 	            }else {
 		            this.minDepositToken = `${Tools.numberMoveDecimal(depositObj.level.gov_param.min_deposit.amount)}`;
 		            this.minDepositTokenDenom = `${Tools.formatDenom(depositObj.level.gov_param.min_deposit.denom)}`
