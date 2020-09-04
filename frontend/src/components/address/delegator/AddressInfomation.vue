@@ -705,15 +705,14 @@
                                 res.forEach( item => {
                                     if(item.amount && item.amount.amount){
                                         if(item.amount.amount.toString().indexOf('.') !== -1){
-                                            let splitNumber = item.amount.amount.toString().split('.')[1].substr(0,2);
-                                            item.amount.amount =  Number(`${item.amount.amount.toString().split('.')[0]}.${splitNumber}`) * 100
+                                            item.amount.amount =  Tools.formatAmount3(item.amount).amount.replace(/\,/g,'')* 100
                                         }else {
-                                            item.amount.amount = item.amount.amount * 100
+                                            item.amount.amount = Tools.formatAmount3(item.amount).amount.replace(/\,/g,'')* 100
                                         }
                                     }
                                 });
-					            this.totalUnBondingDelegator = res.reduce( (total,item) => {
-						            return Number(item.amount.amount) + Number(total)
+                                this.totalUnBondingDelegator = res.reduce( (total,item) => {
+                                    return Number(item.amount.amount) + Number(total)
 					            },0)
                             }
 				            this.totalUnBondingDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`
@@ -983,7 +982,7 @@
 			        this.unBondingDelegationsItems = this.unBondingDelegationPageNationArrayData[pageNum].map( item =>{
 				        return {
 					        address: item.address,
-					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
+					        amount: `${Tools.formatAmount2(item.amount)}`,
 					        block: item.height,
 					        endTime: Tools.format2UTC(item.end_time),
 					        moniker: item.moniker
@@ -993,7 +992,7 @@
 			        this.unBondingDelegationsItems = this.unBondingDelegationPageNationArrayData.map( item =>{
 				        return {
 					        address: item.address,
-					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
+					        amount: `${Tools.formatAmount2(item.amount)}`,
 					        block: item.height,
 					        endTime: Tools.format2UTC(item.end_time),
 					        moniker: item.moniker
