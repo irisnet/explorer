@@ -705,15 +705,14 @@
                                 res.forEach( item => {
                                     if(item.amount && item.amount.amount){
                                         if(item.amount.amount.toString().indexOf('.') !== -1){
-                                            let splitNumber = item.amount.amount.toString().split('.')[1].substr(0,2);
-                                            item.amount.amount =  Number(`${item.amount.amount.toString().split('.')[0]}.${splitNumber}`) * 100
+                                            item.amount.amount =  Tools.formatAmount3(item.amount).amount.replace(/\,/g,'')* 100
                                         }else {
-                                            item.amount.amount = item.amount.amount * 100
+                                            item.amount.amount = Tools.formatAmount3(item.amount).amount.replace(/\,/g,'')* 100
                                         }
                                     }
                                 });
-					            this.totalUnBondingDelegator = res.reduce( (total,item) => {
-						            return Number(item.amount.amount) + Number(total)
+                                this.totalUnBondingDelegator = res.reduce( (total,item) => {
+                                    return Number(item.amount.amount) + Number(total)
 					            },0)
                             }
 				            this.totalUnBondingDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${this.$store.state.displayToken.toUpperCase()}`
@@ -822,12 +821,7 @@
                                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
 						        if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
 							        if(item.status === 'success'){
-								        if(item.tags.balance){
-									        let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
-									        let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
-									        item.amount[0].formatAmount =  new BigNumber(Tools.formatStringToFixedNumber(tokenStr,2)).toFormat();
-									        Amount = item.amount.map(listItem => `${listItem.formatAmount} ${this.$store.state.nativeToken}`).join(',');
-                                        }
+                                        Amount = Tools.formatAmount2(item.amount)
 							        }
 						        }else {
 						            if(item.amount && item.amount.length > 0){
@@ -983,7 +977,7 @@
 			        this.unBondingDelegationsItems = this.unBondingDelegationPageNationArrayData[pageNum].map( item =>{
 				        return {
 					        address: item.address,
-					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
+					        amount: `${Tools.formatAmount2(item.amount)}`,
 					        block: item.height,
 					        endTime: Tools.format2UTC(item.end_time),
 					        moniker: item.moniker
@@ -993,7 +987,7 @@
 			        this.unBondingDelegationsItems = this.unBondingDelegationPageNationArrayData.map( item =>{
 				        return {
 					        address: item.address,
-					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
+					        amount: `${Tools.formatAmount2(item.amount)}`,
 					        block: item.height,
 					        endTime: Tools.format2UTC(item.end_time),
 					        moniker: item.moniker
@@ -1126,12 +1120,16 @@
                     if(res){
                         this.providerTxList = [];
                         for(let item of res.data){
+                            const copyItem = {
+                                amount: Tools.formatAccountCoinsAmount(JSON.parse(item.msgs[0].msg.pricing || '{}').price)[0],
+                                denom: Tools.formatAccountCoinsDenom(JSON.parse(item.msgs[0].msg.pricing || '{}').price)[0]
+                            }
                             let result = {
                                 serviceName:(item.msgs[0].msg.ex || {}).service_name,
                                 provider:item.msgs[0].msg.provider,
                                 owner:item.msgs[0].msg.owner,
                                 respond_times:item.respond_times,
-                                pricing:JSON.parse(item.msgs[0].msg.pricing || '{}').price,
+                                pricing:`${Tools.formatAmount3(copyPricing).amount} ${this.$store.state.displayToken}`,
                                 qos:item.msgs[0].msg.qos,
                                 time: Tools.getDisplayDate(item.time),
                                 unbindTime:item.unbinding_time ? Tools.getDisplayDate(item.unbinding_time) : '--',
@@ -1141,13 +1139,13 @@
                                 status:item.status,
                             };
                             if (item.msgs[0].msg.deposit && item.msgs[0].msg.deposit.length) {
-                                result.deposit = `${item.msgs[0].msg.deposit[0].amount} ${item.msgs[0].msg.deposit[0].denom}`;
+                                result.deposit = `${Tools.formatAmount2(item.msgs[0].msg.deposit)}`;
                             }
                             let bindings = await getServiceBindingByServiceName(result.serviceName);
                             (bindings || []).forEach((bind)=>{
                                 if(result.provider === bind.provider && result.owner == bind.owner){
                                     result.isAvailable = bind.available;
-                                    result.pricing = JSON.parse(bind.pricing || '{}').price;
+                                    result.pricing = Tools.formatAmount2(copyItem);
                                     result.qos = bind.qos;
                                     if (bind.disabled_time) {
                                         let time = new Date(bind.disabled_time).getTime();
