@@ -95,9 +95,13 @@ func registerNavigationBar(r *mux.Router) error {
 				}
 			}()
 			var poolStake = lcd.StakePool()
-			loose, _ := new(big.Rat).SetString(poolStake.LooseTokens)
+			supply, err := lcd.GetTotalSupply()
+			if err != nil {
+				logger.Error("GetTokenStatsSupply have error", logger.String("err", err.Error()))
+			}
+			//loose, _ := new(big.Rat).SetString(poolStake.LooseTokens)
 			bonded, _ := new(big.Rat).SetString(poolStake.BondedTokens)
-			total := new(big.Rat).Add(loose, bonded)
+			total, _ := new(big.Rat).SetString(supply.Amount)
 			if total.Cmp(new(big.Rat).SetInt64(0)) == 1 && total.Cmp(bonded) >= 0 {
 				ratio := new(big.Rat).Quo(bonded, total)
 				result.BondedRatio = ratio.FloatString(18)
@@ -141,21 +145,21 @@ func registerNavigationBar(r *mux.Router) error {
 }
 
 type NavigationData struct {
-	BlockHeight      int64     `json:"block_height"`
-	BlockTime        time.Time `json:"block_time"`
-	TotalTxs         int64     `json:"total_txs"`
-	Tps              float32   `json:"tps"`
-	AvgBlockTime     float32   `json:"avg_block_time"`
-	VotingRatio      float32   `json:"voting_ratio"`
-	VotingTokens     string    `json:"voting_tokens"`
-	VoteValNum       int       `json:"vote_val_num"`
-	ActiveValNum     int       `json:"active_val_num"`
-	BondedRatio      string    `json:"bonded_ratio"`
-	BondedTokens     string    `json:"bonded_tokens"`
-	TotalSupply      string    `json:"total_supply"`
-	Circulation      string    `json:"circulation"`
+	BlockHeight  int64     `json:"block_height"`
+	BlockTime    time.Time `json:"block_time"`
+	TotalTxs     int64     `json:"total_txs"`
+	Tps          float32   `json:"tps"`
+	AvgBlockTime float32   `json:"avg_block_time"`
+	VotingRatio  float32   `json:"voting_ratio"`
+	VotingTokens string    `json:"voting_tokens"`
+	VoteValNum   int       `json:"vote_val_num"`
+	ActiveValNum int       `json:"active_val_num"`
+	BondedRatio  string    `json:"bonded_ratio"`
+	BondedTokens string    `json:"bonded_tokens"`
+	TotalSupply  string    `json:"total_supply"`
+	Circulation  string    `json:"circulation"`
 	//FoundationBonded string    `json:"foundation_bonded"`
-	Moniker          string    `json:"moniker"`
-	OperatorAddr     string    `json:"operator_addr"`
-	ValidatorIcon    string    `json:"validator_icon"`
+	Moniker       string `json:"moniker"`
+	OperatorAddr  string `json:"operator_addr"`
+	ValidatorIcon string `json:"validator_icon"`
 }
