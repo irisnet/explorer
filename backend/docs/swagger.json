@@ -3421,6 +3421,9 @@
         "vo.EnvConfig": {
             "type": "object",
             "properties": {
+                "acc_addr_prefix": {
+                    "type": "string"
+                },
                 "chain_id": {
                     "type": "string"
                 },
@@ -3440,6 +3443,9 @@
                     "type": "string"
                 },
                 "nt_unit_min": {
+                    "type": "string"
+                },
+                "val_addr_prefix": {
                     "type": "string"
                 }
             }
