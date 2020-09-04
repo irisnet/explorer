@@ -780,7 +780,7 @@ export default class Tools {
 					amount = Tools.formatListByAmount(data.amount);
 					if(data.msgs){
 	                    data.msgs.forEach( item => {
-	                        if(item.msg){
+	                        if(item.msg && item.type == Constant.TxType.WITHDRAWDELEGATORREWARD){
 	                            fromAddressAndMoniker.unshift( Tools.getFromAndToMoniker(item.msg.validator_addr,data.monikers))
 	                            toAddressAndMoniker.unshift( Tools.getFromAndToMoniker(item.msg.delegator_addr,data.monikers))
 	                        }

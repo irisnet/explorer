@@ -1240,7 +1240,7 @@ export default class formatMsgsAndTags {
         }
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
             dataTx.msgs.forEach(item =>{
-                if(item.msg){
+                if(item.msg && item.type == txType){
                     message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_addr);
                     message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr)
                 }
