@@ -686,6 +686,8 @@
 						item.icon = 'iconfont iconcaihongmao'
                     }else if(item.network_name === constant.CHAINID.GOZTESTNET){
                         item.icon = 'iconfont iconGOZ'
+                    }else if(item.network_name === constant.CHAINID.BIFROST){
+                        item.icon = 'iconfont iconBI-01'
                     }
 					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`;
 					return item
