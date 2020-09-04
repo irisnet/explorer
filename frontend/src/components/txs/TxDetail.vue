@@ -44,7 +44,7 @@
                                 <div class="gas_tip_content_wrap"
                                      :style="{left:`${-((gasContentWidth / 2) - 7) / 100}rem`}">
                                     <div class="gas_tip_content">
-                                        <p>Gas Price : {{gasPrice ? gasPrice + ' Nano' : '--'}}</p>
+                                        <p>Gas Price : {{gasPrice ? gasPrice + `` : '--'}}</p>
                                         <p>Gas Used : {{gasUsed || '--'}}</p>
                                         <p>Gas Wanted : {{gasWanted || '--'}}</p>
                                         <p>Gas Limit : {{gasLimit || '--'}}</p>
@@ -385,10 +385,7 @@
                             let fromInformation, toInformation;
                             fromInformation = Tools.formatListAmount(res).fromAddressAndMoniker;
                             toInformation = Tools.formatListAmount(res).toAddressAndMoniker;
-                            this.monikers = [...fromInformation,...toInformation];
-                            this.gasPrice = Tools.convertScientificNotation2Number(
-                                Tools.formaNumberAboutGasPrice(res.gas_price)
-                            );
+                            this.gasPrice = `${res.gas_price} ${this.$store.state.nativeToken.toLocaleUpperCase()}`;
                             if(res.isProfiler){
                                 this.isProfiler = res.isProfiler;
                             }

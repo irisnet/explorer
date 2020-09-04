@@ -613,6 +613,7 @@
 					this.clearSearchContent();
 					return
 				} else {
+				    debugger
 					if (/^[A-F0-9]{64}$/.test(this.searchInputValue)) {
 						this.searchTx();
 					} else if(/^[a-f0-9]{64}$/.test(this.searchInputValue)){
@@ -768,26 +769,34 @@
 				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
 				root.style.setProperty(skinStyle.skinStyle.CONTENTCOLORNAME,skinStyle.skinStyle.commonFontContentColor);
 				root.style.setProperty(skinStyle.skinStyle.MODULEBLACKCOLOR,skinStyle.skinStyle.commonModuleBlackColor);
-				if (networkName === constant.CHAINID.IRISHUB) {
+                if (networkName === constant.CHAINID.IRISHUB) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.MAINNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.MAINNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.MAINNETACTIVECOLOR);
-				} else if(networkName === constant.CHAINID.FUXI) {
+                    root.style.setProperty(skinStyle.skinStyle.HEADERBGCOLOR,skinStyle.skinStyle.MAINNET_HEADER_BG_COLOR);
+    
+                } else if(networkName === constant.CHAINID.FUXI) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.TESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.TESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.TESTNETACTIVECOLOR);
-				}else if(networkName === constant.CHAINID.NYANCAT){
+                    root.style.setProperty(skinStyle.skinStyle.HEADERBGCOLOR,skinStyle.skinStyle.TESTNET_HEADER_BG_COLOR);
+    
+                }else if(networkName === constant.CHAINID.NYANCAT){
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.NYANCATTESTNETACTIVECOLOR);
+                    root.style.setProperty(skinStyle.skinStyle.HEADERBGCOLOR,skinStyle.skinStyle.NYANCAT_HEADER_BG_COLOR);
+    
                 }else if(networkName === constant.CHAINID.BIFROST){
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.BIFROST_BG_COLOR);
                     root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.BIFROST_HOVER_COLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.BIFROST_ACTIVE_COLOR);
+                    root.style.setProperty(skinStyle.skinStyle.HEADERBGCOLOR,skinStyle.skinStyle.BIFROST_HEADER_BG_COLOR);
                 }else{
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.DEFAULTBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.DEFAULTHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.DEFAULTACTIVECOLOR);
+                    root.style.setProperty(skinStyle.skinStyle.HEADERBGCOLOR,skinStyle.skinStyle.DEFAULT_HEADER_BG_COLOR);
                 }
 			},
 			setCurrentSelectOption (currentEnv, currentChainId) {
@@ -843,7 +852,7 @@
         .app_header_person_computer {
             box-sizing: border-box;
             width: 100%;
-            background: var(--bgColor);
+            background: var(--headerColor);
             position: relative;
             .header_unfold{
                 position: absolute;
@@ -856,7 +865,7 @@
             .header_navigation_container{
                 max-width: 12.8rem;
                 margin: 0 auto;
-                background: var(--bgColor);
+                background: var(--headerColor);
                 box-sizing: border-box;
                 padding: 0 0.2rem;
                 display: flex;
@@ -931,7 +940,7 @@
                         align-items: center;
                         .search_input_container {
                             flex: 1;
-                            background: var(--bgColor);
+                            background: var(--headerColor);
                             z-index: 1;
                             .search_input_wrap {
                                 max-width: 12.8rem;
@@ -944,7 +953,7 @@
                                     height: 0.33rem;
                                     border-radius: 0.06rem 0 0 0.06rem;
                                     box-shadow: none;
-                                    background: var(--bgColor);
+                                    background: var(--headerColor);
                                     border: 0.01rem solid rgba(255,255,255,0.5);
                                     color: #fff;
                                     font-size: 0.14rem;
@@ -965,7 +974,7 @@
                                     border-top: 0.01rem solid rgba(255,255,255,0.5);
                                     border-right: 0.01rem solid rgba(255,255,255,0.5);
                                     border-bottom: 0.01rem solid rgba(255,255,255,0.5);
-                                    background: var(--bgColor);
+                                    background: var(--headerColor);
                                     border-radius: 0 0.06rem 0.06rem 0;
                                     cursor: pointer;
                                 }

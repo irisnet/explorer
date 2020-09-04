@@ -5,22 +5,27 @@ const skinStyle = {
 skinStyle.DEFAULTBGCOLOR = '#0580D3';
 skinStyle.DEFAULTHOVERCOLOR = '#0269AF';
 skinStyle.DEFAULTACTIVECOLOR = '#0269AF';
+skinStyle.DEFAULT_HEADER_BG_COLOR = '#0580D3';
+
 
 //主网皮肤样式色值
 skinStyle.MAINNETBGCOLOR = '#3264FD';
 skinStyle.MAINNETHOVERCOLOR = '#4673FD';
 skinStyle.MAINNETACTIVECOLOR = 'rgba(0,0,0,0.15)';
 skinStyle.MAINNETFONTCOLOR = '#3264FD';
+skinStyle.MAINNET_HEADER_BG_COLOR = '#3264FD'
 
 //测试网皮肤样式色值
 skinStyle.TESTNETBGCOLOR = '#0C4282';
 skinStyle.TESTNETHOVERCOLOR = '#24548E';
 skinStyle.TESTNETACTIVECOLOR = 'rgba(0,0,0,0.15)';
+skinStyle.TESTNET_HEADER_BG_COLOR = '#002D63'
 
 //Bifrost皮肤样式色值
-skinStyle.BIFROST_BG_COLOR = '#002D63';
+skinStyle.BIFROST_BG_COLOR = '#1772E1';
 skinStyle.BIFROST_HOVER_COLOR = '#1772E1';
 skinStyle.BIFROST_ACTIVE_COLOR = 'rgba(0,0,0,0.15)';
+skinStyle.BIFROST_HEADER_BG_COLOR = '#002D63'
 
 
 
@@ -28,6 +33,8 @@ skinStyle.BIFROST_ACTIVE_COLOR = 'rgba(0,0,0,0.15)';
 skinStyle.NYANCATTESTNETBGCOLOR = '#0D9388';
 skinStyle.NYANCATTESTNETHOVERCOLOR = '#259D93';
 skinStyle.NYANCATTESTNETACTIVECOLOR = 'rgba(0,0,0,0.15)';
+skinStyle.NYANCAT_HEADER_BG_COLOR = '#0D9388'
+
 
 //公共样式色值
 skinStyle.commonFontContentColor = '#787C99';
@@ -41,6 +48,7 @@ skinStyle.ACTIVECOLORNAME = '--activeColor';
 skinStyle.TITLECOLORNAME = '--titleColor';
 skinStyle.CONTENTCOLORNAME = '--contentColor';
 skinStyle.MODULEBLACKCOLOR = '--moduleColor';
+skinStyle.HEADERBGCOLOR = '--headerColor'
 
 export default {
 	skinStyle

@@ -260,7 +260,7 @@
 		}
 	}
 	.search_bar_container{
-		background: var(--bgColor);
+		background: var(--headerColor);
 		width: 100%;
 		display: block;
 		position: relative;

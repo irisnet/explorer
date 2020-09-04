@@ -44,7 +44,7 @@
 				mainnetThemeStyle:["#3264FD","#FF5C01"],
 				testnetFuXiThemeStyle:["#0C4282","#FF5C01"],
 				testnetNyancatThemeStyle:["#0D9388","#FF5C01"],
-				testnetBifrostThemeStyle:["#FF5C01","#3264FD"],
+				testnetBifrostThemeStyle:["#FF5C01","#002D63"],
 				defaultThemeStyle:["#0580D3","#FF5C01"],
 				defaultJailedThemeStyle:["#0580D3","#101149"],
 				mainnetJailedThemeStyle:['#3264FD',"#101149"],
