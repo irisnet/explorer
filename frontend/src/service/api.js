@@ -147,7 +147,7 @@ export function getServiceTxList(type, status, serviceName,currentPageNum,pageSi
     if(type){
         url += `&type=${type}`;
     }
-    if(status==TX_STATUS.success || status === TX_STATUS.fail){
+    if(status === 0 || status === 1){
         url += `&status=${status}`;
     }
 

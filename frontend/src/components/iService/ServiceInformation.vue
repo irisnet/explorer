@@ -341,22 +341,25 @@
                     console.log(serviceList)
                     if(serviceList && serviceList.data){
                         let bindings = await getServiceBindingByServiceName(this.$route.query.serviceName);
-                        if(bindings && bindings.length){
-                            serviceList.data.forEach((s) =>{
-                                s.bindTime = Tools.getDisplayDate(s.bindTime);
-                                bindings.forEach((b) =>{
-                                    let deposit = `${b.deposit[0].amount} ${b.deposit[0].denom}`;
-                                    if(s.provider === b.provider){
-                                        s.isAvailable = b.available ? 'True' : 'False';
-                                        s.available = b.available;
-                                        s.price = JSON.parse(b.pricing).price;
-                                        s.qos = `${b.qos} ${this.$t('ExplorerCN.unit.blocks')}`;
-                                        s.deposit = deposit;
-                                        s.disabledTime = b.available ? '--' : Tools.getFormatDate(b.disabled_time);
-                                    }
-                                })
+                        serviceList.data.forEach((s) =>{
+                            s.bindTime = Tools.getDisplayDate(s.bindTime);
+                            s.isAvailable = 'False';
+                            s.price = '--';
+                            s.qos = '--';
+                            s.deposit = '--';
+                            s.disabledTime = '--';
+                            (bindings || []).forEach((b) =>{
+                                let deposit = `${b.deposit[0].amount} ${b.deposit[0].denom}`;
+                                if(s.provider === b.provider){
+                                    s.isAvailable = b.available ? 'True' : 'False';
+                                    s.available = b.available;
+                                    s.price = JSON.parse(b.pricing).price;
+                                    s.qos = `${b.qos} ${this.$t('ExplorerCN.unit.blocks')}`;
+                                    s.deposit = deposit;
+                                    s.disabledTime = b.available ? '--' : Tools.getFormatDate(b.disabled_time);
+                                }
                             })
-                        }
+                        })
                         console.log(serviceList)
                         this.serviceList = serviceList.data;
                         this.providerCount = Number(serviceList.count);

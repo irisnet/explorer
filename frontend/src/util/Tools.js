@@ -346,7 +346,7 @@ export default class Tools {
 	}
 	static formatDenom(denom){
 		if(denom.toLowerCase() === store.state.displayToken || denom.toLowerCase() === store.state.nativeToken){
-			return store.state.nativeToken
+			return store.state.displayToken
 		}else {
 			return denom
 		}

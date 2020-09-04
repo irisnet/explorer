@@ -613,14 +613,13 @@
 					this.clearSearchContent();
 					return
 				} else {
-				    debugger
 					if (/^[A-F0-9]{64}$/.test(this.searchInputValue)) {
 						this.searchTx();
 					} else if(/^[a-f0-9]{64}$/.test(this.searchInputValue)){
                         this.searchHashLock()
-                    } else if (Tools.isBech32(this.$Crypto.config.iris.bech32.accAddr, this.searchInputValue)) {
+                    } else if (Tools.isBech32(localStorage['acc_addr_prefix'] || this.$Crypto.config.iris.bech32.accAddr, this.searchInputValue)) {
 						this.searchDelegator();
-					} else if (Tools.isBech32(this.$Crypto.config.iris.bech32.valAddr, this.searchInputValue)) {
+					} else if (Tools.isBech32(localStorage['val_addr_prefix'] || this.$Crypto.config.iris.bech32.valAddr, this.searchInputValue)) {
 						this.searchValidator();
 					} else if (/^\+?[1-9][0-9]*$/.test(this.searchInputValue)) {
 						this.searchBlockAndProposal();
@@ -692,6 +691,9 @@
                         this.$store.commit('scaleLength',res.nt_scale)
                         sessionStorage.setItem('scaleLength',res.nt_scale)
                         sessionStorage.setItem('nativeToken',res.nt_unit_min)
+                        localStorage.setItem('acc_addr_prefix',res.acc_addr_prefix)
+                        localStorage.setItem('val_addr_prefix',res.val_addr_prefix)
+                        sessionStorage.setItem('displayToken',res.nt_unit_display)
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
@@ -718,7 +720,6 @@
                 });
 			},
 			handleConfigs (configs) {
-			    console.error(configs)
                 if (!configs) {return;}
 				this.netWorkArray = configs.map(item => {
 					if(item.network_name === constant.CHAINID.IRISHUB){
