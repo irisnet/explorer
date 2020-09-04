@@ -267,13 +267,20 @@ func GetUnbondingDelegationsByDelegatorAddr(delAddr string) (result []UnbondingD
 			DelegatorAddr: val.DelegatorAddress,
 			ValidatorAddr: val.ValidatorAddress,
 		}
-		if len(val.Entries) > 0 {
-			data.MinTime = val.Entries[0].CompletionTime.String()
-			data.InitialBalance = val.Entries[0].InitialBalance.String()
-			data.CreationHeight = val.Entries[0].CreationHeight
-			data.Balance = val.Entries[0].Balance.String()
+		for _, item := range val.Entries {
+			data.MinTime = item.CompletionTime.String()
+			data.InitialBalance = item.InitialBalance.String()
+			data.CreationHeight = item.CreationHeight
+			data.Balance = item.Balance.String()
+			result = append(result, data)
 		}
-		result = append(result, data)
+		//if len(val.Entries) > 0 {
+		//	data.MinTime = val.Entries[0].CompletionTime.String()
+		//	data.InitialBalance = val.Entries[0].InitialBalance.String()
+		//	data.CreationHeight = val.Entries[0].CreationHeight
+		//	data.Balance = val.Entries[0].Balance.String()
+		//}
+
 	}
 	return
 }
