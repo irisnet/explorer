@@ -124,10 +124,14 @@
                                 s.qos = '--';
                                 s.isAvailable = 'False';
                                 bindings.forEach((b)=>{
+	                                const copyPrice = {
+		                                amount: Tools.formatAccountCoinsAmount(JSON.parse(b.pricing || '{}').price)[0],
+		                                denom: Tools.formatAccountCoinsDenom(JSON.parse(b.pricing || '{}').price)[0]
+	                                }
                                     if(s.provider === b.provider){
                                         s.isAvailable = b.available ? 'True' : 'False';
                                         s.available = b.available;
-                                        s.price = JSON.parse(b.pricing).price;
+                                        s.price =`${Tools.formatAmount3(copyPrice).amount} ${this.$store.state.displayToken.toLocaleUpperCase()}`;
                                         s.qos = `${b.qos} ${this.$t('ExplorerCN.unit.blocks')}`;
                                     }
                                 })

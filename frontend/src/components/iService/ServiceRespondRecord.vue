@@ -213,7 +213,7 @@
                             denom: Tools.formatAccountCoinsDenom(JSON.parse(bindings[0].pricing || '{}').price)[0]
                         }
                         this.isAvailable = available ? 'True' : 'False';
-                        this.price = `${Tools.formatAmount3(copyPricing).amount} ${this.$store.state.displayToken}`;
+                        this.price = `${Tools.formatAmount3(copyPricing).amount} ${this.$store.state.displayToken.toLocaleUpperCase()}`;
                         this.qos = qos;
                         this.deposit = `${Tools.formatAmount2(deposit[0])}`;
                         this.disabledTime = available ? '--' : Tools.getFormatDate(disabled_time);
