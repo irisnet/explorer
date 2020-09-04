@@ -206,11 +206,16 @@
                         this.bindTime = Tools.getDisplayDate(serviceInfo.time);
                     }
                     if(bindings && bindings.length){
-                        const {available, pricing, qos, deposit, disabled_time} = bindings[0];
+                        const {available, qos, deposit, disabled_time} = bindings[0];
+                        
+                        const  copyPricing = {
+                            amount: Tools.formatAccountCoinsAmount(JSON.parse(bindings[0].pricing || '{}').price)[0],
+                            denom: Tools.formatAccountCoinsDenom(JSON.parse(bindings[0].pricing || '{}').price)[0]
+                        }
                         this.isAvailable = available ? 'True' : 'False';
-                        this.price = pricing;
+                        this.price = `${Tools.formatAmount3(copyPricing).amount} ${this.$store.state.displayToken}`;
                         this.qos = qos;
-                        this.deposit = `${deposit[0].amount} ${deposit[0].denom}`;
+                        this.deposit = `${Tools.formatAmount2(deposit[0])}`;
                         this.disabledTime = available ? '--' : Tools.getFormatDate(disabled_time);
                     }
 

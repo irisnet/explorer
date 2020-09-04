@@ -821,12 +821,7 @@
                                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
 						        if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
 							        if(item.status === 'success'){
-								        if(item.tags.balance){
-									        let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
-									        let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
-									        item.amount[0].formatAmount =  new BigNumber(Tools.formatStringToFixedNumber(tokenStr,2)).toFormat();
-									        Amount = item.amount.map(listItem => `${listItem.formatAmount} ${this.$store.state.nativeToken}`).join(',');
-                                        }
+                                        Amount = Tools.formatAmount2(item.amount)
 							        }
 						        }else {
 						            if(item.amount && item.amount.length > 0){
@@ -1125,12 +1120,16 @@
                     if(res){
                         this.providerTxList = [];
                         for(let item of res.data){
+                            const copyItem = {
+                                amount: Tools.formatAccountCoinsAmount(JSON.parse(item.msgs[0].msg.pricing || '{}').price)[0],
+                                denom: Tools.formatAccountCoinsDenom(JSON.parse(item.msgs[0].msg.pricing || '{}').price)[0]
+                            }
                             let result = {
                                 serviceName:(item.msgs[0].msg.ex || {}).service_name,
                                 provider:item.msgs[0].msg.provider,
                                 owner:item.msgs[0].msg.owner,
                                 respond_times:item.respond_times,
-                                pricing:JSON.parse(item.msgs[0].msg.pricing || '{}').price,
+                                pricing:`${Tools.formatAmount3(copyPricing).amount} ${this.$store.state.displayToken}`,
                                 qos:item.msgs[0].msg.qos,
                                 time: Tools.getDisplayDate(item.time),
                                 unbindTime:item.unbinding_time ? Tools.getDisplayDate(item.unbinding_time) : '--',
@@ -1140,13 +1139,13 @@
                                 status:item.status,
                             };
                             if (item.msgs[0].msg.deposit && item.msgs[0].msg.deposit.length) {
-                                result.deposit = `${item.msgs[0].msg.deposit[0].amount} ${item.msgs[0].msg.deposit[0].denom}`;
+                                result.deposit = `${Tools.formatAmount2(item.msgs[0].msg.deposit)}`;
                             }
                             let bindings = await getServiceBindingByServiceName(result.serviceName);
                             (bindings || []).forEach((bind)=>{
                                 if(result.provider === bind.provider && result.owner == bind.owner){
                                     result.isAvailable = bind.available;
-                                    result.pricing = JSON.parse(bind.pricing || '{}').price;
+                                    result.pricing = Tools.formatAmount2(copyItem);
                                     result.qos = bind.qos;
                                     if (bind.disabled_time) {
                                         let time = new Date(bind.disabled_time).getTime();
