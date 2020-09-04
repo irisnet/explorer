@@ -10,7 +10,6 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"sync"
-	"math/big"
 )
 
 type TokenStatsService struct {
@@ -34,9 +33,7 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 		defer group.Done()
 		pool := lcd.StakePool()
 		if pool.BondedTokens != "" {
-			bondtokens, _ := new(big.Rat).SetString(pool.BondedTokens)
-			bondtokens = utils.ConverToDisplayUint(types.NtScale, bondtokens)
-			tokenStatsVO.DelegatedTokens = LoadCoinVoFromLcdCoin(lcd.Coin{Amount: bondtokens.FloatString(18)})
+			tokenStatsVO.DelegatedTokens = LoadCoinVoFromLcdCoin(lcd.Coin{Amount: pool.BondedTokens,Denom:types.StakeUint})
 		}
 	}()
 	go func() {
