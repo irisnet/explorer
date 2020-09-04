@@ -1201,17 +1201,6 @@ definitions:
       type:
         type: string
     type: object
-  vo.TokenStatStr:
-    properties:
-      bonded:
-        type: string
-      circulation:
-        type: string
-      foundation_bonded:
-        type: string
-      total_supply:
-        type: string
-    type: object
   vo.Tx:
     properties:
       Signer:
@@ -1245,9 +1234,6 @@ definitions:
         type: integer
       num:
         type: integer
-      token_stat:
-        $ref: '#/definitions/vo.TokenStatStr'
-        type: object
       total_acc_num:
         type: integer
     type: object
@@ -1260,9 +1246,6 @@ definitions:
           type: integer
         num:
           type: integer
-        token_stat:
-          $ref: '#/definitions/vo.TokenStatStr'
-          type: object
         total_acc_num:
           type: integer
       type: object

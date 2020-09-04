@@ -4167,23 +4167,6 @@
                 }
             }
         },
-        "vo.TokenStatStr": {
-            "type": "object",
-            "properties": {
-                "bonded": {
-                    "type": "string"
-                },
-                "circulation": {
-                    "type": "string"
-                },
-                "foundation_bonded": {
-                    "type": "string"
-                },
-                "total_supply": {
-                    "type": "string"
-                }
-            }
-        },
         "vo.Tx": {
             "type": "object",
             "properties": {
@@ -4233,10 +4216,6 @@
                 "num": {
                     "type": "integer"
                 },
-                "token_stat": {
-                    "type": "object",
-                    "$ref": "#/definitions/vo.TokenStatStr"
-                },
                 "total_acc_num": {
                     "type": "integer"
                 }
@@ -4255,10 +4234,6 @@
                     },
                     "num": {
                         "type": "integer"
-                    },
-                    "token_stat": {
-                        "type": "object",
-                        "$ref": "#/definitions/vo.TokenStatStr"
                     },
                     "total_acc_num": {
                         "type": "integer"
