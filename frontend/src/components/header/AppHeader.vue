@@ -692,6 +692,7 @@
                         this.$store.commit('scaleLength',res.nt_scale)
                         sessionStorage.setItem('scaleLength',res.nt_scale)
                         sessionStorage.setItem('nativeToken',res.nt_unit_min)
+                        sessionStorage.setItem('displayToken',res.nt_unit_display)
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
@@ -718,7 +719,6 @@
                 });
 			},
 			handleConfigs (configs) {
-			    console.error(configs)
                 if (!configs) {return;}
 				this.netWorkArray = configs.map(item => {
 					if(item.network_name === constant.CHAINID.IRISHUB){
