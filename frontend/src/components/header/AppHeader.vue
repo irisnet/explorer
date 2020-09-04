@@ -613,7 +613,6 @@
 					this.clearSearchContent();
 					return
 				} else {
-				    debugger
 					if (/^[A-F0-9]{64}$/.test(this.searchInputValue)) {
 						this.searchTx();
 					} else if(/^[a-f0-9]{64}$/.test(this.searchInputValue)){
