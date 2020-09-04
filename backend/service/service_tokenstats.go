@@ -15,6 +15,7 @@ import (
 type TokenStatsService struct {
 	BaseService
 }
+
 func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 
 	var (
@@ -32,7 +33,7 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 		defer group.Done()
 		pool := lcd.StakePool()
 		if pool.BondedTokens != "" {
-			tokenStatsVO.DelegatedTokens = LoadCoinVoFromLcdCoin(lcd.Coin{Amount: pool.BondedTokens})
+			tokenStatsVO.DelegatedTokens = LoadCoinVoFromLcdCoin(lcd.Coin{Amount: pool.BondedTokens,Denom:types.StakeUint})
 		}
 	}()
 	go func() {

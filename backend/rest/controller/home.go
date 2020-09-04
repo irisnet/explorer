@@ -11,6 +11,7 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/vo"
 	"math/big"
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 func RegisterHome(r *mux.Router) error {
@@ -102,6 +103,8 @@ func registerNavigationBar(r *mux.Router) error {
 			//loose, _ := new(big.Rat).SetString(poolStake.LooseTokens)
 			bonded, _ := new(big.Rat).SetString(poolStake.BondedTokens)
 			total, _ := new(big.Rat).SetString(supply.Amount)
+			bonded = utils.ConverToDisplayUint(types.NtScale, bonded)
+			total = utils.ConverToDisplayUint(types.NtScale, total)
 			if total.Cmp(new(big.Rat).SetInt64(0)) == 1 && total.Cmp(bonded) >= 0 {
 				ratio := new(big.Rat).Quo(bonded, total)
 				result.BondedRatio = ratio.FloatString(18)
