@@ -260,8 +260,7 @@ export default {
                 } %`;
             } else if (parameterItem.key === "gas_price_threshold") {
                 let maxL = String(arr[1]).length - 1;
-                parameterItem.max = `${Number(arr[1]) / 10 ** maxL}*10^${maxL -
-                    9} Nano`;
+                parameterItem.max = `${Number(arr[1]) / 10 ** maxL}*10^${this.$store.state.scaleLength} ${Tools.firstWordUpperCase(this.$store.state.nativeToken)}`;
                 let current_value_arr = String(
                     Number(parameterItem.current_value) / 10 ** 9
                 ).split(".");
@@ -275,11 +274,11 @@ export default {
                     genesis_value_arr[0]
                 ).split(".")[0];
                 parameterItem.current = current_value_arr[1]
-                    ? `${current_value_arr_0}.${current_value_arr[1]} Nano`
-                    : `${current_value_arr_0} Nano`;
+                    ? `${current_value_arr_0}.${current_value_arr[1]} ${Tools.firstWordUpperCase(this.$store.state.nativeToken)}`
+                    : `${current_value_arr_0} ${Tools.firstWordUpperCase(this.$store.state.nativeToken)}`;
                 parameterItem.genesis = genesis_value_arr[1]
-                    ? `${genesis_value_arr_0}.${genesis_value_arr[1]} Nano`
-                    : `${genesis_value_arr_0} Nano`;
+                    ? `${genesis_value_arr_0}.${genesis_value_arr[1]} ${Tools.firstWordUpperCase(this.$store.state.nativeToken)}`
+                    : `${genesis_value_arr_0} ${Tools.firstWordUpperCase(this.$store.state.nativeToken)}`;
             } else if (parameterItem.key === "tx_size") {
                 parameterItem.max =
                     Number(arr[1]) === 0
