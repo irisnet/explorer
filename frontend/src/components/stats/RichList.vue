@@ -72,9 +72,7 @@ export default {
                             return {
                                 rank: item.rank,
                                 Address: item.address,
-                                Balance: `${Tools.formatPrice(
-                                    Tools.formatAmount2(item.balance)
-                                )}`,
+                                Balance: `${Tools.formatAmount2(item.balance,2)}`,
                                 Percentage: this.formatPercentage(item.percent)
                             };
                         });
