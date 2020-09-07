@@ -23,7 +23,7 @@ skinStyle.TESTNET_HEADER_BG_COLOR = '#002D63'
 
 //Bifrost皮肤样式色值
 skinStyle.BIFROST_BG_COLOR = '#1772E1';
-skinStyle.BIFROST_HOVER_COLOR = '#24548E';
+skinStyle.BIFROST_HOVER_COLOR = '#11467F';
 skinStyle.BIFROST_ACTIVE_COLOR = 'rgba(0,0,0,0.15)';
 skinStyle.BIFROST_HEADER_BG_COLOR = '#002D63'
 
