@@ -18,9 +18,6 @@
 					<a href="https://map-of-zones-web.herokuapp.com/?period=24" target="_blank">Map of zones</a>
 				</div>
 				<div class="goz_content_link_content">
-					<a href="https://goz.p2p.org/" target="_blank">Visualizer from P2P Team</a>
-				</div>
-				<div class="goz_content_link_content">
 					<a href="https://goz.cosmos.network/3d" target="_blank">Visualizer from Cosmos Team</a>
 				</div>
 				<div class="goz_content_link_content">
@@ -52,9 +49,6 @@
 				</li>
 				<li class="goz_mobile_link_item">
 					<a href="https://map-of-zones-web.herokuapp.com/?period=24" target="_blank">Map of zones</a>
-				</li>
-				<li class="goz_mobile_link_item">
-					<a href="https://goz.p2p.org/" target="_blank">Visualizer from P2P Team</a>
 				</li>
 				<li class="goz_mobile_link_item">
 					<a href="https://goz.cosmos.network/3d" target="_blank">Visualizer from Cosmos Team</a>
