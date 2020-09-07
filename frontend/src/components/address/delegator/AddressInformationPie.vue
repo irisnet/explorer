@@ -85,11 +85,11 @@
 						}
 					]
 				};
-				if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
+				if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.IRISHUB){
 					this.themeStyleArray = this.mainnetThemeStyle;
-				}else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.FUXI){
+				}else if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.FUXI){
 					this.themeStyleArray = this.testnetFuXiThemeStyle;
-				}else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.NYANCAT){
+				}else if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.NYANCAT){
 					this.themeStyleArray = this.testnetNyancatThemeStyle;
 				}else {
 					this.themeStyleArray = this.defaultThemeStyle;
