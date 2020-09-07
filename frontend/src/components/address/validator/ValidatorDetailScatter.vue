@@ -166,26 +166,26 @@
 						}
 					]
 				};
-				if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
+				if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.IRISHUB){
 					if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
 						this.chartOptionColor = this.mainnetJailedThemeStyle;
 					}else {
 						this.chartOptionColor = this.mainnetThemeStyle;
 					}
-				}else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.FUXI){
+				}else if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.FUXI){
 					if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
 						this.chartOptionColor = this.testnetFuXiJailedThemeStyle;
 					}else {
 						this.chartOptionColor = this.testnetFuXiThemeStyle;
 					}
-				}else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.NYANCAT){
+				}else if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.NYANCAT){
 					if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
 						this.chartOptionColor = this.testnetNyancatJailedThemeStyle;
 					}else {
 						this.chartOptionColor = this.testnetNyancatThemeStyle;
 					}
 					
-				}else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.BIFROST){
+				}else if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.BIFROST){
 					if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
 						this.chartOptionColor = this.testnetBifrostJailedThemeStyle;
 					}else {

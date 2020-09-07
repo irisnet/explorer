@@ -162,11 +162,11 @@ export default {
                 "#93ED56",
                 "#FF837E"
             ];
-            if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
+            if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.IRISHUB){
                 option.color.unshift(skinStyle.skinStyle.MAINNETBGCOLOR)
-            }else if(this.$store.state.currentSkinStyle === Constant.CHAINID.FUXI){
+            }else if(this.$store.state.currentSkinStyle === Constant.NET_WORK_NAME.FUXI){
                 option.color.unshift(skinStyle.skinStyle.TESTNETBGCOLOR)
-            }else if(this.$store.state.currentSkinStyle === Constant.CHAINID.NYANCAT){
+            }else if(this.$store.state.currentSkinStyle === Constant.NET_WORK_NAME.NYANCAT){
                 option.color.unshift(skinStyle.skinStyle.NYANCATTESTNETBGCOLOR)
             }else {
                 option.color.unshift(skinStyle.skinStyle.DEFAULTBGCOLOR)
