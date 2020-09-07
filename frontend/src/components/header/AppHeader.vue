@@ -717,11 +717,11 @@
 			},
 			handleConfigs (configs) {
 				this.netWorkArray = configs.map(item => {
-					if(item.network_name === constant.CHAINID.IRISHUB){
+					if(item.network_name === constant.NET_WORK_NAME.IRISHUB){
 						item.icon = 'iconfont iconiris'
-                    }else if(item.network_name === constant.CHAINID.FUXI){
+                    }else if(item.network_name === constant.NET_WORK_NAME.FUXI){
 						item.icon = 'iconfont iconfuxi1'
-                    }else if(item.network_name === constant.CHAINID.NYANCAT){
+                    }else if(item.network_name === constant.NET_WORK_NAME.NYANCAT){
 						item.icon = 'iconfont iconcaihongmao'
                     }
 					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`;
@@ -761,15 +761,15 @@
 				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
 				root.style.setProperty(skinStyle.skinStyle.CONTENTCOLORNAME,skinStyle.skinStyle.commonFontContentColor);
 				root.style.setProperty(skinStyle.skinStyle.MODULEBLACKCOLOR,skinStyle.skinStyle.commonModuleBlackColor);
-				if (networkName === constant.CHAINID.IRISHUB) {
+				if (networkName === constant.NET_WORK_NAME.IRISHUB) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.MAINNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.MAINNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.MAINNETACTIVECOLOR);
-				} else if(networkName === constant.CHAINID.FUXI) {
+				} else if(networkName === constant.NET_WORK_NAME.FUXI) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.TESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.TESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.TESTNETACTIVECOLOR);
-				}else if(networkName === constant.CHAINID.NYANCAT){
+				}else if(networkName === constant.NET_WORK_NAME.NYANCAT){
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.NYANCATTESTNETACTIVECOLOR);
@@ -787,15 +787,15 @@
 				}
 			},
 			setNetWorkLogo () {
-				if (this.$store.state.currentSkinStyle === constant.CHAINID.IRISHUB) {
+				if (this.$store.state.currentSkinStyle === constant.NET_WORK_NAME.IRISHUB) {
 					this.flShowGatewayMenu = false;
 					this.explorerLogo = require("../../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconiris'
-				} else if (this.$store.state.currentSkinStyle === constant.CHAINID.FUXI) {
+				} else if (this.$store.state.currentSkinStyle === constant.NET_WORK_NAME.FUXI) {
 					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconfuxi'
-				} else if (this.$store.state.currentSkinStyle === constant.CHAINID.NYANCAT) {
+				} else if (this.$store.state.currentSkinStyle === constant.NET_WORK_NAME.NYANCAT) {
 					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconcaihongmao'

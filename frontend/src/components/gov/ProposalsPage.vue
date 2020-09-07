@@ -374,15 +374,15 @@
 							]
 						}
 					];
-                    if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
+                    if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.IRISHUB){
                         data[0].itemStyle.color = skinStyle.skinStyle.MAINNETBGCOLOR;
                         data[0].children[0].itemStyle.color = '#4371FF';
                         data[0].children[0].children = this.formatGrahpChildren(yesArr, {h: [223, 222], s: [100, 100], l: [75, 35]})
-                    }else if(this.$store.state.currentSkinStyle === Constant.CHAINID.FUXI){
+                    }else if(this.$store.state.currentSkinStyle === Constant.NET_WORK_NAME.FUXI){
                         data[0].children[0].itemStyle.color = '#004EAA';
                         data[0].itemStyle.color = skinStyle.skinStyle.TESTNETBGCOLOR;
                         data[0].children[0].children = this.formatGrahpChildren(yesArr, {h: [213, 212], s: [100, 100], l: [75, 35]})
-                    }else if(this.$store.state.currentSkinStyle === Constant.CHAINID.NYANCAT){
+                    }else if(this.$store.state.currentSkinStyle === Constant.NET_WORK_NAME.NYANCAT){
                         data[0].children[0].itemStyle.color = '#06A79A';
                         data[0].itemStyle.color = skinStyle.skinStyle.NYANCATTESTNETBGCOLOR;
                         data[0].children[0].children = this.formatGrahpChildren(yesArr, {h: [175, 174], s: [100, 100], l: [75, 35]})

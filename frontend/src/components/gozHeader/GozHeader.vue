@@ -139,14 +139,16 @@
 			},
 			handleConfigs (configs) {
 				this.netWorkArray = configs.map(item => {
-					if(item.network_name === constant.CHAINID.IRISHUB){
+					if(item.network_name === constant.NET_WORK_NAME.IRISHUB){
 						item.icon = 'iconfont iconiris'
-					}else if(item.network_name === constant.CHAINID.FUXI){
+					}else if(item.network_name === constant.NET_WORK_NAME.FUXI){
 						item.icon = 'iconfont iconfuxi1'
-					}else if(item.network_name === constant.CHAINID.NYANCAT){
+					}else if(item.network_name === constant.NET_WORK_NAME.NYANCAT){
 						item.icon = 'iconfont iconcaihongmao'
-					}else if(item.network_name === constant.CHAINID.GOZTESTNET){
+					}else if(item.network_name === constant.NET_WORK_NAME.GOZTESTNET){
 						item.icon = 'iconfont iconGOZ'
+					}else if(item.network_name === constant.NET_WORK_NAME.BIFROST){
+						item.icon = 'iconfont iconBI-01'
 					}
 					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`;
 					return item
@@ -165,15 +167,17 @@
 						}
 					})
 				}
-				if (networkName === constant.CHAINID.IRISHUB) {
+				if (networkName === constant.NET_WORK_NAME.IRISHUB) {
 					this.currentNetworkClass = 'iconfont iconiris'
-				} else if (networkName === constant.CHAINID.FUXI) {
+				} else if (networkName === constant.NET_WORK_NAME.FUXI) {
 					this.currentNetworkClass = 'iconfont iconfuxi'
-				} else if (networkName === constant.CHAINID.NYANCAT) {
+				} else if (networkName === constant.NET_WORK_NAME.NYANCAT) {
 					this.currentNetworkClass = 'iconfont iconcaihongmao'
-				} else if (networkName === constant.CHAINID.GOZTESTNET) {
+				} else if (networkName === constant.NET_WORK_NAME.GOZTESTNET) {
 					this.currentNetworkClass = 'iconfont iconGOZ'
-				} else {
+				} else if (networkName === constant.NET_WORK_NAME.BIFROST) {
+					this.currentNetworkClass = 'iconfont iconBI-01'
+				}else {
 					this.currentNetworkClass = 'iconfont iconiris';
 				}
 			},

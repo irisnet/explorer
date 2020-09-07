@@ -159,19 +159,19 @@
         }
       },
       setThemeStyle(){
-        if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
+        if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.IRISHUB){
           this.skinStyle = '#3264FD';
           this.lineSkinBackgroundStyle = [
             {offset: 0, color: 'rgba(50, 100, 253, 0.8)'},
             {offset: 1, color: 'rgba(50, 100, 253, 0)'}
           ]
-        }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.FUXI){
+        }else if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.FUXI){
           this.skinStyle = '#0C4282';
           this.lineSkinBackgroundStyle = [
             {offset: 0, color: 'rgba(12, 66, 130, 0.8)'},
             {offset: 1, color: 'rgba(12, 66, 130, 0)'}
           ]
-        }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.NYANCAT){
+        }else if(this.$store.state.currentSkinStyle ===  Constant.NET_WORK_NAME.NYANCAT){
           this.skinStyle = '#0D9388';
           this.lineSkinBackgroundStyle = [
             {offset: 0, color: 'rgba(13, 147, 136, 0.8)'},

@@ -67,13 +67,14 @@ PARAMETER.EQUAL = 'eq';
 PARAMETER.UNEQUAL = 'neq';
 
 const CHAINNAME = 'iris';
-const CHAINID = {};
-CHAINID.IRISHUB = 'irishub';
-CHAINID.FUXI = 'fuxi';
-CHAINID.NYANCAT = 'nyancat';
-CHAINID.QA = 'rainbow-qa';
-CHAINID.DEV = 'rainbow-dev';
-CHAINID.GOZTESTNET = 'goz-testnet';
+const NET_WORK_NAME = {};
+NET_WORK_NAME.IRISHUB = 'irishub';
+NET_WORK_NAME.FUXI = 'fuxi';
+NET_WORK_NAME.NYANCAT = 'nyancat';
+NET_WORK_NAME.QA = 'rainbow-qa';
+NET_WORK_NAME.DEV = 'rainbow-dev';
+NET_WORK_NAME.GOZTESTNET = 'goz-testnet';
+NET_WORK_NAME.BIFROST = 'bifrost';
 
 
 
@@ -196,7 +197,7 @@ export default {
   ENVCONFIG,
   CHAINNAME,
   PARAMETER,
-  CHAINID,
+  NET_WORK_NAME,
   RADIXDENOM,
   TRANSACTIONMESSAGENAME,
   SUBMITPROPOSALTYPE
