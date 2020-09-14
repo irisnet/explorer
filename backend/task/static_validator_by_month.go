@@ -220,6 +220,8 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(starttime time.Time, 
 			logger.String("err", err.Error()))
 	}
 
+	// calculate month should add 1 day base on startTime
+	date := starttime.Add(time.Duration(24) * time.Hour)
 	latestone, err := task.mStaticModel.GetLatest(terminalval.OperatorAddress)
 	if err != nil {
 		logger.Error("get latest one failed", logger.String("func", "get IncrementCommission"),
@@ -240,7 +242,7 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(starttime time.Time, 
 		Tokens:                  terminalval.Tokens,
 		OperatorAddress:         terminalval.OperatorAddress,
 		Status:                  terminalval.Status,
-		Date:                    fmt.Sprintf("%d.%02d.%02d", starttime.Year(), starttime.Month(), starttime.Day()),
+		Date:                    fmt.Sprintf("%d.%02d.%02d", date.Year(), date.Month(), date.Day()),
 		TerminalDelegation:      terminalvalDelegations,
 		TerminalDelegatorN:      terminalval.DelegatorNum,
 		TerminalSelfBond:        selfbond,
@@ -346,7 +348,7 @@ func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(foundationDel
 }
 
 func (task *StaticValidatorByMonthTask) getIncrementCommission(pcommission, terminalCommission,
-beginCommission document.Coin) (IncreCommission document.Coin) {
+	beginCommission document.Coin) (IncreCommission document.Coin) {
 	//Rcx = Rcn - Rcn-1 + Rcw
 
 	IncreCommission.Amount = terminalCommission.Amount - beginCommission.Amount + pcommission.Amount
