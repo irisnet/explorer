@@ -18,13 +18,15 @@ const (
 )
 
 type Config struct {
-	NetworkName string `bson:"network_name"`
-	Env         string `bson:"env"`
-	Host        string `bson:"host"`
-	ChainId     string `bson:"chain_id"`
-	ShowFaucet  int    `bson:"show_faucet"`
-	EnvLcd      string `bson:"env_lcd"`
-	UmengId     int64  `bson:"umeng_id"`
+	NetworkName       string `bson:"network_name"`
+	Env               string `bson:"env"`
+	Host              string `bson:"host"`
+	ChainId           string `bson:"chain_id"`
+	ShowFaucet        int    `bson:"show_faucet"`
+	EnvLcd            string `bson:"env_lcd"`
+	UmengId           int64  `bson:"umeng_id"`
+	NodeVersion       string `bson:"node_version"`
+	TendermintVersion string `bson:"tendermint_version"`
 }
 
 func (c Config) String() string {
@@ -36,7 +38,9 @@ func (c Config) String() string {
 		ShowFaucet :%v
 		EnvLcd :%v
 		UmengId :%v
- 		`, c.NetworkName, c.Env, c.Host, c.ChainId, c.ShowFaucet, c.EnvLcd, c.UmengId)
+		NodeVersion :%v
+		TendermintVersion :%v
+ 		`, c.NetworkName, c.Env, c.Host, c.ChainId, c.ShowFaucet, c.EnvLcd, c.UmengId, c.NodeVersion, c.TendermintVersion)
 }
 
 func (a Config) Name() string {
