@@ -42,10 +42,9 @@ Vue.component('swipe', Swipe);
 Vue.component('swipe-item', SwipeItem);
 
 import axios from "axios"
-const  codec  = require("irisnet-crypto/util/codec.js") ;
 const  crypto = require("irisnet-crypto");
 Vue.prototype.$Crypto = crypto;
-Vue.prototype.$Codec = codec;
+Vue.prototype.$Codec = crypto.Codec;
 Vue.prototype.$uMeng = Umeng;
 
 Vue.config.productionTip = false;
