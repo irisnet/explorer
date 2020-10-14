@@ -1,9 +1,9 @@
 package task
 
 import (
-	"testing"
-	"github.com/irisnet/explorer/backend/orm/document"
 	"encoding/json"
+	"github.com/irisnet/explorer/backend/orm/document"
+	"testing"
 )
 
 func TestUpdateAccount_Start(t *testing.T) {
@@ -45,14 +45,12 @@ func TestUpdateAccount_getBalance(t *testing.T) {
 	t.Log(v)
 }
 
-
-
 func TestUpdateAccount_getDelegationInfo(t *testing.T) {
 	ret, _ := getDelegationInfo(account.Address)
 	t.Log(ret)
 }
 
 func TestUpdateAccount_getUnbondingDelegationInfo(t *testing.T) {
-	ret, _ := getUnbondingDelegationInfo(account.Address)
+	ret, _ := getUnbondingDelegationInfo("iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts")
 	t.Log(ret)
 }
