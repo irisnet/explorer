@@ -2,13 +2,13 @@ package task
 
 import (
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/types"
-	"math/big"
+	"github.com/irisnet/explorer/backend/utils"
 	"math"
+	"math/big"
 	"strings"
 )
 
@@ -188,5 +188,6 @@ func getUnbondingDelegationInfo(address string) (float64, error) {
 		}
 	}
 
+	token = new(big.Rat).Mul(token, new(big.Rat).SetFloat64(math.Pow10(18)))
 	return utils.ParseStringToFloat(token.FloatString(18))
 }
