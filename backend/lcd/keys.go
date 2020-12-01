@@ -23,7 +23,7 @@ type (
 	Value struct {
 		Coins      []*Coin   `json:"coins"`
 		Address    string    `json:"address"`
-		PublicKey  PublicKey `json:"public_key"`
+		//PublicKey  PublicKey `json:"public_key"`
 		AccountNum string    `json:"account_number"`
 		Sequence   string    `json:"sequence"`
 	}
@@ -45,8 +45,8 @@ func buildAccountVo(acc Account01411) AccountVo {
 	res.Address = acc.Value.Address
 	res.Sequence = acc.Value.Sequence
 	res.AccountNumber = acc.Value.AccountNum
-	res.PublicKey.Type = acc.Value.PublicKey.Type
-	res.PublicKey.Value = acc.Value.PublicKey.Value
+	//res.PublicKey.Type = acc.Value.PublicKey.Type
+	//res.PublicKey.Value = acc.Value.PublicKey.Value
 
 	coinsStrArr := []string{}
 	for _, v := range acc.Value.Coins {
