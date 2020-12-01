@@ -48,10 +48,10 @@ const (
 type AccountVo struct {
 	Address   string   `json:"address"`
 	Coins     []string `json:"coins"`
-	PublicKey struct {
-		Type  string `json:"type"`
-		Value string `json:"value"`
-	} `json:"public_key"`
+	//PublicKey struct {
+	//	Type  string `json:"type"`
+	//	Value string `json:"value"`
+	//} `json:"public_key"`
 	AccountNumber string `json:"account_number"`
 	Sequence      string `json:"sequence"`
 }
