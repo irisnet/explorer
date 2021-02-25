@@ -15,15 +15,15 @@
 								<img src="../../assets/rainbow_google_plays.png" alt="">
 							</div>
 						</a>
-						<a @click="$uMeng.push('RainbowMainnet_iOS','click')" href="https://apps.apple.com/us/app/rainbow-irisnet-cosmos/id1466725641" target="_blank"  v-if="isShowIphone || !isMobile">
+					<!--	<a @click="$uMeng.push('RainbowMainnet_iOS','click')" href="https://apps.apple.com/us/app/rainbow-irisnet-cosmos/id1466725641" target="_blank"  v-if="isShowIphone || !isMobile">
 							<div class="app_download_ios_content">
 								<img src="../../assets/app_store.png" alt="">
 							</div>
-						</a>
+						</a>-->
 						<div class="app_download_qr_content" v-if="!isMobile">
 							<img src="../../assets/scan_icon.png" alt="">
 							<div class="qr_content">
-								<img src="../../assets/rainbow_qr.png" alt="">
+								<img src="../../assets/qr.png" alt="">
 								<span class="tooltip_content">Scan to download</span>
 							</div>
 						</div>

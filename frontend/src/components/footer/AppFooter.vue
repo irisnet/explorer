@@ -12,15 +12,13 @@
                     <a @click="$uMeng.push('Footer_Telegram','click')"  target="_blank" href='https://t.me/irisnetwork'><i class="iconfont icontelegram"></i></a>
                     <a @click="$uMeng.push('Footer_Twitter','click')"  target="_blank" href='https://twitter.com/irisnetwork'><i class="iconfont icontuite"></i></a>
                     <a @click="$uMeng.push('Footer_Medium','click')"  target="_blank" href='https://medium.com/irisnet-blog'><i class="iconfont iconmedium"></i></a>
-                    <span class="we_chat" @click="showWeChatQRCode"><i class="iconfont iconweixin"></i></span>
-                    <span class="qq" @click="showqqQRCode"><i class="iconfont iconQQ"></i></span>
                 </div>
             </div>
         </div>
         <div class="footer_version_content">
             <div class="footer_version_content_warp">
                 <div class="footer_copyright_wrap">
-                    ©️ IRISplorer 2019-2020 all rights reserved
+                    Copyright © 2021 IRIS Foundation Ltd. All Rights Reserved.
                 </div>
                <!-- <div class="footer_chain_id_content">Chain ID {{chainID}}</div>
                 <div class="footer_version_node_tendermint_content"><p>Node Version {{nodeVersion}}</p> <span class="line">|</span>  <p>Tendermint Version {{tendermintVersion}}</p></div>-->
@@ -195,6 +193,10 @@
                 color: rgba(255,255,255,0.5);
                 .footer_copyright_wrap {
                     flex: 1;
+                    text-align: center;
+                    @media (max-width: 450px) {
+                        margin: 0 0.2rem;
+                    }
                 }
                 .footer_chain_id_content{
                     flex: 1;
@@ -233,6 +235,9 @@
                 align-items: center;
                 .community_list_content{
                     justify-content: center;
+                    a:last-child{
+                        margin-right: 0;
+                    }
                     .qq{
                         margin-right: 0;
                     }

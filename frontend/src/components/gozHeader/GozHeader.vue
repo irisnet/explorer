@@ -3,25 +3,24 @@
 		<div class="goz_content_wrap">
 			<div class="goz_content_left_content">
 				<div class="goz_content_logo_content">
-					<a @click="$uMeng.push('GoZ_IRISplorer','click')" href="https://www.irisplorer.io/#/home" target="_blank"><img src="../../assets/logo.png" alt=""></a>
-					<span class="iconfont" :class="currentNetworkClass"></span>
+					<div><img src="../../assets/IOBSCAN_logo.png" alt=""></div>
 				</div>
 				<div class="goz_content_network_state" :class="changeRouter ? 'active_border_bottom' :'unActive_border_bottom'">
-					<span><router-link :to="`/`">GoZ Network State Visualizer</router-link></span>
+					<span><router-link :to="`/`">Network State Visualizer </router-link></span>
 				</div>
 				<div class="menu_content" @click="flShowMobileMenu">
 					<img src="../../assets/menu.png" alt="">
 				</div>
 			</div>
 			<div class="goz_content_right_content">
-				<div class="goz_content_link_content">
+				<!--<div class="goz_content_link_content">
 					<a href="https://map-of-zones-web.herokuapp.com/?period=24" target="_blank">Map of zones</a>
-				</div>
-				<div class="goz_content_link_content">
+				</div>-->
+				<!--<div class="goz_content_link_content">
 					<a href="https://goz.cosmos.network/3d" target="_blank">Visualizer from Cosmos Team</a>
-				</div>
+				</div>-->
 				<div class="goz_content_link_content">
-					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">GoZ Website</a>
+					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">Network</a>
 				</div>
 				<div class="goz_network_links_content">
 					<div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
@@ -39,20 +38,20 @@
 			</div>
 			<ul class="goz_mobile_content" v-show="isShowMobileMenu">
 				<li class="goz_mobile_link_item">
-					<router-link :to="`/`">GoZ Network State Visualizer</router-link>
+					<router-link :to="`/`">Network State Visualizer</router-link>
 				</li>
-				<li class="goz_mobile_link_item">
+				<!--<li class="goz_mobile_link_item">
 					<router-link :to="`/download-rainbowgoz`">IBC-GoZ  Wallet</router-link>
-				</li>
-				<li class="goz_mobile_link_item">
+				</li>-->
+			<!--	<li class="goz_mobile_link_item">
 					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">GoZ Website</a>
-				</li>
-				<li class="goz_mobile_link_item">
+				</li>-->
+			<!--	<li class="goz_mobile_link_item">
 					<a href="https://map-of-zones-web.herokuapp.com/?period=24" target="_blank">Map of zones</a>
-				</li>
-				<li class="goz_mobile_link_item">
+				</li>-->
+				<!--<li class="goz_mobile_link_item">
 					<a href="https://goz.cosmos.network/3d" target="_blank">Visualizer from Cosmos Team</a>
-				</li>
+				</li>-->
 				<li class="goz_mobile_net_work_content" @click="showNetworkToggle">
 					<div class="goz_mobile_net_work_wrap">
 						<span class="net_work_name">Network</span>
@@ -87,11 +86,14 @@
 				flShowNetworkLogo: false,
 				currentNetworkClass:'',
 				isShowMobileMenu: false,
-				flShowNetwork:false
+				flShowNetwork:false,
+				networkList:[],
 			}
 		},
 		mounted(){
+			this.networkList = require('../../../config/network.json')
 			this.getConfig();
+			
 		},
 		computed:{
 			changeRouter(){
@@ -119,32 +121,34 @@
 				window.open(url)
 			},
 			getConfig () {
-				Service.commonInterface({headerConfig:{}},(res) => {
+				// Service.commonInterface({headerConfig:{}},(res) => {
+					console.log(this.networkList)
 					try {
 						// TODO 测试展示
-						res.cur_env = 'testnet';
-						res.chain_id = 'goz';
-						this.handleConfigs(res.configs);
-						this.setNetWorkLogo(res);
+						// res.cur_env = 'testnet';
+						// res.chain_id = 'goz';
+						this.handleConfigs(this.networkList);
+						this.setNetWorkLogo(this.networkList);
 					}catch (e) {
 						console.error(e);
 					}
-				});
+				// });
 			},
 			handleConfigs (configs) {
+				
 				this.netWorkArray = configs.map(item => {
 					if(item.network_name === constant.NET_WORK_NAME.IRISHUB){
 						item.icon = 'iconfont iconiris'
-					}else if(item.network_name === constant.NET_WORK_NAME.FUXI){
-						item.icon = 'iconfont iconfuxi1'
 					}else if(item.network_name === constant.NET_WORK_NAME.NYANCAT){
 						item.icon = 'iconfont iconcaihongmao'
 					}else if(item.network_name === constant.NET_WORK_NAME.GOZTESTNET){
 						item.icon = 'iconfont iconGOZ'
 					}else if(item.network_name === constant.NET_WORK_NAME.BIFROST){
 						item.icon = 'iconfont iconBI-01'
+					}else if(item.network_name === constant.NET_WORK_NAME.COSMOSHUB){
+						item.icon = 'iconfont iconCosmosHub'
 					}
-					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`;
+					item.netWorkSelectOption = `${item.chain_id.toLocaleUpperCase()}`;
 					return item
 				});
 				this.netWorkArray = this.netWorkArray.filter(item => {
@@ -205,11 +209,10 @@
 					.iconfont{
 						display: none;
 					}
-					a{
-						display: inline-block;
-						width: 100%;
+					div{
+						width: 1.5rem;
 						box-sizing: border-box;
-						padding:0 0.1rem;
+						padding:0 0.1rem 0 0;
 						img {
 							height: 100%;
 							width: 100%;

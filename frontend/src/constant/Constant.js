@@ -68,13 +68,14 @@ PARAMETER.UNEQUAL = 'neq';
 
 const CHAINNAME = 'iris';
 const NET_WORK_NAME = {};
-NET_WORK_NAME.IRISHUB = 'irishub';
+NET_WORK_NAME.IRISHUB = 'Mainnet IRISHUB';
 NET_WORK_NAME.FUXI = 'fuxi';
-NET_WORK_NAME.NYANCAT = 'nyancat';
+NET_WORK_NAME.NYANCAT = 'Testnet NYANCAT';
 NET_WORK_NAME.QA = 'rainbow-qa';
 NET_WORK_NAME.DEV = 'rainbow-dev';
 NET_WORK_NAME.GOZTESTNET = 'goz-testnet';
-NET_WORK_NAME.BIFROST = 'bifrost';
+NET_WORK_NAME.BIFROST = 'Testnet BIFROST';
+NET_WORK_NAME.COSMOSHUB = 'Mainnet COSMOSHUB';
 
 
 
