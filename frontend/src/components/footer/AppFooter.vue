@@ -45,11 +45,11 @@
 
         mounted(){
 		    if(sessionStorage.getItem('skinEnvInformation')){
-                this.getVersionInformation()
+                // this.getVersionInformation()
             }else {
 		        let that = this;
 		        this.versionTimer = setInterval(() => {
-                    that.getVersionInformation()
+                    // that.getVersionInformation()
                     if(sessionStorage.getItem('skinEnvInformation')){
                         clearInterval(that.versionTimer)
                     }
@@ -57,7 +57,7 @@
             }
         },
         methods:{
-		    getVersionInformation(){
+		    /*getVersionInformation(){
                 if(sessionStorage.getItem('skinEnvInformation')){
                     this.flShowVersion = true;
                     let configs = JSON.parse(sessionStorage.getItem('skinEnvInformation')),
@@ -74,7 +74,7 @@
                 }else {
                     this.flShowVersion = false;
                 }
-            },
+            },*/
 	        showWeChatQRCode() {
                 this.$uMeng.push('Footer_WeChat','click');
                 this.$store.commit('flShowQR',true);
