@@ -710,7 +710,7 @@
 					})
 				})
 				
-				/*this.copyData.paths.forEach((item, index) => {
+				this.copyData.paths.forEach((item, index) => {
 					if (item.state === 'OPEN') {
 						nodeLinksArray.push({
 							source: item['src-chain-id'],
@@ -744,8 +744,7 @@
 						})
 					}
 					
-				});*/
-				nodeLinksArray=[]
+				});
 				let graphOption = {
 					name: '',
 					tooltip: {
@@ -813,7 +812,7 @@
 					zoomSpeedRule = 0.04
 					setTime = 950
 				} else if (nodeArray.length < 50) {
-					zoomRule = 0.5;
+					zoomRule = 0.8;
 					zoomSpeedRule = 0.07
 					setTime = 950
 				}

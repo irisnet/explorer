@@ -1,103 +1,113 @@
 {
-    "production": false,
-    "update": "2021-02-25 20:59:13",
-    "nodes": [
+    "production":false,
+    "update":"2021-02-25 20:59:13",
+    "nodes":[
         {
-            "chain-id": "cosmoshub-4",
-            "connections": 0
+            "chain-id":"cosmoshub-4",
+            "connections":1
         },
         {
-            "chain-id": "irishub-1",
-            "connections": 0
+            "chain-id":"irishub-1",
+            "connections":1
         },
         {
-            "chain-id": "Kava",
-            "connections": 0
+            "chain-id":"Kava",
+            "connections":0
         },
         {
-            "chain-id": "Akash",
-            "connections": 0
+            "chain-id":"Akash",
+            "connections":0
         },
         {
-            "chain-id": "Crypto.com",
-            "connections": 0
+            "chain-id":"Crypto.com",
+            "connections":0
         },
         {
-            "chain-id": "Regen Network",
-            "connections": 0
+            "chain-id":"Regen Network",
+            "connections":0
         },
         {
-            "chain-id": "Thorchain",
-            "connections": 0
+            "chain-id":"Thorchain",
+            "connections":0
         },
         {
-            "chain-id": "Commercio",
-            "connections": 0
+            "chain-id":"Commercio",
+            "connections":0
         },
         {
-            "chain-id": "Althea",
-            "connections": 0
+            "chain-id":"Althea",
+            "connections":0
         },
         {
-            "chain-id": "HBTC",
-            "connections": 0
+            "chain-id":"HBTC",
+            "connections":0
         },
         {
-            "chain-id": "Starname",
-            "connections": 0
+            "chain-id":"Starname",
+            "connections":0
         },
         {
-            "chain-id": "Microtick",
-            "connections": 0
+            "chain-id":"Microtick",
+            "connections":0
         },
         {
-            "chain-id": "LikeCoin",
-            "connections": 0
+            "chain-id":"LikeCoin",
+            "connections":0
         },
         {
-            "chain-id": "Band Protocol",
-            "connections": 0
+            "chain-id":"Band Protocol",
+            "connections":0
         },
         {
-            "chain-id": "Terra",
-            "connections": 0
+            "chain-id":"Terra",
+            "connections":0
         },
         {
-            "chain-id": "cyber",
-            "connections": 0
+            "chain-id":"cyber",
+            "connections":0
         },
         {
-            "chain-id": "Binance Chain",
-            "connections": 0
+            "chain-id":"Binance Chain",
+            "connections":0
         },
         {
-            "chain-id": "Okexchain",
-            "connections": 0
+            "chain-id":"Okexchain",
+            "connections":0
         },
         {
-            "chain-id": "Kuchain",
-            "connections": 0
+            "chain-id":"Kuchain",
+            "connections":0
         },
         {
-            "chain-id": "CosmWasm",
-            "connections": 0
+            "chain-id":"CosmWasm",
+            "connections":0
         },
         {
-            "chain-id": "Agoric",
-            "connections": 0
+            "chain-id":"Agoric",
+            "connections":0
         },
         {
-            "chain-id": "Persistence",
-            "connections": 0
+            "chain-id":"Persistence",
+            "connections":0
         },
         {
-            "chain-id": "Secret Network",
-            "connections": 0
+            "chain-id":"Secret Network",
+            "connections":0
         },
         {
-            "chain-id": "Sentinel",
-            "connections": 0
+            "chain-id":"Sentinel",
+            "connections":0
         }
     ],
-    "paths": []
+    "paths":[
+        {
+            "src-chain-id":"irishub-1",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"cosmoshub-4",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        }
+    ]
 }
