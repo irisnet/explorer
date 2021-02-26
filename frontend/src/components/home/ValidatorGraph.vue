@@ -55,10 +55,10 @@
 									     :class="item.isActive ? '' : 'hide_style'"
 									     v-if="item.name !== 'Cosmos Hub (cosmoshub-4)' && item.name !== 'IRIS Hub (irishub-1)'">
 									</div>
-									<div class="legend_block_img" v-if=" item.name === 'IRIS Hub (irishub-1)'">
+									<div class="legend_block_img" :class="item.isActive ? '' : 'img_hide_style'" v-if=" item.name === 'IRIS Hub (irishub-1)'">
 										<img src="../../assets/IRISnet_LOGO_Small.png" alt="">
 									</div>
-									<div class="legend_block_img"  v-if="item.name === 'Cosmos Hub (cosmoshub-4)'">
+									<div class="legend_block_img" :class="item.isActive ? '' : 'img_hide_style'"  v-if="item.name === 'Cosmos Hub (cosmoshub-4)'">
 										<img src="../../assets/Cosmos_LOGO_Small.png" alt="">
 									</div>
 									<div class="legend_name_content">
@@ -1158,13 +1158,17 @@
 									}
 									.legend_block_img{
 										box-sizing: border-box;
-										width: 0.32rem;
-										height: 0.32rem;
+										width: 0.28rem;
+										height: 0.28rem;
 										border-radius: 0.07rem;
 										cursor: pointer;
+										opacity: 1;
 										img{
 											width: 100%;
 										}
+									}
+									.img_hide_style{
+										opacity: 0.4;
 									}
 								}
 							}
