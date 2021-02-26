@@ -1038,7 +1038,7 @@
 						overflow: hidden;
 						right: 0;
 						top: 0;
-						background: rgba(45, 50, 90, 0.2);
+						background: rgba(95, 115, 255, 0.15);
 						backdrop-filter: blur(2px);
 						.sort_scroll_content {
 							overflow-x: hidden;
