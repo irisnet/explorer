@@ -28,7 +28,10 @@
                                 <i style="font-size: 0.24rem;padding-right: 0.02rem;" :class="currentNetworkClass"></i>
                                 <i style="font-size: 0.08rem" class="iconfont iconwangluoqiehuanjiantou"></i>
                             </span>
-						<ul class="network_list_container" v-show="flShowNetworkLogo" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
+						<ul class="network_list_container"
+						    v-show="flShowNetworkLogo"
+						    @mouseenter="showNetWorkLogo()"
+						    @mouseleave="hideNetWorkLogo()">
 							<li class="network_list_item"
 							    v-for="item in netWorkArray"
 							    @click="windowOpenUrl(item.host)"><i :class="item.icon"></i>{{item.netWorkSelectOption}}</li>
@@ -122,7 +125,6 @@
 			},
 			getConfig () {
 				// Service.commonInterface({headerConfig:{}},(res) => {
-					console.log(this.networkList)
 					try {
 						// TODO 测试展示
 						// res.cur_env = 'testnet';
@@ -147,6 +149,8 @@
 						item.icon = 'iconfont iconBI-01'
 					}else if(item.network_name === constant.NET_WORK_NAME.COSMOSHUB){
 						item.icon = 'iconfont iconCosmosHub'
+					}else if(item.network_name === constant.NET_WORK_NAME.STARGATE){
+						item.icon = 'iconfont iconStargate1'
 					}
 					item.netWorkSelectOption = `${item.chain_id.toLocaleUpperCase()}`;
 					return item
@@ -175,6 +179,8 @@
 					this.currentNetworkClass = 'iconfont iconGOZ'
 				} else if (networkName === constant.NET_WORK_NAME.BIFROST) {
 					this.currentNetworkClass = 'iconfont iconBI-01'
+				}else if(networkName === constant.NET_WORK_NAME.STARGATE){
+					this.currentNetworkClass = 'iconfont iconStargate1'
 				}else {
 					this.currentNetworkClass = 'iconfont iconiris';
 				}
@@ -275,9 +281,10 @@
 						position: relative;
 						height:0.6rem;
 						line-height: 0.6rem;
-						padding-left: 0.2rem;
+						margin-left: 0.2rem;
+						cursor: pointer;
 						.network_list_container{
-							background: #fff;
+							background: rgba(16, 15, 50, 1);
 							box-shadow: 0 0.02rem 0.1rem 0 rgba(3,16,114,0.15);
 							width: auto;
 							position: absolute;
@@ -293,8 +300,9 @@
 								cursor: pointer;
 								font-size: 0.14rem;
 								display: flex;
+								color: rgba(255,255,255,1);
 								&:hover{
-									background: #F6F7FF;
+									background: rgba(41,39,90,1);
 								}
 								i{
 									font-size: 0.18rem;
