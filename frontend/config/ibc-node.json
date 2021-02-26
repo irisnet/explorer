@@ -3,11 +3,11 @@
     "update":"2021-02-25 20:59:13",
     "nodes":[
         {
-            "chain-id":"cosmoshub-4",
+            "chain-id":"Cosmos Hub (cosmoshub-4)",
             "connections":1
         },
         {
-            "chain-id":"irishub-1",
+            "chain-id":"IRIS Hub (irishub-1)",
             "connections":1
         },
         {
@@ -101,10 +101,10 @@
     ],
     "paths":[
         {
-            "src-chain-id":"irishub-1",
+            "src-chain-id":"IRIS Hub (irishub-1)",
             "src-client-id":"07-tendermint-0",
             "src-connection-id":"connection-0",
-            "dst-chain-id":"cosmoshub-4",
+            "dst-chain-id":"Cosmos Hub (cosmoshub-4)",
             "dst-client-id":"07-tendermint-1",
             "dst-connection-id":"connection-1",
             "state":"OPEN"

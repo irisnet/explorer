@@ -36,11 +36,11 @@
 							<span :class="flConnectionActiveStyle ? 'active_style' : ''"
 							      @click="sortByConnection(sortByConnectionSwitchIcon)">Conns <i class="iconfont"
 							                                                                    v-show="flShowConnectionSortIcon"
-							                                                                    :class="sortByConnectionSwitchIcon ? 'iconpaixu-xia' : 'iconpaixu-shang'"></i></span>
+							                                                                    :class="sortByConnectionSwitchIcon ? 'iconxiangxia' : 'iconxiangshang'"></i></span>
 							<span :class="flLetterActiveStyle ? 'active_style' : ''"
 							      @click="sortByLetter(sortByLetterSwitchIcon)">A-Z <i class="iconfont"
 							                                                           v-show="flShowLetterSortIcon"
-							                                                           :class="sortByLetterSwitchIcon ? 'iconpaixu-xia' : 'iconpaixu-shang'"></i></span>
+							                                                           :class="sortByLetterSwitchIcon ? 'iconxiangxia' : 'iconxiangshang'"></i></span>
 						</div>
 						<div class="sort_scroll_content" ref="graph_list_content">
 							<div class="graph_list_item_all" @click="selectAll()">
@@ -61,7 +61,7 @@
 											{{item.name}} </p>
 										<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'"
 										   v-show="item.connection !== 0"><span
-												style="display: flex;white-space: nowrap">{{item.connection}} Connections</span>
+												style="display: flex;white-space: nowrap">{{item.connection}} {{`${item.connection > 1 ? 'Conns' :'Conn'}`}}</span>
 										</p>
 									</div>
 								</li>
@@ -695,8 +695,8 @@
 						name: this.copyData.nodes[i]['chain-id'],
 						symbolSize: this.copyData.nodes[i].connections === 0 ? 30 : this.copyData.nodes[i].connections * (symbolSizeRule / this.maxLinks) + 20,
 						label: {
-							show: false,
-							position: 'right',
+							show: true,//默认展示信息
+							position: 'bottom',
 						},
 						itemStyle: {
 							color: this.copyData.nodes[i].color,
@@ -1097,7 +1097,7 @@
 								padding-bottom: 0.4rem;
 								
 								.graph_list_item {
-									width: 1.5rem;
+									width: 1.6rem;
 									align-items: center;
 									margin-left: 0.2rem;
 									display: flex;
@@ -1116,7 +1116,7 @@
 									}
 									
 									.legend_name_content {
-										max-width: 1.2rem;
+										max-width: 1.3rem;
 										
 										.legend_name {
 											line-height: 0.16rem;
