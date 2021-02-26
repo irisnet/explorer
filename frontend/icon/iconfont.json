@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "20072444",
+      "name": "向下",
+      "font_class": "xiangxia",
+      "unicode": "e6a0",
+      "unicode_decimal": 59040
+    },
+    {
+      "icon_id": "20072441",
+      "name": "向上",
+      "font_class": "xiangshang",
+      "unicode": "e69f",
+      "unicode_decimal": 59039
+    },
+    {
       "icon_id": "20070655",
       "name": "github",
       "font_class": "github",
