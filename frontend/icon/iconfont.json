@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "20073849",
+      "name": "复位",
+      "font_class": "fuwei",
+      "unicode": "e6a1",
+      "unicode_decimal": 59041
+    },
+    {
       "icon_id": "20072444",
       "name": "向下",
       "font_class": "xiangxia",

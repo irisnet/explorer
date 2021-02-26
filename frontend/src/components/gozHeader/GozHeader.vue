@@ -252,13 +252,12 @@
 				align-items: center;
 				.goz_content_link_content{
 					color:#fff;
-					border-right: 0.01rem solid rgba(255,255,255,0.74);
 					a{
 						color:rgba(255,255,255,0.75) !important;
 						font-size: 0.14rem;
 						line-height: 0.16rem;
-						border-right: 0.01rem solid rgba(255,255,255,0.75);
-						padding: 0 0.2rem;
+						padding: 0 0 0 0.2rem;
+						
 					}
 					a:last-child{
 						border-right: none;
