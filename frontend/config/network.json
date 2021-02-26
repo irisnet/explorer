@@ -20,10 +20,10 @@
     "show_faucet" : 0.0
   },
   {
-    "network_name" : "Testnet BIFROST",
-    "env" : "bifrost hub",
-    "host" : "https://bifrost.irisplorer.io/#/home",
-    "chain_id" : "Testnet BIFROST",
+    "network_name" : "Testnet STARGATE",
+    "env" : "stargate hub",
+    "host" : "https://stargate.iobscan.io/#/home",
+    "chain_id" : "Testnet STARGATE",
     "node_version" : "",
     "tendermint_version" : "",
     "umeng_id" : 0.0,
@@ -34,6 +34,16 @@
     "env" : "NYANCAT hub",
     "host" : "https://nyancat.irisplorer.io/#/home",
     "chain_id" : "Testnet NYANCAT",
+    "node_version" : "",
+    "tendermint_version" : "",
+    "umeng_id" : 0.0,
+    "show_faucet" : 0.0
+  },
+  {
+    "network_name" : "Testnet BIFROST",
+    "env" : "bifrost hub",
+    "host" : "https://bifrost.irisplorer.io/#/home",
+    "chain_id" : "Testnet BIFROST",
     "node_version" : "",
     "tendermint_version" : "",
     "umeng_id" : 0.0,
