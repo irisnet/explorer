@@ -2,7 +2,7 @@
   {
     "network_name" : "Mainnet IRISHUB",
     "env" : "IRIS hub",
-    "host" : "https://www.irisplorer.io/#/home",
+    "host" : "https://irishub.iobscan.io",
     "chain_id" : "Mainnet IRISHUB",
     "node_version" : "",
     "tendermint_version" : "",
@@ -32,18 +32,8 @@
   {
     "network_name" : "Testnet NYANCAT",
     "env" : "NYANCAT hub",
-    "host" : "https://nyancat.irisplorer.io/#/home",
+    "host" : "https://nyancat.iobscan.io/",
     "chain_id" : "Testnet NYANCAT",
-    "node_version" : "",
-    "tendermint_version" : "",
-    "umeng_id" : 0.0,
-    "show_faucet" : 0.0
-  },
-  {
-    "network_name" : "Testnet BIFROST",
-    "env" : "bifrost hub",
-    "host" : "https://bifrost.irisplorer.io/#/home",
-    "chain_id" : "Testnet BIFROST",
     "node_version" : "",
     "tendermint_version" : "",
     "umeng_id" : 0.0,
