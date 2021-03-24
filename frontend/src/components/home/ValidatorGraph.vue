@@ -2,7 +2,7 @@
 	<div class="validator_graph_container" :class="switchValue ? 'start_sky_img' : 'default_bg_img'">
 		<div class="graph_content_wrap">
 			<div class="graph_content_title">
-				<div>Inter-Chain Network
+				<div>Interchain Network
 					<span class="beat_content" v-if="!flShowTestTooltip">Beta </span>
 				</div>
 				<div class="tooltip" v-if="flShowNetwork">
@@ -32,7 +32,7 @@
 					     v-show="colorDataArray.length > 0">
 						<div class="sort_content">
 							<span :class="flConnectionActiveStyle ? 'active_style' : ''"
-							      @click="sortByConnection(sortByConnectionSwitchIcon)">Conns <i class="iconfont"
+							      @click="sortByConnection(sortByConnectionSwitchIcon)">Connections <i class="iconfont"
 							                                                                    v-show="flShowConnectionSortIcon"
 							                                                                    :class="sortByConnectionSwitchIcon ? 'iconxiangxia' : 'iconxiangshang'"></i></span>
 							<span :class="flLetterActiveStyle ? 'active_style' : ''"

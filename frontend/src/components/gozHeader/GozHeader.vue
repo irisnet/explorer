@@ -20,7 +20,7 @@
 					<a href="https://goz.cosmos.network/3d" target="_blank">Visualizer from Cosmos Team</a>
 				</div>-->
 				<div class="goz_content_link_content">
-					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">Network</a>
+					<span>Network</span>
 				</div>
 				<div class="goz_network_links_content">
 					<div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
@@ -145,8 +145,6 @@
 						item.icon = 'iconfont iconcaihongmao'
 					}else if(item.network_name === constant.NET_WORK_NAME.GOZTESTNET){
 						item.icon = 'iconfont iconGOZ'
-					}else if(item.network_name === constant.NET_WORK_NAME.BIFROST){
-						item.icon = 'iconfont iconBI-01'
 					}else if(item.network_name === constant.NET_WORK_NAME.COSMOSHUB){
 						item.icon = 'iconfont iconCosmosHub'
 					}else if(item.network_name === constant.NET_WORK_NAME.STARGATE){
@@ -177,9 +175,7 @@
 					this.currentNetworkClass = 'iconfont iconcaihongmao'
 				} else if (networkName === constant.NET_WORK_NAME.GOZTESTNET) {
 					this.currentNetworkClass = 'iconfont iconGOZ'
-				} else if (networkName === constant.NET_WORK_NAME.BIFROST) {
-					this.currentNetworkClass = 'iconfont iconBI-01'
-				}else if(networkName === constant.NET_WORK_NAME.STARGATE){
+				} else if(networkName === constant.NET_WORK_NAME.STARGATE){
 					this.currentNetworkClass = 'iconfont iconStargate1'
 				}else {
 					this.currentNetworkClass = 'iconfont iconiris';
