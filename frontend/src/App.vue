@@ -132,6 +132,16 @@
             opacity: 1 !important;
         }
     }
+    .el-tooltip__popper.is-dark{
+        background: #100f34 !important;
+        color: #fff !important;
+        max-width: 1.8rem;
+        text-align: center;
+        .popper__arrow::after{
+            border-bottom-color: #100f34 !important;
+        }
+    }
+
     .el-select-dropdown{
         .el-scrollbar{
             .el-select-dropdown__wrap{

@@ -72,15 +72,34 @@
                                     </div>
 									<div class="legend_name_content">
 										<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'">
-											<span v-show="item.name !== 'Crypto.com (Crypto-Org-Chain-Mainnet-1)'">{{item.name}}</span>
-                                            <span class="legend_name_style" style="display: flex;flex-direction: column">
+											<span v-show="item.name !== 'Crypto.com (Crypto-Org-Chain-Mainnet-1)'
+											 && item.name !== 'Cosmos Hub (cosmoshub-4)'
+											 && item.name !== 'IRIS Hub (irishub-1)'
+											 && item.name !== 'Akash (Akashnet-2)' ">{{item.name}}</span>
+                                            <span class="legend_name_style" style="display: block">
                                                <span v-show="item.name === 'Crypto.com (Crypto-Org-Chain-Mainnet-1)'">Crypto.com</span>
-											   <span class="display_ellipsis" v-show="item.name === 'Crypto.com (Crypto-Org-Chain-Mainnet-1)'"> (Crypto-Org-Chain-Mainnet-1)</span>
+                                                <el-tooltip effect="dark" content="(Crypto-Org-Chain-Mainnet-1)">
+                                                   <span class="display_ellipsis" v-show="item.name === 'Crypto.com (Crypto-Org-Chain-Mainnet-1)'">
+                                                       (Crypto-Org-Chain-Mainnet-1)
+                                                   </span>
+                                                </el-tooltip>
+                                            </span>
+                                            <span class="legend_name_style">
+                                               <span v-show="item.name === 'Cosmos Hub (cosmoshub-4)'">Cosmos Hub</span>
+											   <span class="display_ellipsis" v-show="item.name === 'Cosmos Hub (cosmoshub-4)'"> (cosmoshub-4)</span>
+                                            </span>
+                                            <span class="legend_name_style">
+                                               <span v-show="item.name === 'IRIS Hub (irishub-1)'">IRIS Hub</span>
+											   <span class="display_ellipsis" v-show="item.name === 'IRIS Hub (irishub-1)'"> (irishub-1)</span>
+                                            </span>
+                                            <span class="legend_name_style">
+                                               <span v-show="item.name === 'Akash (Akashnet-2)'">Akash</span>
+											   <span class="display_ellipsis" v-show="item.name === 'Akash (Akashnet-2)'"> (Akashnet-2)</span>
                                             </span>
                                         </p>
 										<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'"
 										   v-show="item.connection !== 0"><span
-												style="display: flex;white-space: nowrap">{{item.connection}} {{`${item.connection > 1 ? 'Conns' :'Conn'}`}}</span>
+												style="display: flex;white-space: nowrap">{{item.connection}} {{`${item.connection > 1 ? 'Connections' :'Connection'}`}}</span>
 										</p>
 									</div>
 								</li>
@@ -1198,6 +1217,8 @@
                                             -webkit-line-clamp:2;
                                             overflow:hidden;
                                             .legend_name_style{
+                                                display: flex;
+                                                flex-direction: column;
                                                 .display_ellipsis{
                                                     display:-webkit-box;
                                                     -webkit-box-orient:vertical;
