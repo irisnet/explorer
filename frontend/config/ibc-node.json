@@ -4,7 +4,7 @@
     "nodes":[
         {
             "chain-id":"Cosmos Hub (cosmoshub-4)",
-            "connections":1
+            "connections":3
         },
         {
             "chain-id":"IRIS Hub (irishub-1)",
@@ -15,12 +15,12 @@
             "connections":0
         },
         {
-            "chain-id":"Akash",
-            "connections":0
+            "chain-id":"Akash (Akashnet-2)",
+            "connections":1
         },
         {
-            "chain-id":"Crypto.com",
-            "connections":0
+            "chain-id":"Crypto.com (Crypto-Org-Chain-Mainnet-1)",
+            "connections":1
         },
         {
             "chain-id":"Regen Network",
@@ -107,6 +107,24 @@
             "dst-chain-id":"Cosmos Hub (cosmoshub-4)",
             "dst-client-id":"07-tendermint-1",
             "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Akash (Akashnet-2)",
+            "src-client-id":"07-tendermint-2",
+            "src-connection-id":"connection-2",
+            "dst-chain-id":"Cosmos Hub (cosmoshub-4)",
+            "dst-client-id":"07-tendermint-2",
+            "dst-connection-id":"connection-2",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Crypto.com (Crypto-Org-Chain-Mainnet-1)",
+            "src-client-id":"07-tendermint-2",
+            "src-connection-id":"connection-2",
+            "dst-chain-id":"Cosmos Hub (cosmoshub-4)",
+            "dst-client-id":"07-tendermint-2",
+            "dst-connection-id":"connection-2",
             "state":"OPEN"
         }
     ]
