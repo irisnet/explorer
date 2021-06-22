@@ -4,11 +4,11 @@
     "nodes":[
         {
             "chain-id":"Cosmos Hub (cosmoshub-4)",
-            "connections":3
+            "connections":6
         },
         {
             "chain-id":"IRIS Hub (irishub-1)",
-            "connections":1
+            "connections":2
         },
         {
             "chain-id":"Kava",
@@ -16,15 +16,15 @@
         },
         {
             "chain-id":"Akash (Akashnet-2)",
-            "connections":1
+            "connections":3
         },
         {
             "chain-id":"Crypto.com (Crypto-Org-Chain-Mainnet-1)",
-            "connections":1
+            "connections":2
         },
         {
-            "chain-id":"Regen Network",
-            "connections":0
+            "chain-id":"Regen Network (regen-1)",
+            "connections":2
         },
         {
             "chain-id":"Thorchain",
@@ -87,19 +87,140 @@
             "connections":0
         },
         {
-            "chain-id":"Persistence",
-            "connections":0
+            "chain-id":"Persistence (Core-1)",
+            "connections":3
         },
         {
             "chain-id":"Secret Network",
             "connections":0
         },
         {
-            "chain-id":"Sentinel",
-            "connections":0
+            "chain-id":"Sentinel (Sentinelhub-2)",
+            "connections":1
+        },
+        {
+            "chain-id":"Osmosis (Osmosis-1)",
+            "connections":7
         }
     ],
     "paths":[
+        {
+            "src-chain-id":"Sentinel (Sentinelhub-2)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Osmosis (Osmosis-1)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Osmosis (Osmosis-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"IRIS Hub (irishub-1)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Osmosis (Osmosis-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Akash (Akashnet-2)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Osmosis (Osmosis-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Cosmos Hub (cosmoshub-4)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Osmosis (Osmosis-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Sentinel (Sentinelhub-2)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Osmosis (Osmosis-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Persistence (Core-1)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Osmosis (Osmosis-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Regen Network (regen-1)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Osmosis (Osmosis-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Crypto.com (Crypto-Org-Chain-Mainnet-1)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Regen Network (regen-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Cosmos Hub (cosmoshub-4)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Regen Network (regen-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Osmosis (Osmosis-1)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Persistence (Core-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Osmosis (Osmosis-1)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Persistence (Core-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Osmosis (Osmosis-1)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
+        {
+            "src-chain-id":"Persistence (Core-1)",
+            "src-client-id":"07-tendermint-0",
+            "src-connection-id":"connection-0",
+            "dst-chain-id":"Cosmos Hub (cosmoshub-4)",
+            "dst-client-id":"07-tendermint-1",
+            "dst-connection-id":"connection-1",
+            "state":"OPEN"
+        },
         {
             "src-chain-id":"IRIS Hub (irishub-1)",
             "src-client-id":"07-tendermint-0",
