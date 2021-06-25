@@ -63,10 +63,10 @@
 									      && item.name !== 'Sentinel (Sentinelhub-2)'">
 									</div>
 									<div class="legend_block_img" :class="item.isActive ? '' : 'img_hide_style'" v-if=" item.name === 'IRIS Hub (irishub-1)'">
-										<img src="../../assets/IRISnet_LOGO_Small.png" alt="">
+										<img src="../../assets/logo_irisnet_menu.png" alt="">
 									</div>
 									<div class="legend_block_img" :class="item.isActive ? '' : 'img_hide_style'"  v-if="item.name === 'Cosmos Hub (cosmoshub-4)'">
-										<img src="../../assets/Cosmos_LOGO_Small.png" alt="">
+										<img src="../../assets/logo_cosmos_menu.png" alt="">
 									</div>
                                     <div class="legend_block_img" :class="item.isActive ? '' : 'img_hide_style'"  v-if="item.name === 'Akash (Akashnet-2)'">
                                         <img src="../../assets/logo_akash_menu.png" alt="">
