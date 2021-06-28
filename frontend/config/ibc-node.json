@@ -207,7 +207,7 @@
             "src-chain-id":"Persistence (Core-1)",
             "src-client-id":"07-tendermint-0",
             "src-connection-id":"connection-0",
-            "dst-chain-id":"Osmosis (Osmosis-1)",
+            "dst-chain-id":"Akash (Akashnet-2)",
             "dst-client-id":"07-tendermint-1",
             "dst-connection-id":"connection-1",
             "state":"OPEN"
