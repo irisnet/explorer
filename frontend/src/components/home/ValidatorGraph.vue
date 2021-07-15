@@ -159,9 +159,9 @@
 					<p>Sorry, failed to obtain information Check if you are using vpn</p>
 					<span @click="refreshPage()">Please refresh <i class="iconfont iconshuaxin"></i></span>
 				</div>
-				<div class="hover_up_content" v-if="flShowRevertIcon" v-show="flShowHoverUp" @click="scrollBottom()">
+<!--				<div class="hover_up_content" v-if="flShowRevertIcon" v-show="flShowHoverUp" @click="scrollBottom()">
 					<img style="width: 0.16rem;height:0.22rem;" src="../../assets/hover_up.gif" alt="">
-				</div>
+				</div>-->
 			</div>
 <!--			<app-download></app-download>-->
 <!--			<validator-bianjie-information></validator-bianjie-information>-->
@@ -576,9 +576,10 @@
 							minScrollbarLength: 20
 						});
 						container.update()*/
-			this.$refs.chart_content.style.height = (window.innerHeight - 164) + "px"
-			this.$refs.graph_list_content.style.height = (window.innerHeight - 288) + "px"
-			window.addEventListener('resize', this.onresize)
+			this.$refs.chart_content.style.height = (window.innerHeight - 353) + "px"
+			this.$refs.graph_list_content.style.height = (window.innerHeight - 450) + "px"
+            this.graphEcharts = echarts.init(document.getElementById('validator_graph_content'));
+            window.addEventListener('resize', this.onresize)
 			clearTimeout(this.timer);
 			this.getData();
 			this.timer = setInterval(() => {
@@ -647,7 +648,7 @@
 				})
 			},
 			onresize () {
-				this.$refs.chart_content.style.height = (window.innerHeight - 164) + "px"
+				this.$refs.chart_content.style.height = (window.innerHeight - 353) + "px"
 				// this.$refs.graph_list_content.style.height = (window.innerHeight - 288) + "px"
 				this.graphEcharts.resize()
 			},
@@ -793,7 +794,6 @@
             },
 			initChartsGraph () {
 				this.flShowRevertIcon = false
-				this.graphEcharts = echarts.init(document.getElementById('validator_graph_content'));
 				let nodeLinksArray = [], nodeArray = [];
 				//最大像素点与最小像素点的差值66  最小的symbolSize 为 8 * 节点递增的比例
 				let symbolSizeRule = 50;
@@ -918,6 +918,10 @@
 							draggable: true, //是否拖拽
 							hoverAnimation: true,
 							focusNodeAdjacency: true,
+                            scaleLimit:{
+							    min:0.4,
+                                max:2
+                            },
 							/*itemStyle: {
 								shadowColor: 'rgba(255, 255, 255, 0.8)',
 								shadowOffsetY:2,
@@ -961,19 +965,19 @@
 
 				this.dataTimer = setInterval(() => {
 					graphOption.series[0].draggable = false
-					this.dataIndex = this.dataIndex - 0.07;
-					if (this.dataIndex < zoomRule) {
-						this.dataIndex = zoomRule
+					this.dataIndex = this.dataIndex - 0.1;
+					if (this.dataIndex < zoomRule -0.5) {
+						this.dataIndex = zoomRule - 0.28
 						clearInterval(this.dataTimer);
 						graphOption.series[0].draggable = true
 					}
 					graphOption.series[0].zoom = this.dataIndex;
 					this.graphEcharts.setOption(graphOption)
-				}, 20)
+				}, 30)
 
 				//最后一次渲染
 				setTimeout(() => {
-					graphOption.series[0].zoom = zoomRule;
+					graphOption.series[0].zoom = zoomRule - 0.28;
 					graphOption.series[0].links = nodeLinksArray;
 					graphOption.series[0].force.gravity = 0.3
 					this.graphEcharts.setOption(graphOption);
