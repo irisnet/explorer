@@ -649,7 +649,7 @@
 			},
 			onresize () {
 				this.$refs.chart_content.style.height = (window.innerHeight - 353) + "px"
-				// this.$refs.graph_list_content.style.height = (window.innerHeight - 288) + "px"
+				this.$refs.graph_list_content.style.height = (window.innerHeight - 450) + "px"
 				this.graphEcharts.resize()
 			},
 			flPickUp () {
