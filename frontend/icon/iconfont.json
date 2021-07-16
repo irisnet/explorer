@@ -6,6 +6,41 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "22931691",
+      "name": "github",
+      "font_class": "github1",
+      "unicode": "e6ee",
+      "unicode_decimal": 59118
+    },
+    {
+      "icon_id": "22931674",
+      "name": "telegram",
+      "font_class": "telegram1",
+      "unicode": "e6ed",
+      "unicode_decimal": 59117
+    },
+    {
+      "icon_id": "22931669",
+      "name": "tweeter",
+      "font_class": "tweeter",
+      "unicode": "e6ec",
+      "unicode_decimal": 59116
+    },
+    {
+      "icon_id": "22931666",
+      "name": "medium",
+      "font_class": "medium1",
+      "unicode": "e6eb",
+      "unicode_decimal": 59115
+    },
+    {
+      "icon_id": "20685811",
+      "name": "跳转",
+      "font_class": "tiaozhuan",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
       "icon_id": "20081070",
       "name": "Stargate",
       "font_class": "Stargate1",

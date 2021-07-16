@@ -126,8 +126,19 @@
                     display: flex;
                     a{
                         margin-right: 0.25rem;
+                        .icongithub{
+                            font-size: 0.23rem !important;
+                        }
+                        .icontelegram{
+                            font-size: 0.2rem !important;
+                        }
+                        .icontuite{
+                            font-size: 0.2rem !important;
+                        }
+                        .iconmedium{
+                            font-size: 0.22rem !important;
+                        }
                         i{
-                            font-size: 0.25rem;
                             color: rgba(255,255,255,0.5);
                             &:hover{
                                 color: #fff;
