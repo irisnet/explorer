@@ -19,7 +19,7 @@
 			</div>
 			<div class="graph_charts_container" :class="flShowNetwork ? '' : 'show_error_content'">
 				<div class="graph_content_container" v-if="flShowNetwork">
-					<span class="iconfont iconfuwei" v-if="flShowRevertIcon" @click="revertGraph()"></span>
+					<span class="iconfont icon-fuwei" v-if="flShowRevertIcon" @click="revertGraph()"></span>
 					<div class="graph_container_content_wrap"
 					     :style="{background: switchValue ? 'transparent' : '#2d325a'}">
 						<!--						<p class="graph_charts_title" v-if="flShowNetwork && !flShowTestTooltip"></p>-->
@@ -577,7 +577,7 @@
 						});
 						container.update()*/
 			this.$refs.chart_content.style.height = (window.innerHeight - 353) + "px"
-			this.$refs.graph_list_content.style.height = (window.innerHeight - 450) + "px"
+			this.$refs.graph_list_content.style.height = (window.innerHeight - 350) + "px"
             this.graphEcharts = echarts.init(document.getElementById('validator_graph_content'));
             window.addEventListener('resize', this.onresize)
 			clearTimeout(this.timer);
@@ -649,7 +649,7 @@
 			},
 			onresize () {
 				this.$refs.chart_content.style.height = (window.innerHeight - 353) + "px"
-				this.$refs.graph_list_content.style.height = (window.innerHeight - 450) + "px"
+				this.$refs.graph_list_content.style.height = (window.innerHeight - 350) + "px"
 				this.graphEcharts.resize()
 			},
 			flPickUp () {
@@ -1494,7 +1494,7 @@
 					flex-direction: column;
 
 					.beat_content {
-						/deep/ .tooltip_content {
+						::v-deep.tooltip_content {
 							width: 3rem;
 						}
 					}

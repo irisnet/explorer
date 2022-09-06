@@ -1,8 +1,8 @@
 @font-face {
-  font-family: "iconfont"; /* Project id 1594514 */
-  src: url('iconfont.woff2?t=1626422941931') format('woff2'),
-       url('iconfont.woff?t=1626422941931') format('woff'),
-       url('iconfont.ttf?t=1626422941931') format('truetype');
+  font-family: "iconfont"; /* Project id 3630584 */
+  src: url('iconfont.woff2?t=1662429233253') format('woff2'),
+       url('iconfont.woff?t=1662429233253') format('woff'),
+       url('iconfont.ttf?t=1662429233253') format('truetype');
 }
 
 .iconfont {
@@ -13,199 +13,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icongithub1:before {
-  content: "\e6ee";
+.icon-telegram:before {
+  content: "\e783";
 }
 
-.icontelegram1:before {
-  content: "\e6ed";
+.icon-twitter:before {
+  content: "\e782";
 }
 
-.icontweeter:before {
-  content: "\e6ec";
+.icon-fuwei:before {
+  content: "\e77e";
 }
 
-.iconmedium1:before {
-  content: "\e6eb";
+.icon-github:before {
+  content: "\e77f";
 }
 
-.icontiaozhuan:before {
-  content: "\e616";
+.icon-irisnet:before {
+  content: "\e780";
 }
 
-.iconStargate1:before {
-  content: "\e6a2";
-}
-
-.iconfuwei:before {
-  content: "\e6a1";
-}
-
-.iconxiangxia:before {
-  content: "\e6a0";
-}
-
-.iconxiangshang:before {
-  content: "\e69f";
-}
-
-.icongithub:before {
-  content: "\e69d";
-}
-
-.iconmedium:before {
-  content: "\e69c";
-}
-
-.icontelegram:before {
-  content: "\e69b";
-}
-
-.icontuite:before {
-  content: "\e69a";
-}
-
-.iconCosmosHub:before {
-  content: "\e696";
-}
-
-.iconStargate:before {
-  content: "\e695";
-}
-
-.iconInitialDeposit:before {
-  content: "\e610";
-}
-
-.iconVeto:before {
-  content: "\e611";
-}
-
-.iconDepositPeriod:before {
-  content: "\e612";
-}
-
-.icon4HoursLeft:before {
-  content: "\e613";
-}
-
-.iconDepositPeriod-liebiao:before {
-  content: "\e614";
-}
-
-.iconPass:before {
-  content: "\e615";
-}
-
-.iconBondedTokens:before {
-  content: "\e60f";
-}
-
-.iconshujuleibie:before {
-  content: "\e626";
-}
-
-.iconwangluoqiehuanjiantou:before {
-  content: "\e60c";
-}
-
-.iconfuxi1:before {
-  content: "\e60d";
-}
-
-.iconBI-01:before {
-  content: "\e60e";
-}
-
-.iconyiwen:before {
-  content: "\e60a";
-}
-
-.icontishi:before {
-  content: "\e601";
-}
-
-.iconiris:before {
-  content: "\e602";
-}
-
-.iconcaihongmao:before {
-  content: "\e607";
-}
-
-.iconGOZ:before {
-  content: "\e608";
-}
-
-.iconID:before {
-  content: "\e656";
-}
-
-.iconhelp:before {
-  content: "\e60b";
-}
-
-.iconzhankai:before {
-  content: "\e604";
-}
-
-.iconshouqi:before {
-  content: "\e605";
-}
-
-.iconservice:before {
-  content: "\e655";
-}
-
-.iconUsers:before {
-  content: "\e653";
-}
-
-.iconAssets:before {
-  content: "\e654";
-}
-
-.iconxialaxuanzejiantou:before {
-  content: "\e606";
-}
-
-.iconAvgBlockTime:before {
-  content: "\e61d";
-}
-
-.iconBlocks:before {
-  content: "\e61e";
-}
-
-.iconBlockHeight:before {
-  content: "\e61f";
-}
-
-.iconTransactions:before {
-  content: "\e620";
-}
-
-.iconVotingPower:before {
-  content: "\e621";
-}
-
-.iconsousuo:before {
-  content: "\e622";
-}
-
-.iconshangyigequkuai:before {
-  content: "\e62a";
-}
-
-.iconxiayigequkuai:before {
-  content: "\e62b";
-}
-
-.iconzhongzhi:before {
-  content: "\e62e";
-}
-
-.iconriqixuanze:before {
-  content: "\e62f";
+.icon-medium:before {
+  content: "\e781";
 }
 

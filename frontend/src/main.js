@@ -1,4 +1,3 @@
-declare var require: any;
 
 import Vue from 'vue'
 import App from './App.vue'
@@ -39,9 +38,9 @@ Vue.use(locale);
 
 
 import axios from "axios"
-const  crypto = require("irisnet-crypto");
-Vue.prototype.$Crypto = crypto;
-Vue.prototype.$Codec = crypto.codec;
+// const  crypto = require("irisnet-crypto");
+// Vue.prototype.$Crypto = crypto;
+// Vue.prototype.$Codec = crypto.codec;
 Vue.prototype.$uMeng = Umeng;
 
 Vue.config.productionTip = false;
