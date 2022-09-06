@@ -1,352 +1,51 @@
 {
-  "id": "1594514",
-  "name": "IRITA",
+  "id": "3630584",
+  "name": "IOBScan Home",
   "font_family": "iconfont",
-  "css_prefix_text": "icon",
+  "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
     {
-      "icon_id": "22931691",
-      "name": "github",
-      "font_class": "github1",
-      "unicode": "e6ee",
-      "unicode_decimal": 59118
-    },
-    {
-      "icon_id": "22931674",
-      "name": "telegram",
-      "font_class": "telegram1",
-      "unicode": "e6ed",
-      "unicode_decimal": 59117
-    },
-    {
-      "icon_id": "22931669",
-      "name": "tweeter",
-      "font_class": "tweeter",
-      "unicode": "e6ec",
-      "unicode_decimal": 59116
-    },
-    {
-      "icon_id": "22931666",
-      "name": "medium",
-      "font_class": "medium1",
-      "unicode": "e6eb",
-      "unicode_decimal": 59115
-    },
-    {
-      "icon_id": "20685811",
-      "name": "跳转",
-      "font_class": "tiaozhuan",
-      "unicode": "e616",
-      "unicode_decimal": 58902
-    },
-    {
-      "icon_id": "20081070",
-      "name": "Stargate",
-      "font_class": "Stargate1",
-      "unicode": "e6a2",
-      "unicode_decimal": 59042
-    },
-    {
-      "icon_id": "20073849",
-      "name": "复位",
-      "font_class": "fuwei",
-      "unicode": "e6a1",
-      "unicode_decimal": 59041
-    },
-    {
-      "icon_id": "20072444",
-      "name": "向下",
-      "font_class": "xiangxia",
-      "unicode": "e6a0",
-      "unicode_decimal": 59040
-    },
-    {
-      "icon_id": "20072441",
-      "name": "向上",
-      "font_class": "xiangshang",
-      "unicode": "e69f",
-      "unicode_decimal": 59039
-    },
-    {
-      "icon_id": "20070655",
-      "name": "github",
-      "font_class": "github",
-      "unicode": "e69d",
-      "unicode_decimal": 59037
-    },
-    {
-      "icon_id": "20070654",
-      "name": "medium",
-      "font_class": "medium",
-      "unicode": "e69c",
-      "unicode_decimal": 59036
-    },
-    {
-      "icon_id": "20070653",
+      "icon_id": "31667305",
       "name": "telegram",
       "font_class": "telegram",
-      "unicode": "e69b",
-      "unicode_decimal": 59035
+      "unicode": "e783",
+      "unicode_decimal": 59267
     },
     {
-      "icon_id": "20070652",
-      "name": "推特",
-      "font_class": "tuite",
-      "unicode": "e69a",
-      "unicode_decimal": 59034
+      "icon_id": "31667301",
+      "name": "icon-kfckfc",
+      "font_class": "twitter",
+      "unicode": "e782",
+      "unicode_decimal": 59266
     },
     {
-      "icon_id": "19927734",
-      "name": "Cosmos Hub",
-      "font_class": "CosmosHub",
-      "unicode": "e696",
-      "unicode_decimal": 59030
+      "icon_id": "31659859",
+      "name": "复位",
+      "font_class": "fuwei",
+      "unicode": "e77e",
+      "unicode_decimal": 59262
     },
     {
-      "icon_id": "19735210",
-      "name": "Stargate",
-      "font_class": "Stargate",
-      "unicode": "e695",
-      "unicode_decimal": 59029
+      "icon_id": "31659860",
+      "name": "github",
+      "font_class": "github",
+      "unicode": "e77f",
+      "unicode_decimal": 59263
     },
     {
-      "icon_id": "19203289",
-      "name": "Initial Deposit",
-      "font_class": "InitialDeposit",
-      "unicode": "e610",
-      "unicode_decimal": 58896
+      "icon_id": "31659863",
+      "name": "irisnet",
+      "font_class": "irisnet",
+      "unicode": "e780",
+      "unicode_decimal": 59264
     },
     {
-      "icon_id": "19203290",
-      "name": "Veto",
-      "font_class": "Veto",
-      "unicode": "e611",
-      "unicode_decimal": 58897
-    },
-    {
-      "icon_id": "19203291",
-      "name": "DepositPeriod",
-      "font_class": "DepositPeriod",
-      "unicode": "e612",
-      "unicode_decimal": 58898
-    },
-    {
-      "icon_id": "19203292",
-      "name": "4 Hours Left",
-      "font_class": "4HoursLeft",
-      "unicode": "e613",
-      "unicode_decimal": 58899
-    },
-    {
-      "icon_id": "19203293",
-      "name": "DepositPeriod-liebiao",
-      "font_class": "DepositPeriod-liebiao",
-      "unicode": "e614",
-      "unicode_decimal": 58900
-    },
-    {
-      "icon_id": "19203294",
-      "name": "Pass",
-      "font_class": "Pass",
-      "unicode": "e615",
-      "unicode_decimal": 58901
-    },
-    {
-      "icon_id": "17954118",
-      "name": "Bonded Tokens",
-      "font_class": "BondedTokens",
-      "unicode": "e60f",
-      "unicode_decimal": 58895
-    },
-    {
-      "icon_id": "17473004",
-      "name": " 数据类别",
-      "font_class": "shujuleibie",
-      "unicode": "e626",
-      "unicode_decimal": 58918
-    },
-    {
-      "icon_id": "17454331",
-      "name": "网络切换箭头",
-      "font_class": "wangluoqiehuanjiantou",
-      "unicode": "e60c",
-      "unicode_decimal": 58892
-    },
-    {
-      "icon_id": "17454353",
-      "name": "fuxi1",
-      "font_class": "fuxi1",
-      "unicode": "e60d",
-      "unicode_decimal": 58893
-    },
-    {
-      "icon_id": "17454356",
-      "name": "BI-01",
-      "font_class": "BI-01",
-      "unicode": "e60e",
-      "unicode_decimal": 58894
-    },
-    {
-      "icon_id": "17453657",
-      "name": "疑问",
-      "font_class": "yiwen",
-      "unicode": "e60a",
-      "unicode_decimal": 58890
-    },
-    {
-      "icon_id": "17453083",
-      "name": "提示",
-      "font_class": "tishi",
-      "unicode": "e601",
-      "unicode_decimal": 58881
-    },
-    {
-      "icon_id": "17453114",
-      "name": "iris",
-      "font_class": "iris",
-      "unicode": "e602",
-      "unicode_decimal": 58882
-    },
-    {
-      "icon_id": "17453117",
-      "name": "彩虹猫",
-      "font_class": "caihongmao",
-      "unicode": "e607",
-      "unicode_decimal": 58887
-    },
-    {
-      "icon_id": "17453118",
-      "name": "GOZ",
-      "font_class": "GOZ",
-      "unicode": "e608",
-      "unicode_decimal": 58888
-    },
-    {
-      "icon_id": "17218842",
-      "name": "身份ID",
-      "font_class": "ID",
-      "unicode": "e656",
-      "unicode_decimal": 58966
-    },
-    {
-      "icon_id": "17162256",
-      "name": "帮助",
-      "font_class": "help",
-      "unicode": "e60b",
-      "unicode_decimal": 58891
-    },
-    {
-      "icon_id": "16560718",
-      "name": "展开",
-      "font_class": "zhankai",
-      "unicode": "e604",
-      "unicode_decimal": 58884
-    },
-    {
-      "icon_id": "16560719",
-      "name": "收起",
-      "font_class": "shouqi",
-      "unicode": "e605",
-      "unicode_decimal": 58885
-    },
-    {
-      "icon_id": "13491806",
-      "name": "service",
-      "font_class": "service",
-      "unicode": "e655",
-      "unicode_decimal": 58965
-    },
-    {
-      "icon_id": "12636853",
-      "name": "Users",
-      "font_class": "Users",
-      "unicode": "e653",
-      "unicode_decimal": 58963
-    },
-    {
-      "icon_id": "12636854",
-      "name": "Assets",
-      "font_class": "Assets",
-      "unicode": "e654",
-      "unicode_decimal": 58964
-    },
-    {
-      "icon_id": "10124735",
-      "name": "下拉选择箭头",
-      "font_class": "xialaxuanzejiantou",
-      "unicode": "e606",
-      "unicode_decimal": 58886
-    },
-    {
-      "icon_id": "10482652",
-      "name": "Avg Block Time",
-      "font_class": "AvgBlockTime",
-      "unicode": "e61d",
-      "unicode_decimal": 58909
-    },
-    {
-      "icon_id": "10482655",
-      "name": "Blocks",
-      "font_class": "Blocks",
-      "unicode": "e61e",
-      "unicode_decimal": 58910
-    },
-    {
-      "icon_id": "10482656",
-      "name": "Block Height",
-      "font_class": "BlockHeight",
-      "unicode": "e61f",
-      "unicode_decimal": 58911
-    },
-    {
-      "icon_id": "10482660",
-      "name": "Transactions",
-      "font_class": "Transactions",
-      "unicode": "e620",
-      "unicode_decimal": 58912
-    },
-    {
-      "icon_id": "10482664",
-      "name": "Voting Power",
-      "font_class": "VotingPower",
-      "unicode": "e621",
-      "unicode_decimal": 58913
-    },
-    {
-      "icon_id": "10482711",
-      "name": "搜索",
-      "font_class": "sousuo",
-      "unicode": "e622",
-      "unicode_decimal": 58914
-    },
-    {
-      "icon_id": "10532078",
-      "name": "上一个区块",
-      "font_class": "shangyigequkuai",
-      "unicode": "e62a",
-      "unicode_decimal": 58922
-    },
-    {
-      "icon_id": "10532079",
-      "name": "下一个区块",
-      "font_class": "xiayigequkuai",
-      "unicode": "e62b",
-      "unicode_decimal": 58923
-    },
-    {
-      "icon_id": "10798504",
-      "name": "重置",
-      "font_class": "zhongzhi",
-      "unicode": "e62e",
-      "unicode_decimal": 58926
-    },
-    {
-      "icon_id": "10798505",
-      "name": "日期选择",
-      "font_class": "riqixuanze",
-      "unicode": "e62f",
-      "unicode_decimal": 58927
+      "icon_id": "31659864",
+      "name": "medium",
+      "font_class": "medium",
+      "unicode": "e781",
+      "unicode_decimal": 59265
     }
   ]
 }
