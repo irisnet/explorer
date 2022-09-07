@@ -122,7 +122,6 @@
                     display: inline-block;
                     width:1.5rem;
                     .irisnet_logo_img{
-                        width:100%;
                         height: 100%;
                     }
                 }
@@ -196,7 +195,6 @@
                     display: inline-block;
                     height: 0.4rem;;
                     img{
-                      width: 100%;
                       height: 100%;
                     }
                   }
@@ -204,6 +202,7 @@
                 .footer_copyright_wrap {
                   flex: 1;
                   text-align: center;
+                  margin-top: 0.08rem;
                   @media (max-width: 450px) {
                     margin: 0 0.2rem;
                   }
