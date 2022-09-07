@@ -20,7 +20,7 @@
               <div class="footer_version_content_warp">
                 <div class="irisnet_logo">
                   <a class="irisnet_link_content" href="https://www.irisnet.org/" target="_blank">
-                    <img class="irisnet_logo_img" src="../../assets/IRISnet-Rebrand-Capital-Black.png"/>
+                    <img class="irisnet_logo_img" src="../../assets/IRIS_LOGO.png"/>
                   </a>
                 </div>
                 <div class="footer_copyright_wrap">
