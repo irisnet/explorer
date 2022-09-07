@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "31709837",
+      "name": "展开",
+      "font_class": "zhankai",
+      "unicode": "e788",
+      "unicode_decimal": 59272
+    },
+    {
+      "icon_id": "31709845",
+      "name": "排序·上",
+      "font_class": "a-paixushang",
+      "unicode": "e789",
+      "unicode_decimal": 59273
+    },
+    {
+      "icon_id": "31709846",
+      "name": "排序·下",
+      "font_class": "a-paixuxia",
+      "unicode": "e78a",
+      "unicode_decimal": 59274
+    },
+    {
+      "icon_id": "31709847",
+      "name": "stargate",
+      "font_class": "stargate",
+      "unicode": "e78b",
+      "unicode_decimal": 59275
+    },
+    {
+      "icon_id": "31709848",
+      "name": "cosmos",
+      "font_class": "cosmos",
+      "unicode": "e78c",
+      "unicode_decimal": 59276
+    },
+    {
+      "icon_id": "31709849",
+      "name": "彩虹猫",
+      "font_class": "caihongmao",
+      "unicode": "e78d",
+      "unicode_decimal": 59277
+    },
+    {
       "icon_id": "31667305",
       "name": "telegram",
       "font_class": "telegram",

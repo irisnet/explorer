@@ -26,7 +26,7 @@
 					<div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
                             <span style="color: #fff">
                                 <i style="font-size: 0.24rem;padding-right: 0.02rem;" :class="currentNetworkClass"></i>
-                                <i style="font-size: 0.08rem" class="iconfont iconwangluoqiehuanjiantou"></i>
+                                <i style="font-size: 0.08rem" class="iconfont icon-zhankai"></i>
                             </span>
 						<ul class="network_list_container"
 						    v-show="flShowNetworkLogo"
@@ -58,7 +58,7 @@
 				<li class="goz_mobile_net_work_content" @click="showNetworkToggle">
 					<div class="goz_mobile_net_work_wrap">
 						<span class="net_work_name">Network</span>
-						<span class="iconfont iconwangluoqiehuanjiantou" :class="flShowNetwork ? 'defalut_rotate_style' : 'rotate_style'"></span>
+						<span class="iconfont icon-zhankai" :class="flShowNetwork ? 'defalut_rotate_style' : 'rotate_style'"></span>
 					</div>
 				</li>
 				<li class="network_list_content network_up_style"
@@ -140,15 +140,15 @@
 				
 				this.netWorkArray = configs.map(item => {
 					if(item.network_name === constant.NET_WORK_NAME.IRISHUB){
-						item.icon = 'iconfont iconiris'
+						item.icon = 'iconfont icon-irisnet'
 					}else if(item.network_name === constant.NET_WORK_NAME.NYANCAT){
-						item.icon = 'iconfont iconcaihongmao'
+						item.icon = 'iconfont icon-caihongmao'
 					}else if(item.network_name === constant.NET_WORK_NAME.GOZTESTNET){
 						item.icon = 'iconfont iconGOZ'
 					}else if(item.network_name === constant.NET_WORK_NAME.COSMOSHUB){
-						item.icon = 'iconfont iconCosmosHub'
+						item.icon = 'iconfont icon-cosmos'
 					}else if(item.network_name === constant.NET_WORK_NAME.STARGATE){
-						item.icon = 'iconfont iconStargate1'
+						item.icon = 'iconfont icon-stargate'
 					}
 					item.netWorkSelectOption = `${item.chain_id.toLocaleUpperCase()}`;
 					return item
@@ -168,17 +168,17 @@
 					})
 				}
 				if (networkName === constant.NET_WORK_NAME.IRISHUB) {
-					this.currentNetworkClass = 'iconfont iconiris'
+					this.currentNetworkClass = 'iconfont icon-irisnet'
 				} else if (networkName === constant.NET_WORK_NAME.FUXI) {
 					this.currentNetworkClass = 'iconfont iconfuxi'
 				} else if (networkName === constant.NET_WORK_NAME.NYANCAT) {
-					this.currentNetworkClass = 'iconfont iconcaihongmao'
+					this.currentNetworkClass = 'iconfont icon-caihongmao'
 				} else if (networkName === constant.NET_WORK_NAME.GOZTESTNET) {
 					this.currentNetworkClass = 'iconfont iconGOZ'
 				} else if(networkName === constant.NET_WORK_NAME.STARGATE){
-					this.currentNetworkClass = 'iconfont iconStargate1'
+					this.currentNetworkClass = 'iconfont icon-stargate'
 				}else {
-					this.currentNetworkClass = 'iconfont iconiris';
+					this.currentNetworkClass = 'iconfont icon-irisnet';
 				}
 			},
 		}

@@ -1093,7 +1093,7 @@
 					display: flex;
 					position: relative;
 
-					.iconfuwei {
+					.icon-fuwei {
 						position: absolute;
 						left: 0;
 						top: 0;
