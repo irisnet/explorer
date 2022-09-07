@@ -60,7 +60,7 @@
                         <div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
                             <span style="color: #fff">
                                 <i style="font-size: 0.24rem;padding-right: 0.02rem;" :class="currentNetworkClass"></i>
-                                <i style="font-size: 0.08rem" class="iconfont iconwangluoqiehuanjiantou"></i>
+                                <i style="font-size: 0.08rem" class="iconfont icon-zhankai"></i>
                             </span>
                             <ul class="network_list_container" v-show="flShowNetworkLogo" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
                                 <li class="network_list_item"
@@ -144,7 +144,7 @@
                 <div class="mobile_menu_container" @click="flShowBlockchain('blockChain')">
                     <div class="mobile_menu_item_content">
                         <span>Blockchain</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowBlockchainMenu ? 'up_style' : 'down_style'"> </i>
+                        <i class="iconfont icon-zhankai" :class="flShowBlockchainMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowBlockchainMenu">
                         <li class="blockchain_list_item" @click="featureButtonClick(`/home`)">Overview</li>
@@ -156,7 +156,7 @@
                 <div class="mobile_menu_container" @click="flShowBlockchain('staking')">
                     <div class="mobile_menu_item_content">
                         <span>Staking</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowStakingMenu ? 'up_style' : 'down_style'"> </i>
+                        <i class="iconfont icon-zhankai" :class="flShowStakingMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowStakingMenu">
                         <li class="blockchain_list_item" @click="featureButtonClick(`/validators`)">Validators</li>
@@ -168,7 +168,7 @@
                 <div class="mobile_menu_container" @click="flShowBlockchain('transfers')">
                     <div class="mobile_menu_item_content"   @click="featureButtonClick(`/txs/transfers`)">
                         <span>Transfers</span>
-                        &lt;!&ndash;<i class="iconfont iconwangluoqiehuanjiantou" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>&ndash;&gt;
+                        &lt;!&ndash;<i class="iconfont icon-zhankai" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>&ndash;&gt;
                     </div>
                     &lt;!&ndash;<ul class="blockchain_list_content" v-show="flShowTransfersMenu">&ndash;&gt;
                         &lt;!&ndash;<li class="blockchain_list_item" @click="featureButtonClick(`/txs/transfers`)">IRIS Transfers Txs</li>&ndash;&gt;
@@ -178,7 +178,7 @@
                 <div class="mobile_menu_container" @click="flShowBlockchain('assets')">
                     <div class="mobile_menu_item_content">
                         <span>Assets</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowAssetsMenu ? 'up_style' : 'down_style'"> </i>
+                        <i class="iconfont icon-zhankai" :class="flShowAssetsMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowAssetsMenu">
                         <li class="blockchain_list_item" @click="featureButtonClick(`/assets/ntvassets`)">Native Asset</li>
@@ -191,7 +191,7 @@
                 <div class="mobile_menu_container" @click="flShowBlockchain('gov')">
                     <div class="mobile_menu_item_content">
                         <span>Gov</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowGovMenu ? 'up_style' : 'down_style'"> </i>
+                        <i class="iconfont icon-zhankai" :class="flShowGovMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowGovMenu">
                         <li class="blockchain_list_item" @click="featureButtonClick(`/gov/parameters`)">Parameters</li>
@@ -204,7 +204,7 @@
                 <div class="mobile_menu_container" @click="flShowBlockchain('stats')">
                     <div class="mobile_menu_item_content">
                         <span>Stats</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowStatsMenu ? 'up_style' : 'down_style'"> </i>
+                        <i class="iconfont icon-zhankai" :class="flShowStatsMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowStatsMenu">
                         <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisrichlist`)">IRIS Rich List</li>
@@ -221,7 +221,7 @@
                 <div class="mobile_menu_container" @click="flShowBlockchain('network')">
                     <div class="mobile_menu_item_content">
                         <span>Network</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowNetWorkMenu ? 'up_style' : 'down_style'"> </i>
+                        <i class="iconfont icon-zhankai" :class="flShowNetWorkMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowNetWorkMenu">
                         <li class="blockchain_list_item"  v-for="item in netWorkArray">
@@ -252,7 +252,7 @@
                     <div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
                             <span style="color: #fff">
                                 <i style="font-size: 0.24rem;padding-right: 0.02rem;" :class="currentNetworkClass"></i>
-                                <i style="font-size: 0.08rem" class="iconfont iconwangluoqiehuanjiantou"></i>
+                                <i style="font-size: 0.08rem" class="iconfont icon-zhankai"></i>
                             </span>
                         <ul class="network_list_container" v-show="flShowNetworkLogo" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
                             <li class="network_list_item"
@@ -718,11 +718,11 @@
 			handleConfigs (configs) {
 				this.netWorkArray = configs.map(item => {
 					if(item.network_name === constant.NET_WORK_NAME.IRISHUB){
-						item.icon = 'iconfont iconiris'
+						item.icon = 'iconfont icon-irisnet'
                     }else if(item.network_name === constant.NET_WORK_NAME.FUXI){
 						item.icon = 'iconfont iconfuxi1'
                     }else if(item.network_name === constant.NET_WORK_NAME.NYANCAT){
-						item.icon = 'iconfont iconcaihongmao'
+						item.icon = 'iconfont icon-caihongmao'
                     }
 					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`;
 					return item
@@ -790,7 +790,7 @@
 				if (this.$store.state.currentSkinStyle === constant.NET_WORK_NAME.IRISHUB) {
 					this.flShowGatewayMenu = false;
 					this.explorerLogo = require("../../assets/logo.png");
-					this.currentNetworkClass = 'iconfont iconiris'
+					this.currentNetworkClass = 'iconfont icon-irisnet'
 				} else if (this.$store.state.currentSkinStyle === constant.NET_WORK_NAME.FUXI) {
 					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../../assets/logo.png");
@@ -798,10 +798,10 @@
 				} else if (this.$store.state.currentSkinStyle === constant.NET_WORK_NAME.NYANCAT) {
 					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../../assets/logo.png");
-					this.currentNetworkClass = 'iconfont iconcaihongmao'
+					this.currentNetworkClass = 'iconfont icon-caihongmao'
 				} else {
 					this.flShowGatewayMenu = true;
-					this.currentNetworkClass = 'iconfont iconiris';
+					this.currentNetworkClass = 'iconfont icon-irisnet';
 					this.explorerLogo = require("../../assets/logo.png")
 				}
 			},
