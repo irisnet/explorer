@@ -171,7 +171,7 @@
               justify-content: space-between;
               margin: 0 auto;
               max-width: 12.8rem;
-              @media (max-width: 768px) {
+              @media (max-width: 820px) {
                 flex-direction: column-reverse;
                 align-items: center;
                 justify-content: center;
@@ -181,14 +181,14 @@
                 display: flex;
                 color: rgba(255,255,255,0.5);
                 align-items: center;
-                @media (max-width: 768px) {
+                @media (max-width: 820px) {
                   flex-direction: column;
                   justify-content: center;
                   margin-top: 0.16rem;
                 }
                 .irisnet_logo{
                   margin-right: 0.32rem;
-                  @media (max-width: 768px) {
+                  @media (max-width: 820px) {
                     margin-right: 0;
                   }
                   a{
@@ -202,9 +202,8 @@
                 .footer_copyright_wrap {
                   flex: 1;
                   text-align: center;
-                  margin-top: 0.08rem;
-                  @media (max-width: 450px) {
-                    margin: 0 0.2rem;
+                  @media (max-width: 820px) {
+                    margin: 0.08rem 0.2rem 0  0.2rem;
                   }
                 }
                 .footer_chain_id_content{
@@ -226,7 +225,7 @@
                 align-items: flex-start;
                 justify-content: center;
                 flex-direction: column;
-                @media (max-width: 768px) {
+                @media (max-width: 820px) {
                   margin-left: 0;
                 }
                 .community_title{
