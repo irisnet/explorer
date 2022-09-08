@@ -171,6 +171,7 @@
               justify-content: space-between;
               margin: 0 auto;
               max-width: 12.8rem;
+              align-items: center;
               @media (max-width: 820px) {
                 flex-direction: column-reverse;
                 align-items: center;
@@ -188,12 +189,13 @@
                 }
                 .irisnet_logo{
                   margin-right: 0.32rem;
+                  height: 0.44rem;
                   @media (max-width: 820px) {
                     margin-right: 0;
                   }
                   a{
+                    height: 0.44rem;
                     display: inline-block;
-                    height: 0.4rem;;
                     img{
                       height: 100%;
                     }
