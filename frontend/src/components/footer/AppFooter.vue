@@ -24,7 +24,7 @@
                   </a>
                 </div>
                 <div class="footer_copyright_wrap">
-                  Copyright © 2022 IOBScan Ltd. All Rights Reserved.
+                  Copyright © 2022 IOBScan. All Rights Reserved.
                 </div>
                 <!-- <div class="footer_chain_id_content">Chain ID {{chainID}}</div>
                  <div class="footer_version_node_tendermint_content"><p>Node Version {{nodeVersion}}</p> <span class="line">|</span>  <p>Tendermint Version {{tendermintVersion}}</p></div>-->
