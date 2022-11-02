@@ -214,11 +214,10 @@
 					div{
 						width: 1.5rem;
 						box-sizing: border-box;
-						padding:0 0.1rem 0 0;
+						margin-top: 0.1rem;
 						img {
-							height: 100%;
-							width: 100%;
-							max-width: 1.5rem;
+							width: 1.48rem;
+							height: 0.3rem;
 						}
 					}
 				}
