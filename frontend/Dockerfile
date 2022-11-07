@@ -8,14 +8,14 @@ npm install && npm run build
 FROM nginx:1.19-alpine
 RUN echo -e 'server {\n\
   location / {\n\
-    if ($request_filename ~ index.html)\n\
+    if (#request_filename ~ index.html)\n\
     {\n\
         add_header Cache-Control "no-cache";\n\
     }\n\
     root /usr/share/nginx/html;\n\
-    try_files $URI $URI/ /index.html;\n\
+    try_files #URI #URI/ /index.html;\n\
   }\n\
 }' > /nginx.template
 
 COPY --from=builder /app/dist/ /usr/share/nginx/html/
-CMD sh -c "envsubst < /nginx.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
+CMD sh -c "envsubst < /nginx.template > /etc/nginx/conf.d/default.conf && sed -i 's/#/$/g' /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
