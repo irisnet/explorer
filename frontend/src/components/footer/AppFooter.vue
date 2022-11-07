@@ -33,8 +33,8 @@
                 <div class="community_list_content">
                   <a target="_blank" href='https://github.com/irisnet'><i class="iconfont icon-github"></i></a>
                   <a target="_blank" href='https://t.me/irisnetwork'><i class="iconfont icon-telegram"></i></a>
-                  <a target="_blank" href='https://twitter.com/irisnetwork'><i class="iconfont icon-twitter"></i></a>
-                  <a target="_blank" href='https://medium.com/irisnet-blog'><i class="iconfont icon-medium"></i></a>
+                  <a target="_blank" href='https://twitter.com/iobscan_ibc'><i class="iconfont icon-twitter"></i></a>
+                  <a target="_blank" href='https://medium.com/@IOBScan'><i class="iconfont icon-medium"></i></a>
                 </div>
               </div>
             </div>
