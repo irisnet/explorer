@@ -7,12 +7,12 @@ npm install && npm run build
 
 FROM nginx:1.19-alpine
 RUN echo -e 'server {\n\
+  root /usr/share/nginx/html;\n\
   location / {\n\
     if ($request_filename ~* index.html)\n\
     {\n\
         add_header Cache-Control "no-cache";\n\
     }\n\
-    root /usr/share/nginx/html;\n\
     try_files $URI $RUI/ /index.html;\n\
   }\n\
 }' > /etc/nginx/conf.d/default.conf
