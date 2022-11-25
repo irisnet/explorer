@@ -3,9 +3,12 @@
   "version": "0.3.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "tag": "node package.js -p"
+    "dev": "vue-cli-service serve --mode development",
+    "qa": "vue-cli-service serve --mode qa",
+    "prod": "vue-cli-service serve --mode production",
+    "build:dev": "vue-cli-service build --mode development",
+    "build:qa": "vue-cli-service build --mode qa",
+    "build:prod": "vue-cli-service build --mode production"
   },
   "dependencies": {
     "axios": "^0.18.1",
