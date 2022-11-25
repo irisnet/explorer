@@ -1039,19 +1039,29 @@ export default class Tools{
         // console.log(amountNumber,tokenName,"amount information")
         return {amountNumber,tokenName,moreAmountsNumber}
     }
-        static formatPercentage(number){
-            return new BigNumber(number).multipliedBy(100)
-        }
-            /**
-            * Form和To字段展示的问题
-            * */
-        static getFromAndToMoniker(address,monikers){
-            let resData =
-                {
-                    address: address,
-                    moniker: monikers[address] ? monikers[address] : ''
-                };
+	static formatPercentage(number){
+		return new BigNumber(number).multipliedBy(100)
+	}
+	/**
+	* Form和To字段展示的问题
+	* */
+	static getFromAndToMoniker(address,monikers){
+		let resData =
+			{
+				address: address,
+				moniker: monikers[address] ? monikers[address] : ''
+			};
 
-            return resData
-        }
+		return resData
+	}
+	static getTextWidth = (text, font = '16px Arial') => {
+		if (!text) return 0;
+		const canvas = document.createElement('canvas');
+		const context = canvas.getContext('2d');
+		font && context && (context.font = font);
+		const metrics = context && context.measureText(text);
+		const textWidth = metrics && Math.ceil(metrics.width);
+		context && context.clearRect(0, 0, canvas.width, canvas.height);
+		return textWidth;
+	};
 }

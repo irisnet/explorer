@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <!-- todo v0.4.0 loading 需要修改 -->
         <loading-component :show-loading="$store.state.flShowLoading"></loading-component>
         <qr-component></qr-component>
         <!--<app-header></app-header>-->

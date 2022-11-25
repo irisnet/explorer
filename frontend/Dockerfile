@@ -1,21 +1,22 @@
 FROM node:10-alpine as builder
 WORKDIR /app
 COPY . /app
+ARG ENVIRONMENT=dev
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
 apk add make git && npm config set registry https://registry.npm.taobao.org && \
-npm install && npm run build
+npm install && npm run build:$ENVIRONMENT
 
 FROM nginx:1.19-alpine
 RUN echo -e 'server {\n\
+  root /usr/share/nginx/html;\n\
   location / {\n\
-    if (#request_filename ~ index.html)\n\
+    if ($request_filename ~* index.html|.*\.ico$)\n\
     {\n\
         add_header Cache-Control "no-cache";\n\
     }\n\
-    root /usr/share/nginx/html;\n\
-    try_files #URI #URI/ /index.html;\n\
+    try_files $URI $RUI/ /index.html;\n\
   }\n\
-}' > /nginx.template
+}' > /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /app/dist/ /usr/share/nginx/html/
-CMD sh -c "envsubst < /nginx.template > /etc/nginx/conf.d/default.conf && sed -i 's/#/$/g' /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"
+CMD sh -c "exec nginx -g 'daemon off;'"
