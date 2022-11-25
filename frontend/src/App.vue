@@ -1,18 +1,18 @@
 <template>
     <div id="app">
-        <!-- todo v0.4.0 loading 需要修改 -->
-        <loading-component :show-loading="$store.state.flShowLoading"></loading-component>
         <qr-component></qr-component>
         <!--<app-header></app-header>-->
         <goz-header></goz-header>
         <div style="flex: 1;background: #202342;">
-            <router-view id="router_wrap" class="router-view" :key="key"/>
+            <loading-component v-show="$store.state.flShowLoading" :loading-img="Constant.LOADING.LOADING_IMG" :loading-text="Constant.LOADING.LOADING_TEXT"></loading-component>
+            <router-view v-show="!$store.state.flShowLoading" id="router_wrap" class="router-view" :key="key"/>
         </div>
         <app-footer></app-footer>
     </div>
 </template>
 
 <script>
+    import Constant from "./constant/Constant";
 	import AppHeader from "./components/header/AppHeader";
 	import LoadingComponent from "./components/loadingComponent/LoadingComponent";
 	import AppFooter from "./components/footer/AppFooter";
@@ -24,6 +24,7 @@
 		data () {
             return {
                 timer:null,
+                Constant
             }
         },
 		beforeMount(){

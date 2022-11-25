@@ -190,6 +190,14 @@ SUBMITPROPOSALTYPE.SUBMITTXTAXUSAGEPROPOSAL = 'SubmitTaxUsageProposal';
 SUBMITPROPOSALTYPE.SUBMITTOKENADDITIONPROPOSAL = 'SubmitTokenAdditionProposal';
 SUBMITPROPOSALTYPE.SUBMITPROPOSAL = 'SubmitProposal';
 
+const LOADING = {};
+LOADING.LOADING_IMG = require("../assets/loading.gif");
+LOADING.LOADING_TEXT = "Loading, Please Wait…";
+
+const ERROR = {};
+ERROR.ERROR_TEXT = "Sorry, failed to obtain information\nCheck if you are using vpn";
+ERROR.ERROR_BTN_TEXT = "Refresh";
+
 export default {
   PREFIX,
   SUFFIX,
@@ -202,5 +210,7 @@ export default {
   NET_WORK_NAME,
   RADIXDENOM,
   TRANSACTIONMESSAGENAME,
-  SUBMITPROPOSALTYPE
+  SUBMITPROPOSALTYPE,
+  LOADING,
+  ERROR
 };
