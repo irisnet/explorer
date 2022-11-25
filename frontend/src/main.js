@@ -63,7 +63,6 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
-console.log('env', process.env);
 const useStageChangeIcon = () => {
     if (process.env.NODE_ENV !== 'stage') return;
     const link = document.querySelector('link[rel *= "icon"]') || document.createElement('link');
