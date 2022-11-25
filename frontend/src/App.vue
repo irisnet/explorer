@@ -18,7 +18,6 @@
 	import AppFooter from "./components/footer/AppFooter";
 	import qrComponent from "./components/qrComponent/qrComponent";
     import GozHeader from "./components/gozHeader/GozHeader";
-console.log('123');
 	export default {
 		name: "App",
 		components: {GozHeader, qrComponent, AppFooter, LoadingComponent, AppHeader},
