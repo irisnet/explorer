@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "vue-cli-service serve --mode development",
     "qa": "vue-cli-service serve --mode qa",
+    "stage": "vue-cli-service serve --mode stage",
     "prod": "vue-cli-service serve --mode production",
     "build:dev": "vue-cli-service build --mode development",
     "build:qa": "vue-cli-service build --mode qa",
+    "build:stage": "vue-cli-service build --mode stage",
     "build:prod": "vue-cli-service build --mode production"
   },
   "dependencies": {
