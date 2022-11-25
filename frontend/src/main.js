@@ -56,10 +56,18 @@ VueRouter.prototype.push = function push(location) {
   return routerPush.call(this, location).catch(error=> error)
 }
 
-
 Vue.prototype.addressRoute = Tools.addressRoute;
 new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app')
+
+const useStageChangeIcon = () => {
+    if (process.env.NODE_ENV !== 'stage') return;
+    const link = document.querySelector('link[rel *= "icon"]') || document.createElement('link');
+    link.rel = 'icon';
+    link.href = '/favicon_stage.ico';
+    document.getElementsByTagName('head')[0].appendChild(link);
+};
+useStageChangeIcon();

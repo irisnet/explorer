@@ -3,7 +3,7 @@
 		<div class="goz_content_wrap">
 			<div class="goz_content_left_content">
 				<div class="goz_content_logo_content">
-					<div><img src="../../assets/IOBSCAN_logo.png" alt=""></div>
+					<div><img :class="{'stage_logo': isStage }" :src="displayLogoImg" alt=""></div>
 				</div>
 				<div class="goz_content_network_state" :class="changeRouter ? 'active_border_bottom' :'unActive_border_bottom'">
 					<span><router-link :to="`/`">Network State Visualizer </router-link></span>
@@ -81,10 +81,15 @@
 	import constant from '../../constant/Constant';
 	import lang from "../../lang";
 	import skinStyle from '../../skinStyle'
+	import logoImg from '../../assets/env/logo_icon.png';
+	import stageLogoImg from '../../assets/env/logo_stage_icon.png';
+	
 	export default {
 		name: "GozHeader",
 		data () {
 			return {
+				logoImg,
+				stageLogoImg,
 				netWorkArray: [],
 				flShowNetworkLogo: false,
 				currentNetworkClass:'',
@@ -105,6 +110,12 @@
 				}else {
 					return  false
 				}
+			},
+			isStage () {
+				return process.env.NODE_ENV === 'stage';
+			},
+			displayLogoImg () {
+				return !this.isStage ? logoImg: stageLogoImg;
 			}
 		},
 		methods:{
@@ -218,6 +229,9 @@
 						img {
 							width: 1.48rem;
 							height: 0.3rem;
+						}
+						.stage_logo {
+							transform: translate(0, 3px);
 						}
 					}
 				}
