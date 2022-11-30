@@ -3,7 +3,7 @@
         <div class="graph_content_wrap">
             <div class="graph_content_title">
                 <div>
-                    Interchain Network
+                    <span v-if="flShowNetwork">Interchain Network</span>
                     <span class="beat_content" v-if="!flShowTestTooltip">Beta </span>
                 </div>
                 <div class="tooltip" v-if="flShowNetwork">
@@ -127,10 +127,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- todo v0.4.0  加载失败，错误样式此处需要修改 -->
                 <div class="error_content" v-if="!flShowNetwork">
-                    <p>Sorry, failed to obtain information Check if you are using vpn</p>
-                    <span @click="refreshPage()">Please refresh <i class="iconfont iconshuaxin"></i></span>
+                    <error-component :error-text="Constant.ERROR.ERROR_TEXT" :error-btn-text="Constant.ERROR.ERROR_BTN_TEXT" @refresh="refreshPage()" />
                 </div>
                 <!-- <div class="hover_up_content" v-if="flShowRevertIcon" v-show="flShowHoverUp" @click="scrollBottom()">
 					<img style="width: 0.16rem;height:0.22rem;" src="../../assets/hover_up.gif" alt="">
@@ -145,8 +143,10 @@
 <script>
 	import axios from "axios";
 	import apiUrlConfig from "../../../config/config";
+    import Constant from "../../constant/Constant";
 	import ValidatorBianjieInformation from "./ValidatorBianjieInformation";
     import AppDownload from "@/components/home/AppDownload";
+    import ErrorComponent from "@/components/errorComponent/ErrorComponent";
 	import Store from "@/store";
 	var echarts = require("echarts/lib/echarts");
 	require("echarts/lib/component/legend");
@@ -159,9 +159,10 @@
     import testImg from '../../assets/logo_osmosis_menu.png';
 export default {
     name: "ValidatorGraph",
-    components: { AppDownload, ValidatorBianjieInformation },
+    components: { AppDownload, ValidatorBianjieInformation, ErrorComponent },
     data() {
         return {
+            Constant,
             Tools,
             testData: null,
             graphContent: "",
