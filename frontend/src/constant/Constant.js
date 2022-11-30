@@ -207,7 +207,7 @@ CHAIN_CONNECT_STATUS[2] = "NOT OPEN";
 
 const CHAIN_SIGNER = {};
 CHAIN_SIGNER.COSMOSHUB = "cosmoshub";
-CHAIN_SIGNER.IRISNET = "irishub";
+CHAIN_SIGNER.IRISNET = "irisnet";
 
 const ERROR_LOAD_IMG = require("../assets/error_load_img.png");
 

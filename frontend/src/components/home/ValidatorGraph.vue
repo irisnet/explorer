@@ -46,9 +46,6 @@
                                         <div slot="placeholder" class="image-slot">
                                             <img class="legend_block_img_loading" :src="Constant.LOADING.LOADING_IMG" alt="">
                                         </div>
-                                        <div slot="error" class="image-slot">
-                                            <img class="legend_block_img" :src="Constant.ERROR_LOAD_IMG" alt="">
-                                        </div>
                                     </el-image>
                                     <div v-else class="legend_block_img" :class="item.isActive ? '' : 'img_hide_style'" :style="{ background: item.color }" ></div>
                                     <div class="legend_name_content" :class="item.isActive ? '' : 'hide_style_color'">
@@ -108,7 +105,6 @@
 	require("echarts/extension/dataTool");
     require("echarts/lib/component/legendScroll");
     import Tools from '@/util/Tools';
-    import testImg from '../../assets/logo_osmosis_menu.png';
 export default {
     name: "ValidatorGraph",
     components: { AppDownload, ValidatorBianjieInformation, ErrorComponent },
@@ -283,42 +279,54 @@ export default {
                 if(code === Constant.API_CODE.SUCCESS) {
                     if(data) {
                         if(data.items?.length) {
-                            // todo shan 要把访问不到的链接换成默认的展示图片
-                            const chainsList = data.items.map(item => {
-                                return {
-                                    chain_name: item.chain_name,
-                                    pretty_name: item.pretty_name,
-                                    current_chain_id: item.current_chain_id
-                                }
-                            })
+                            const chainListMap = new Map();
                             const production = false;
                             let nodes =  [];
                             let paths = [];
                             let path;
-                            data.items.forEach(item => {
-                                let node = {
-                                    "chain-id": `${item.pretty_name} (${item.current_chain_id})`,
-                                    "connections": item.connection_chains.length,
-                                    "icon": item.icon,
-                                    "chain-name": item.chain_name
-                                }
-                                nodes.push(node);
-                                item.connection_chains.forEach(chain => {
-                                    const matchChainInfo = chainsList.filter(matchChain => (matchChain.chain_name === chain.chain_name) && matchChain);
-                                    path = {
-                                        "src-chain-id": `${item.pretty_name} (${item.current_chain_id})`,
-                                        "dst-chain-id": `${matchChainInfo[0]?.pretty_name} (${matchChainInfo[0]?.current_chain_id})`,
-                                        "state": Constant.CHAIN_CONNECT_STATUS[chain.connection_status]
-                                    }
-                                    paths.push(path);
+                            let itemIconPromiseAll = [];
+                            data.items.forEach((item, index) => {
+                                chainListMap.set(item.chain_name, {
+                                    chain_name: item.chain_name,
+                                    pretty_name: item.pretty_name,
+                                    current_chain_id: item.current_chain_id
+                                })
+                                itemIconPromiseAll[index] = new Promise(resolve => {
+                                    const img = new Image();
+                                    img.src = item.icon;
+                                    img.onload = function () {
+                                        resolve(item.icon);
+                                    };
+                                    img.onerror = function () {
+                                        resolve(Constant.ERROR_LOAD_IMG);
+                                    };
                                 })
                             })
-                            let res = {
-                                "production": production,
-                                "nodes": [...nodes],
-                                "paths": [...paths]
-                            }
-                            if (res && JSON.stringify(res) !== "{}") {
+                            Promise.all(itemIconPromiseAll).then(imageSrcList => {
+                                data.items.forEach((item, index) => {
+                                    item.icon = imageSrcList[index];
+                                    let node = {
+                                        "chain-id": `${item.pretty_name} (${item.current_chain_id})`,
+                                        "connections": item.connection_chains.length,
+                                        "icon": item.icon,
+                                        "chain-name": item.chain_name
+                                    }
+                                    nodes.push(node);
+                                    item.connection_chains.forEach(chain => {
+                                        const matchChainInfo = chainListMap.has(chain.chain_name) && chainListMap.get(chain.chain_name);
+                                        path = {
+                                            "src-chain-id": `${item.pretty_name} (${item.current_chain_id})`,
+                                            "dst-chain-id": `${matchChainInfo?.pretty_name} (${matchChainInfo?.current_chain_id})`,
+                                            "state": Constant.CHAIN_CONNECT_STATUS[chain.connection_status]
+                                        }
+                                        paths.push(path);
+                                    })
+                                })
+                                let res = {
+                                    "production": production,
+                                    "nodes": [...nodes],
+                                    "paths": [...paths]
+                                }
                                 this.data = res;
                                 this.flShowTestTooltip = res.production;
                                 //数据先排序
@@ -334,10 +342,10 @@ export default {
                                 this.colorUseCopyData = JSON.parse(JSON.stringify(this.data));
                                 this.initLegend();
                                 this.initChartsGraph();
-                            } else {
-                                this.flShowNetwork = false;
-                                this.$store.commit("flShowLoading", false);
-                            }
+                            }).catch(error => {
+                                this.$store.commit('flShowLoading', false)
+                                console.log(error);
+                            })
                         }
                     }
                 } else {
@@ -615,34 +623,14 @@ export default {
             const currentChainId = nameSplit[nameSplit.length - 1];
             return currentChainId;
         },
-        handleSuccessLoadingImg(image, callback) {
-            this.loadingImg = true;
-            const img = new Image();
-            img.src = image;
-            img.onload = () => {
-                this.loadingImg = false;
-                callback(image);
-            }
-            img.onerror = () => {
-                this.loadingImg = false;
-                image ? callback(Constant.ERROR_LOAD_IMG) : callback("");
-            }
-            // return image;
+        prettyNamePopover(name) {
+            return Tools.getTextWidth(this.formatPrettyName(name)) > 139;
+        },
+        currentChainIdPopover(name) {
+            return Tools.getTextWidth(this.formatCurrentChainId(name)) > 139;
         },
         displayImgSrc(image) {
             return image;
-        }
-    },
-    computed: {
-        prettyNamePopover: () => {
-            return function(name) {
-                return Tools.getTextWidth(this.formatPrettyName(name)) > 143;
-            }
-        },
-        currentChainIdPopover: () => {
-            return function(name) {
-                return Tools.getTextWidth(this.formatCurrentChainId(name)) > 143;
-            }
         }
     },
     async mounted() {
@@ -974,8 +962,8 @@ export default {
                                 }
                                 .legend_block_img {
                                     box-sizing: border-box;
-                                    width: 0.28rem;
-                                    height: 0.28rem;
+                                    width: 0.4rem;
+                                    height: 0.4rem;
                                     border-radius: 50%;
                                     cursor: pointer;
                                     opacity: 1;
@@ -985,8 +973,8 @@ export default {
                                 }
                                 :deep(.el-image__inner) {
                                     box-sizing: border-box;
-                                    width: 0.28rem;
-                                    height: 0.28rem;
+                                    width: 0.4rem;
+                                    height: 0.4rem;
                                     border-radius: 50%;
                                     cursor: pointer;
                                     opacity: 1;
