@@ -302,7 +302,8 @@ export default {
                                     };
                                 })
                             })
-                            Promise.all(itemIconPromiseAll).then(imageSrcList => {
+                            try {
+                                const imageSrcList = await Promise.all(itemIconPromiseAll);
                                 data.items.forEach((item, index) => {
                                     item.icon = imageSrcList[index];
                                     let node = {
@@ -314,12 +315,14 @@ export default {
                                     nodes.push(node);
                                     item.connection_chains.forEach(chain => {
                                         const matchChainInfo = chainListMap.has(chain.chain_name) && chainListMap.get(chain.chain_name);
-                                        path = {
-                                            "src-chain-id": `${item.pretty_name} (${item.current_chain_id})`,
-                                            "dst-chain-id": `${matchChainInfo?.pretty_name} (${matchChainInfo?.current_chain_id})`,
-                                            "state": Constant.CHAIN_CONNECT_STATUS[chain.connection_status]
+                                        if(matchChainInfo) {
+                                            path = {
+                                                "src-chain-id": `${item.pretty_name} (${item.current_chain_id})`,
+                                                "dst-chain-id": `${matchChainInfo.pretty_name} (${matchChainInfo.current_chain_id})`,
+                                                "state": Constant.CHAIN_CONNECT_STATUS[chain.connection_status]
+                                            }
+                                            paths.push(path);
                                         }
-                                        paths.push(path);
                                     })
                                 })
                                 let res = {
@@ -342,10 +345,10 @@ export default {
                                 this.colorUseCopyData = JSON.parse(JSON.stringify(this.data));
                                 this.initLegend();
                                 this.initChartsGraph();
-                            }).catch(error => {
+                            } catch (error) {
                                 this.$store.commit('flShowLoading', false)
                                 console.log(error);
-                            })
+                            }
                         }
                     }
                 } else {
