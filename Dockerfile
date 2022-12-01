@@ -14,7 +14,7 @@ RUN echo -e 'server {\n\
     {\n\
         add_header Cache-Control "no-cache";\n\
     }\n\
-    try_files $URI $RUI/ /index.html;\n\
+    try_files $URI $URI/ /index.html;\n\
   }\n\
 }' > /etc/nginx/conf.d/default.conf
 
