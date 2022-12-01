@@ -42,8 +42,8 @@ export default {
             position: absolute;
             top: -2px;
             left: -2px;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-top: 2px solid #4a61e7;
             border-left: 2px solid #4a61e7;
             content: "";
@@ -53,8 +53,8 @@ export default {
             position: absolute;
             top: -2px;
             right: -2px;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-top: 2px solid #4a61e7;
             border-right: 2px solid #4a61e7;
             content: "";
@@ -68,8 +68,8 @@ export default {
                 position: absolute;
                 left: -2px;
                 bottom: -2px;
-                width: 10px;
-                height: 10px;
+                width: 8px;
+                height: 8px;
                 border-left: 2px solid #4a61e7;
                 border-bottom: 2px solid #4a61e7;
                 content: "";
@@ -79,8 +79,8 @@ export default {
                 position: absolute;
                 right: -2px;
                 bottom: -2px;
-                width: 10px;
-                height: 10px;
+                width: 8px;
+                height: 8px;
                 border-right: 2px solid #4a61e7;
                 border-bottom: 2px solid #4a61e7;
                 content: "";
@@ -92,7 +92,7 @@ export default {
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(315deg, rgba(33, 38, 121, 0.7) 0%, rgba(15, 13, 59, 0.7) 100%);
+            background: rgba(31, 33, 102, 0.7);
             border: 1px solid;
             border-image: linear-gradient(134deg, rgba(32, 37, 137, 1), rgba(16, 14, 51, 0), rgba(32, 37, 137, 1)) 1 1;
         }

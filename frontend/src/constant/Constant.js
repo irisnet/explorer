@@ -198,6 +198,19 @@ const ERROR = {};
 ERROR.ERROR_TEXT = "Sorry, failed to obtain information\nCheck if you are using vpn";
 ERROR.ERROR_BTN_TEXT = "Refresh";
 
+const API_CODE = {};
+API_CODE.SUCCESS = 0;
+
+const CHAIN_CONNECT_STATUS = {};
+CHAIN_CONNECT_STATUS[1] = "OPEN";
+CHAIN_CONNECT_STATUS[2] = "NOT OPEN";
+
+const CHAIN_SIGNER = {};
+CHAIN_SIGNER.COSMOSHUB = "cosmoshub";
+CHAIN_SIGNER.IRISNET = "irisnet";
+
+const ERROR_LOAD_IMG = require("../assets/error_load_img.png");
+
 export default {
   PREFIX,
   SUFFIX,
@@ -212,5 +225,9 @@ export default {
   TRANSACTIONMESSAGENAME,
   SUBMITPROPOSALTYPE,
   LOADING,
-  ERROR
+  ERROR,
+  API_CODE,
+  CHAIN_CONNECT_STATUS,
+  CHAIN_SIGNER,
+  ERROR_LOAD_IMG
 };
