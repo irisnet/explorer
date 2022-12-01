@@ -347,6 +347,7 @@ export default {
                                 this.initChartsGraph();
                             } catch (error) {
                                 this.$store.commit('flShowLoading', false)
+                                this.flShowNetwork = false;
                                 console.log(error);
                             }
                         }
