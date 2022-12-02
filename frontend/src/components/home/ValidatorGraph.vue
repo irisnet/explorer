@@ -486,7 +486,7 @@ export default {
                         source: sourceName,
                         target: targetName,
                         lineStyle: {
-                            color: "rgba(112, 198, 199, 1)",
+                            color: "rgba(70, 67, 188, 1)",
                             width: 1,
                         },
                         emphasis: {
@@ -502,7 +502,7 @@ export default {
                         target: targetName,
                         //连接线的样式设置
                         lineStyle: {
-                            color: "rgba(112, 198, 199, 1)",
+                            color: "rgba(70, 67, 188, 1)",
                             type: "dashed",
                         },
                         //鼠标滑到连接线上的样式配置
@@ -540,8 +540,9 @@ export default {
                         force: {
                             repulsion: [800, 1000], //斥力因子
                             gravity: 0.8, //是否向中心靠拢 值越大越接近于中心
-                            edgeLength: [100, 200], //链接线的长度范围
+                            edgeLength: [150, 250], //链接线的长度范围
                             layoutAnimation: true,
+                            friction: 0.2
                         },
                         // zoom:0.1, //设置整体视图缩放的比例
                         zoom: this.dataIndex,
@@ -590,7 +591,7 @@ export default {
                 zoomSpeedRule = 0.04;
                 setTime = 950;
             } else if (nodeArray.length < 50) {
-                zoomRule = 1;
+                zoomRule = 0.75;
                 zoomSpeedRule = 0.07;
                 setTime = 950;
             }
@@ -612,11 +613,14 @@ export default {
             //最后一次渲染
             setTimeout(() => {
                 graphOption.series[0].zoom = zoomRule - 0.28;
-                graphOption.series[0].links = nodeLinksArray;
                 graphOption.series[0].force.gravity = 0.3;
                 this.graphEcharts.setOption(graphOption);
                 this.flShowRevertIcon = true;
             }, setTime);
+            this.graphEcharts.on('click', params => {
+                graphOption.series[0].links = nodeLinksArray.filter(item => (item.source === params.data.name || item.target === params.data.name) && item);
+                this.graphEcharts.setOption(graphOption);
+            })
         },
         formatPrettyName(name) {
             const prettyName = this.formatName(name);
@@ -680,7 +684,10 @@ export default {
     height: 100%;
     //线上数据
     .graph_content_wrap {
+        @include flex;
+        flex-direction: column;
         width: 100%;
+        height: 100%;
         box-sizing: border-box;
         padding: 0 0.4rem;
         margin: 0 auto;
@@ -752,8 +759,8 @@ export default {
         }
 
         .graph_charts_container {
-            height: 100%;
-
+            // height: 100%;
+            flex: 1;
             .graph_charts_title {
                 padding: 0.2rem 0 0.2rem 0.2rem;
                 font-size: 0.12rem;
@@ -935,7 +942,7 @@ export default {
                                     color: rgba(134, 143, 211, 1);
                                     .legend_item {
                                         margin-top: 0.03rem;
-                                        max-width: 1.6rem;
+                                        max-width: 1.5rem;
                                         overflow: hidden;
                                         text-overflow: ellipsis;
                                         white-space: nowrap;
@@ -992,6 +999,7 @@ export default {
                     position: absolute;
                     right: 2.29rem;
                     top: 50%;
+                    transform: translateY(-100%);
                     z-index: 10;
 
                     .pick_up_img_content {
@@ -1008,6 +1016,7 @@ export default {
                 .pick_up_show_content {
                     position: absolute;
                     top: 50%;
+                    transform: translateY(-100%);
                     right: 0;
 
                     .pick_up_show_img_content {
@@ -1180,7 +1189,7 @@ export default {
 
                         p:nth-of-type(2) {
                             span:nth-of-type(1) {
-                                margin-left: 0;
+                                // margin-left: 0;
                             }
                         }
                     }
