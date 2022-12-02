@@ -938,7 +938,6 @@ export default {
                                     flex-direction: column;
                                     align-items: flex-start;
                                     margin-left: 0.08rem;
-                                    font-weight: 600;
                                     color: rgba(134, 143, 211, 1);
                                     .legend_item {
                                         margin-top: 0.03rem;
