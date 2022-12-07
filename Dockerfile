@@ -4,7 +4,7 @@ COPY ./frontend /app
 ARG ENVIRONMENT=null
 ARG APKPROXY=http://192.168.0.60:8081/repository/apk-ustc
 RUN sed -i "s+https://dl-cdn.alpinelinux.org/alpine+${APKPROXY}+g" /etc/apk/repositories && \
-apk add make git && npm config set registry https://registry.npm.taobao.org && \
+apk add git && npm config set registry https://registry.npm.taobao.org && \
 npm install && npm run build:$ENVIRONMENT
 
 FROM nginx:1.19-alpine
